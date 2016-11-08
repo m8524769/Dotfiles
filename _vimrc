@@ -129,8 +129,12 @@ let g:tagbar_width=30
 
 
 "QuickFix <F2>
-map <F2> :cclose<CR>
-imap <F2> <Esc> :cclose<CR>
+map <F2> :call CloseFX()<CR>
+imap <F2> <Esc> :call CloseFX()<CR>
+func! CloseFX()
+	exec "cclose"
+	exec "TagbarOpen"
+endfunc
 
 
 "AirLine配置 <Ctrl + Tab>
@@ -167,10 +171,12 @@ func! AsyncRun()
 	exec "w"
 	if expand("%:e") == "c"
 		exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
+		exec "TagbarClose"
 		exec "copen"
 		echohl WarningMsg | echo "AsyncRun Done!"  	
 	elseif expand("%:e") == "cpp"  
 		exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
+		exec "TagbarClose"
 		exec "copen"
 		echohl WarningMsg | echo "AsyncRun Done!"  	
 	endif
@@ -212,6 +218,7 @@ let s:windows_CFlags = 'gcc\ -fexec-charset=gbk\ -std=c11\ -Wall\ -g\ -O0\ -c\ %
 let s:windows_CPPFlags = 'g++\ -fexec-charset=gbk\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
 
 func! Compile()
+exe "w"
 exe ":ccl"
 exe ":update"
 if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
