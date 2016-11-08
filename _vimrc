@@ -27,6 +27,8 @@ filetype indent on
 "编码配置
 set encoding=utf-8
 set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+set langmenu=zh_CN.utf-8
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
@@ -39,6 +41,12 @@ set noundofile
 "废弃<F1>
 noremap <F1> <Esc>
 
+"方向键切换窗口
+map <Left> <c-w>h
+map <Down> <c-w>j
+map <up> <c-w>k
+map <right> <c-w>l
+
 "与Windows共享剪切
 set clipboard+=unnamed
 
@@ -47,6 +55,7 @@ set autoread
 
 "默认操作路径
 cd $VIM\Vim_Projects
+
 
 
 
@@ -71,6 +80,7 @@ Plugin 'git://github.com/Valloric/YouCompleteMe.git'
 Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
+Plugin 'git://github.com/vim-scripts/a.vim.git'
 
 call vundle#end()
 filetype plugin indent on
@@ -118,7 +128,7 @@ let g:tagbar_width=30
 "autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
-"QuickFix
+"QuickFix <F2>
 map <F2> :cclose<CR>
 imap <F2> <Esc> :cclose<CR>
 
@@ -142,6 +152,30 @@ let g:airline#extensions#tabline#left_sep = "\u2b80"
 let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
 
 
+"YouCompleteMe 配置
+filetype on
+set runtimepath+=$VIM/vimfiles/bundle/YouCompleteMe
+let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
+let $PYTHON='$VIM/vimfiles/Python_3.5'
+autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
+
+
+"AsyncRun 配置 <F7>
+map <F7> :call AsyncRun()<CR>
+imap <F7> <Esc> :call AsyncRun()<CR>
+func! AsyncRun()
+	exec "w"
+	if expand("%:e") == "c"
+		exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
+		exec "copen"
+		echohl WarningMsg | echo "AsyncRun Done!"  	
+	elseif expand("%:e") == "cpp"  
+		exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
+		exec "copen"
+		echohl WarningMsg | echo "AsyncRun Done!"  	
+	endif
+endfunc
+
 
 
 
@@ -149,11 +183,6 @@ let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
 
 
 "一键编译运行
-if(has("win32") || has("win64") || has("win95") || has("win16"))  
-	let g:iswindows = 1  
-else  
-	let g:iswindows = 0  
-endif  
 
 if has("gui_running")  
 	let g:isGUI = 1  
@@ -171,6 +200,7 @@ imap <c-F9> <ESC>:call Compile()<CR>
 map <c-F10> :call Link()<CR>  
 imap <c-F10> <ESC>:call Link()<CR>  
 
+let g:iswindows = 1  
 let s:LastShellReturn_C = 0  
 let s:LastShellReturn_L = 0  
 let s:ShowWarning = 1  
@@ -179,37 +209,26 @@ let s:Exe_Extension = '.exe'
 let s:Sou_Error = 0  
 
 let s:windows_CFlags = 'gcc\ -fexec-charset=gbk\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-
 let s:windows_CPPFlags = 'g++\ -fexec-charset=gbk\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-let s:linux_CPPFlags = 'g++\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
 
-func! Compile()  
-exe ":ccl"  
-exe ":update"  
+func! Compile()
+exe ":ccl"
+exe ":update"
 if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-    let s:Sou_Error = 0  
-    let s:LastShellReturn_C = 0  
+    let s:Sou_Error = 0
+    let s:LastShellReturn_C = 0
     let Sou = expand("%:p")  
-    let Obj = expand("%:p:r").s:Obj_Extension  
-    let Obj_Name = expand("%:p:t:r").s:Obj_Extension  
-    let v:statusmsg = ''  
+    let Obj = expand("%:p:r").s:Obj_Extension
+    let Obj_Name = expand("%:p:t:r").s:Obj_Extension
+    let v:statusmsg = ''
     if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))  
-	redraw!  
-	if expand("%:e") == "c"  
-	    if g:iswindows  
-			exe ":setlocal makeprg=".s:windows_CFlags  
-	    else  
-			exe ":setlocal makeprg=".s:linux_CFlags  
-	    endif  
+	redraw!
+	if expand("%:e") == "c"
+		exe ":setlocal makeprg=".s:windows_CFlags  
 	    echohl WarningMsg | echo " compiling..."  
 	    silent make  
 	elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-	    if g:iswindows  
-			exe ":setlocal makeprg=".s:windows_CPPFlags  
-	    else  
-			exe ":setlocal makeprg=".s:linux_CPPFlags  
-	    endif  
+		exe ":setlocal makeprg=".s:windows_CPPFlags  
 	    echohl WarningMsg | echo " compiling..."  
 	    silent make  
 	endif  
@@ -230,7 +249,7 @@ if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"
 	else  
 	    if empty(v:statusmsg)  
 			echohl WarningMsg | echo " compilation successful"  
-	    else  
+	    else
 			exe ":bo cope"  
 	    endif  
 	endif  
@@ -252,46 +271,33 @@ endif
 let s:LastShellReturn_L = 0  
 let Sou = expand("%:p")  
 let Obj = expand("%:p:r").s:Obj_Extension  
-if g:iswindows  
-    let Exe = expand("%:p:r").s:Exe_Extension  
-    let Exe_Name = expand("%:p:t:r").s:Exe_Extension  
-else  
-    let Exe = expand("%:p:r")  
-    let Exe_Name = expand("%:p:t:r")  
-endif  
+let Exe = expand("%:p:r").s:Exe_Extension  
+let Exe_Name = expand("%:p:t:r").s:Exe_Extension  
 let v:statusmsg = ''  
 if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))  
     redraw!  
     if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))  
-	if expand("%:e") == "c"  
-	    setlocal makeprg=gcc\ -o\ %<\ %<.o  
-	    echohl WarningMsg | echo " linking..."  
-	    silent make  
-	elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-	    setlocal makeprg=g++\ -o\ %<\ %<.o  
-	    echohl WarningMsg | echo " linking..."  
-	    silent make  
-	endif  
-	redraw!  
-	if v:shell_error != 0  
-	    let s:LastShellReturn_L = v:shell_error  
-	endif  
-	if g:iswindows  
-	    if s:LastShellReturn_L != 0  
-		exe ":bo cope"  
-		echohl WarningMsg | echo " linking failed"  
-	    else  
-		if s:ShowWarning  
-		    exe ":bo cw"  
+		if expand("%:e") == "c"  
+			setlocal makeprg=gcc\ -o\ %<\ %<.o  
+			echohl WarningMsg | echo " linking..."  
+			silent make  
+		elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
+			setlocal makeprg=g++\ -o\ %<\ %<.o  
+			echohl WarningMsg | echo " linking..."  
+			silent make  
+		endif  
+		redraw!  
+		if v:shell_error != 0  
+			let s:LastShellReturn_L = v:shell_error  
+		endif  
+		if s:LastShellReturn_L != 0  
+			exe ":bo cope"  
+			echohl WarningMsg | echo " linking failed"  
+		else  
+			if s:ShowWarning  
+				exe ":bo cw"  
 		endif  
 		echohl WarningMsg | echo " linking successful"  
-	    endif  
-	else  
-	    if empty(v:statusmsg)  
-			echohl WarningMsg | echo " linking successful"  
-	    else  
-			exe ":bo cope"  
-	    endif  
 	endif  
     else  
 		echohl WarningMsg | echo ""Exe_Name"is up to date"  
@@ -309,28 +315,32 @@ if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0
 endif  
 let Sou = expand("%:p")  
 let Obj = expand("%:p:r").s:Obj_Extension  
-if g:iswindows  
-    let Exe = expand("%:p:r").s:Exe_Extension  
-else  
-    let Exe = expand("%:p:r")  
-endif  
+let Exe = expand("%:p:r").s:Exe_Extension  
 if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)  
     redraw!  
     echohl WarningMsg | echo " running..."  
-    if g:iswindows  
-		exe ":!%<.exe"  
-    else  
-		if g:isGUI  
-			exe ":!gnome-terminal -e ./%<"  
-		else  
-			exe ":!./%<"  
-		endif  
-    endif  
+	exe ":!%<.exe"  
     redraw!  
     echohl WarningMsg | echo " running finish"  
 endif  
 endfunc  
 
+
+
+
+
+
+
+
+
+function! s:insert_gates()
+	let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+	exec "normal! i#ifndef _" . gatename
+	exec "normal! o#define _" . gatename
+	exec "normal! Go#endif // _" . gatename
+	normal! kk
+endfunction
+autocmd BufNewFile *.{h,hpp,H} call insert_gates()
 
 
 
