@@ -8,6 +8,7 @@ colorscheme desert
 set laststatus=2
 set t_Co=256
 set guifont=DejaVu\ Sans\ Mono:h11 
+" set guifont=MONACO:h11
 set number
 set nowrap
 set shortmess=atI
@@ -46,6 +47,13 @@ map <Left> <c-w>h
 map <Down> <c-w>j
 map <up> <c-w>k
 map <right> <c-w>l
+
+"代码折叠 <Space>
+set foldenable
+set foldmethod=syntax
+set foldcolumn=0
+set foldlevelstart=99
+"map <Space> @=((foldclosed(line('.'))<0)?'zc':'zo')<CR>
 
 "与Windows共享剪切
 set clipboard+=unnamed
@@ -138,7 +146,7 @@ endfunc
 
 
 "AirLine配置 <Ctrl + Tab>
-nnoremap <C-tab> :bn<CR>
+nmap <C-tab> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
 let g:airline#extensions#tabline#enabled = 1
@@ -183,13 +191,27 @@ func! AsyncRun()
 endfunc
 
 
+"Debug 配置 <F8>
+map <F8> :call Debug()<CR>
+imap <F8> <Esc> :call Debug()<CR>
+func! Debug()
+	exec "w"
+	if expand("%:e") == "c"
+		exec "!gcc -std=c11 % -g -o %<.exe"
+		exec "!gdb %<.exe"
+		echohl WarningMsg | echo "Debug Done!"  	
+	elseif expand("%:e") == "cpp"  
+		exec "!g++ -std=c++14 % -g -o %<.exe"
+		exec "!gdb %<.exe"
+		echohl WarningMsg | echo "Debug Done!"  	
+	endif
+endfunc
 
 
 
 
 
 "一键编译运行
-
 if has("gui_running")  
 	let g:isGUI = 1  
 else  
@@ -218,123 +240,111 @@ let s:windows_CFlags = 'gcc\ -fexec-charset=gbk\ -std=c11\ -Wall\ -g\ -O0\ -c\ %
 let s:windows_CPPFlags = 'g++\ -fexec-charset=gbk\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
 
 func! Compile()
-exe "w"
-exe ":ccl"
-exe ":update"
-if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-    let s:Sou_Error = 0
-    let s:LastShellReturn_C = 0
-    let Sou = expand("%:p")  
-    let Obj = expand("%:p:r").s:Obj_Extension
-    let Obj_Name = expand("%:p:t:r").s:Obj_Extension
-    let v:statusmsg = ''
-    if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))  
-	redraw!
-	if expand("%:e") == "c"
-		exe ":setlocal makeprg=".s:windows_CFlags  
-	    echohl WarningMsg | echo " compiling..."  
-	    silent make  
-	elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-		exe ":setlocal makeprg=".s:windows_CPPFlags  
-	    echohl WarningMsg | echo " compiling..."  
-	    silent make  
-	endif  
-	redraw!  
-	if v:shell_error != 0  
-	    let s:LastShellReturn_C = v:shell_error  
-	endif  
-	if g:iswindows  
-	    if s:LastShellReturn_C != 0  
-			exe ":bo cope"  
-		echohl WarningMsg | echo " compilation failed"  
-	    else  
-			if s:ShowWarning  
-				exe ":bo cw"  
-			endif  
-		echohl WarningMsg | echo " compilation successful"  
-	    endif  
-	else  
-	    if empty(v:statusmsg)  
-			echohl WarningMsg | echo " compilation successful"  
-	    else
-			exe ":bo cope"  
-	    endif  
-	endif  
-    else  
-	echohl WarningMsg | echo ""Obj_Name"is up to date"  
-    endif  
-else  
-    let s:Sou_Error = 1  
-    echohl WarningMsg | echo " please choose the correct source file"  
-endif  
-exe ":setlocal makeprg=make"  
-endfunc  
-
-func! Link()  
-call Compile()  
-if s:Sou_Error || s:LastShellReturn_C != 0  
-    return  
-endif  
-let s:LastShellReturn_L = 0  
-let Sou = expand("%:p")  
-let Obj = expand("%:p:r").s:Obj_Extension  
-let Exe = expand("%:p:r").s:Exe_Extension  
-let Exe_Name = expand("%:p:t:r").s:Exe_Extension  
-let v:statusmsg = ''  
-if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))  
-    redraw!  
-    if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))  
-		if expand("%:e") == "c"  
-			setlocal makeprg=gcc\ -o\ %<\ %<.o  
-			echohl WarningMsg | echo " linking..."  
+	exe "w"
+	exe ":ccl"
+	exe ":update"
+	if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
+		let s:Sou_Error = 0
+		let s:LastShellReturn_C = 0
+		let Sou = expand("%:p")  
+		let Obj = expand("%:p:r").s:Obj_Extension
+		let Obj_Name = expand("%:p:t:r").s:Obj_Extension
+		let v:statusmsg = ''
+		if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))  
+			redraw!
+		if expand("%:e") == "c"
+			exe ":setlocal makeprg=".s:windows_CFlags  
+			echohl WarningMsg | echo " compiling..."  
 			silent make  
 		elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-			setlocal makeprg=g++\ -o\ %<\ %<.o  
-			echohl WarningMsg | echo " linking..."  
+			exe ":setlocal makeprg=".s:windows_CPPFlags  
+			echohl WarningMsg | echo " compiling..."  
 			silent make  
 		endif  
 		redraw!  
 		if v:shell_error != 0  
-			let s:LastShellReturn_L = v:shell_error  
+			let s:LastShellReturn_C = v:shell_error  
 		endif  
-		if s:LastShellReturn_L != 0  
+		if s:LastShellReturn_C != 0  
 			exe ":bo cope"  
-			echohl WarningMsg | echo " linking failed"  
+			echohl WarningMsg | echo " compilation failed"  
 		else  
 			if s:ShowWarning  
 				exe ":bo cw"  
+			endif  
+			echohl WarningMsg | echo " compilation successful"  
 		endif  
-		echohl WarningMsg | echo " linking successful"  
+		else  
+			echohl WarningMsg | echo ""Obj_Name"is up to date"  
+		endif  
+	else  
+		let s:Sou_Error = 1  
+		echohl WarningMsg | echo " please choose the correct source file"  
 	endif  
-    else  
-		echohl WarningMsg | echo ""Exe_Name"is up to date"  
-    endif  
-endif  
-setlocal makeprg=make  
+	exe ":setlocal makeprg=make"  
+endfunc  
+
+func! Link()  
+call Compile()  
+	if s:Sou_Error || s:LastShellReturn_C != 0  
+		return  
+	endif  
+	let s:LastShellReturn_L = 0  
+	let Sou = expand("%:p")  
+	let Obj = expand("%:p:r").s:Obj_Extension  
+	let Exe = expand("%:p:r").s:Exe_Extension  
+	let Exe_Name = expand("%:p:t:r").s:Exe_Extension  
+	let v:statusmsg = ''  
+	if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))  
+		redraw!  
+		if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))  
+			if expand("%:e") == "c"  
+				setlocal makeprg=gcc\ -o\ %<\ %<.o  
+				echohl WarningMsg | echo " linking..."  
+				silent make  
+			elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
+				setlocal makeprg=g++\ -o\ %<\ %<.o  
+				echohl WarningMsg | echo " linking..."  
+				silent make  
+			endif  
+			redraw!  
+			if v:shell_error != 0  
+				let s:LastShellReturn_L = v:shell_error  
+			endif  
+			if s:LastShellReturn_L != 0  
+				exe ":bo cope"  
+				echohl WarningMsg | echo " linking failed"  
+			else  
+				if s:ShowWarning  
+					exe ":bo cw"  
+				endif  
+				echohl WarningMsg | echo " linking successful"  
+			endif  
+		else  
+			echohl WarningMsg | echo ""Exe_Name"is up to date"  
+		endif  
+	endif  
+	setlocal makeprg=make  
 endfunc  
 
 func! Run()  
-let s:ShowWarning = 0  
-call Link()  
-let s:ShowWarning = 1  
-if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0  
-    return  
-endif  
-let Sou = expand("%:p")  
-let Obj = expand("%:p:r").s:Obj_Extension  
-let Exe = expand("%:p:r").s:Exe_Extension  
-if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)  
-    redraw!  
-    echohl WarningMsg | echo " running..."  
-	exe ":!%<.exe"  
-    redraw!  
-    echohl WarningMsg | echo " running finish"  
-endif  
+	let s:ShowWarning = 0  
+	call Link()  
+	let s:ShowWarning = 1  
+	if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0  
+		return  
+	endif  
+	let Sou = expand("%:p")  
+	let Obj = expand("%:p:r").s:Obj_Extension  
+	let Exe = expand("%:p:r").s:Exe_Extension  
+	if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)  
+		redraw!  
+		echohl WarningMsg | echo " running..."  
+		exe ":!%<.exe"  
+		redraw!  
+		echohl WarningMsg | echo " running finish"  
+	endif  
 endfunc  
-
-
-
-
 
 
 
@@ -348,8 +358,6 @@ function! s:insert_gates()
 	normal! kk
 endfunction
 autocmd BufNewFile *.{h,hpp,H} call insert_gates()
-
-
 
 
 
