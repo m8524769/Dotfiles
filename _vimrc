@@ -1,3 +1,4 @@
+"模仿Windows快捷键
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
@@ -5,6 +6,7 @@ behave mswin
 "界面配置
 syntax on
 colorscheme desert
+" colorscheme solarized
 set laststatus=2
 set t_Co=256
 set guifont=DejaVu\ Sans\ Mono:h11 
@@ -15,6 +17,8 @@ set shortmess=atI
 set cursorcolumn
 set cursorline
 set go=
+highlight Pmuenu guibg=darkgrey guifg=black
+highlight PmuenuSel guibg=lightgrey guifg=black
 
 "缩进配置
 set tabstop=4
@@ -33,6 +37,7 @@ set langmenu=zh_CN.utf-8
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
+let &termencoding=&encoding
 
 "取消备份及交换文件
 set nobackup
@@ -42,18 +47,20 @@ set noundofile
 "废弃<F1>
 noremap <F1> <Esc>
 
+"切换全屏<F11>
+imap <F11> <Esc> :call ToggleFullscreen()<CR>
+
 "方向键切换窗口
 map <Left> <c-w>h
 map <Down> <c-w>j
 map <up> <c-w>k
 map <right> <c-w>l
 
-"代码折叠 <Space>
+"代码折叠
 set foldenable
 set foldmethod=syntax
 set foldcolumn=0
 set foldlevelstart=99
-"map <Space> @=((foldclosed(line('.'))<0)?'zc':'zo')<CR>
 
 "与Windows共享剪切
 set clipboard+=unnamed
@@ -63,6 +70,7 @@ set autoread
 
 "默认操作路径
 cd $VIM\Vim_Projects
+
 
 
 
@@ -84,11 +92,13 @@ Plugin 'git://github.com/majutsushi/tagbar.git'
 Plugin 'git://github.com/easymotion/vim-easymotion.git'
 Plugin 'git://github.com/vim-airline/vim-airline.git'
 Plugin 'git://github.com/vim-airline/vim-airline-themes.git'
-Plugin 'git://github.com/Valloric/YouCompleteMe.git'
+" Plugin 'git://github.com/Valloric/YouCompleteMe.git'
 Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'git://github.com/vim-scripts/a.vim.git'
+" Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
+" Plugin 'git://github.com/tpope/vim-surround.git'
 
 call vundle#end()
 filetype plugin indent on
@@ -96,17 +106,47 @@ filetype plugin indent on
 
 
 
-"EasyMotion 配置
+
+"EasyMotion 配置 <s> <t>
 let mapleader=','
 let g:mapleader = ","
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_startofline = 0
+map <Leader> <Plug>(easymotion-prefix)
+nmap s <Plug>(easymotion-s)
+nmap t <Plug>(easymotion-t)
+map <Leader>l <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>h <Plug>(easymotion-linebackward)
+map <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+
+
+"multiple-cursors 配置
+" set selection=inclusive
+" let g:multi_cursor_use_default_mapping=0
+" let g:multi_cursor_next_key='<C-n>'
+" let g:multi_cursor_prev_key='<C-p>'
+" let g:multi_cursor_skip_key='<C-x>'
+" let g:multi_cursor_quit_key='<Esc>'
+" let g:multi_cursor_start_key='<F4>'
+" let g:multi_cursor_start_word_key='g<C-n>'
+" highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
+" highlight link multiple_cursors_visual Visual
 
 
 "NERD_Tree 配置 <F5>
 map <F5> :NERDTreeToggle<CR>
 imap <F5> <Esc>:NERDTreeToggle<CR>
-"autocmd vimenter * NERDTree
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+" autocmd vimenter * NERDTree
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
@@ -133,7 +173,7 @@ map <F6> :TagbarToggle<CR>
 imap <F6> <Esc> :TagbarToggle<CR>
 let g:tagbar_ctags_bin='ctags'
 let g:tagbar_width=30
-"autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
+" autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
 "QuickFix <F2>
@@ -166,10 +206,10 @@ let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
 
 "YouCompleteMe 配置
 filetype on
-set runtimepath+=$VIM/vimfiles/bundle/YouCompleteMe
+" set runtimepath+=$VIM/vimfiles/bundle/YouCompleteMe
 let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
 let $PYTHON='$VIM/vimfiles/Python_3.5'
-autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
+" autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
 
 
 "AsyncRun 配置 <F7>
@@ -211,7 +251,7 @@ endfunc
 
 
 
-"一键编译运行
+"一键编译运行(请确保文件名不含中文)
 if has("gui_running")  
 	let g:isGUI = 1  
 else  
@@ -285,7 +325,7 @@ func! Compile()
 endfunc  
 
 func! Link()  
-call Compile()  
+	call Compile()  
 	if s:Sou_Error || s:LastShellReturn_C != 0  
 		return  
 	endif  
@@ -349,47 +389,47 @@ endfunc
 
 
 
-
-function! s:insert_gates()
-	let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-	exec "normal! i#ifndef _" . gatename
-	exec "normal! o#define _" . gatename
-	exec "normal! Go#endif // _" . gatename
-	normal! kk
-endfunction
-autocmd BufNewFile *.{h,hpp,H} call insert_gates()
+"头文件自动插入保护符
+" func! s:insert_gates()
+"     let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+"     exec "normal! i#ifndef _" . gatename
+"     exec "normal! o#define _" . gatename
+"     exec "normal! Go#endif // _" . gatename
+"     normal! kk
+" endfunc
+" autocmd BufNewFile *.{h,hpp,H} call insert_gates()
 
 
 
 
 
 set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      if empty(&shellxquote)
-        let l:shxq_sav = ''
-        set shellxquote&
-      endif
-      let cmd = '"' . $VIMRUNTIME . '\diff"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-  if exists('l:shxq_sav')
-    let &shellxquote=l:shxq_sav
-  endif
-endfunction
+func MyDiff()
+	let opt = '-a --binary '
+	if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+	if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+	let arg1 = v:fname_in
+	if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+	let arg2 = v:fname_new
+	if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+	let arg3 = v:fname_out
+	if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+	if $VIMRUNTIME =~ ' '
+		if &sh =~ '\<cmd'
+			if empty(&shellxquote)
+				let l:shxq_sav = ''
+				set shellxquote&
+			endif
+			let cmd = '"' . $VIMRUNTIME . '\diff"'
+		else
+			let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+		endif
+	else
+		let cmd = $VIMRUNTIME . '\diff'
+	endif
+	silent exec '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+	if exists('l:shxq_sav')
+		let &shellxquote=l:shxq_sav
+	endif
+endfunc
 
