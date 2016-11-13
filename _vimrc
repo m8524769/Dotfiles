@@ -9,7 +9,7 @@ colorscheme desert
 " colorscheme solarized
 set laststatus=2
 set t_Co=256
-set guifont=DejaVu\ Sans\ Mono:h11 
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11 
 " set guifont=MONACO:h11
 set number
 set nowrap
@@ -17,13 +17,12 @@ set shortmess=atI
 set cursorcolumn
 set cursorline
 set go=
-highlight Pmuenu guibg=darkgrey guifg=black
-highlight PmuenuSel guibg=lightgrey guifg=black
 
 "缩进配置
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
+set expandtab
 set smarttab
 set cindent
 filetype on
@@ -34,6 +33,7 @@ set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
 set langmenu=zh_CN.utf-8
+set helplang=CN
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
@@ -97,8 +97,10 @@ Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'git://github.com/vim-scripts/a.vim.git'
-" Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
+Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
 " Plugin 'git://github.com/tpope/vim-surround.git'
+Plugin 'git://github.com/Yggdroot/indentLine.git'
+Plugin 'git://github.com/w0rp/ale.git'
 
 call vundle#end()
 filetype plugin indent on
@@ -107,21 +109,19 @@ filetype plugin indent on
 
 
 
-"EasyMotion 配置 <s> <t>
+"EasyMotion 配置
 let mapleader=','
 let g:mapleader = ","
 let g:EasyMotion_smartcase = 1
-let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_do_mapping = 1
 let g:EasyMotion_startofline = 0
 map <Leader> <Plug>(easymotion-prefix)
-nmap s <Plug>(easymotion-s)
-nmap t <Plug>(easymotion-t)
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
 map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <Leader>h <Plug>(easymotion-linebackward)
-map <Leader>f <Plug>(easymotion-bd-f)
-nmap <Leader>f <Plug>(easymotion-overwin-f)
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
 map  n <Plug>(easymotion-next)
@@ -129,12 +129,12 @@ map  N <Plug>(easymotion-prev)
 
 
 "multiple-cursors 配置
-" set selection=inclusive
-" let g:multi_cursor_use_default_mapping=0
-" let g:multi_cursor_next_key='<C-n>'
-" let g:multi_cursor_prev_key='<C-p>'
-" let g:multi_cursor_skip_key='<C-x>'
-" let g:multi_cursor_quit_key='<Esc>'
+set selection=inclusive
+let g:multi_cursor_use_default_mapping=1
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
 " let g:multi_cursor_start_key='<F4>'
 " let g:multi_cursor_start_word_key='g<C-n>'
 " highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
@@ -192,16 +192,44 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:Powerline_symbols="fancy"
-let g:airline_symbols = {}
-let g:airline_left_sep = "\u2b80" 
-let g:airline_left_alt_sep = "\u2b81"
-let g:airline_right_sep = "\u2b82"
-let g:airline_right_alt_sep = "\u2b83"
-let g:airline_symbols.branch = "\u2b60"
-let g:airline_symbols.readonly = "\u2b64"
-let g:airline_symbols.linenr = "\u2b61"
-let g:airline#extensions#tabline#left_sep = "\u2b80"
-let g:airline#extensions#tabline#left_alt_sep = "\u2b81"
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+let g:airline#extensions#tabline#left_sep = ''
+let g:airline#extensions#tabline#left_alt_sep = ''
+let g:airline#extensions#tabline#right_sep = ''
+let g:airline#extensions#tabline#right_alt_sep = ''
+map <Leader>1 :b 1<CR>
+map <Leader>2 :b 2<CR>
+map <Leader>3 :b 3<CR>
+map <Leader>4 :b 4<CR>
+map <Leader>5 :b 5<CR>
+map <Leader>6 :b 6<CR>
+map <Leader>7 :b 7<CR>
+map <Leader>8 :b 8<CR>
+map <Leader>9 :b 9<CR>
+" function! ALEGetStatusLine()
+"     if &filetype == 'c,cpp'
+"         let w:airline_section_a = 'ALEGetStatusLine'
+"         let w:airline_section_b = '%f'
+"         let w:airline_section_c = '%{ALEGetStatusLine()}'
+"         let g:airline_variable_referenced_in_statusline = 'foo'
+"     endif
+" endfunction
+" call airline#add_statusline_func('ALEGetStatusLine')
+
+
+
+"IndentLine 配置
+let g:indentLine_enabled = 1
+let g:indentLine_char = '¦'
 
 
 "YouCompleteMe 配置
@@ -210,6 +238,22 @@ filetype on
 let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
 let $PYTHON='$VIM/vimfiles/Python_3.5'
 " autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
+
+
+"ALE 配置
+let g:ale_sign_column_always = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
+augroup YourGroup
+    autocmd!
+    autocmd User ALELint call YourFunction()
+augroup END
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
 "AsyncRun 配置 <F7>
