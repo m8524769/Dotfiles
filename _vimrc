@@ -7,10 +7,11 @@ behave mswin
 syntax on
 colorscheme desert
 " colorscheme solarized
+" colorscheme wombat256
 set laststatus=2
 set t_Co=256
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11 
-" set guifont=MONACO:h11
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
+" set guifont=MONACO:h12
 set number
 set nowrap
 set shortmess=atI
@@ -34,6 +35,7 @@ set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
+let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
@@ -44,8 +46,11 @@ set nobackup
 set noswapfile
 set noundofile
 
-"废弃<F1>
+"禁用<F1>
 noremap <F1> <Esc>
+
+"禁用Alt
+set winaltkeys=no
 
 "切换全屏<F11>
 imap <F11> <Esc> :call ToggleFullscreen()<CR>
@@ -55,6 +60,14 @@ map <Left> <c-w>h
 map <Down> <c-w>j
 map <up> <c-w>k
 map <right> <c-w>l
+
+"插入模式快捷键映射
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+imap <C-o> <Esc> o
+imap <C-u> <Esc> u
 
 "代码折叠
 set foldenable
@@ -67,6 +80,7 @@ set clipboard+=unnamed
 
 "自动载入
 set autoread
+set history=200
 
 "默认操作路径
 cd $VIM\Vim_Projects
@@ -84,7 +98,10 @@ call vundle#begin('$VIM/vimfiles/bundle/')
 
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
 
-Plugin 'git://github.com/kien/ctrlp.vim.git'
+Plugin 'git://github.com/Shougo/unite.vim.git'
+Plugin 'git://github.com/Shougo/vimproc.vim.git'
+Plugin 'git://github.com/Shougo/neocomplete.vim.git'
+" Plugin 'git://github.com/kien/ctrlp.vim.git'
 Plugin 'git://github.com/scrooloose/nerdtree.git'
 Plugin 'git://github.com/scrooloose/nerdcommenter.git'
 Plugin 'git://github.com/universal-ctags/ctags.git'
@@ -94,9 +111,9 @@ Plugin 'git://github.com/vim-airline/vim-airline.git'
 Plugin 'git://github.com/vim-airline/vim-airline-themes.git'
 " Plugin 'git://github.com/Valloric/YouCompleteMe.git'
 Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
+Plugin 'git://github.com/vim-scripts/a.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
-Plugin 'git://github.com/vim-scripts/a.vim.git'
 Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
 " Plugin 'git://github.com/tpope/vim-surround.git'
 Plugin 'git://github.com/Yggdroot/indentLine.git'
@@ -232,11 +249,15 @@ let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
 
 
+"Vimproc 配置
+let g:vimproc_dll_path=$VIMRUNTIME."/vimproc_win32.dll"
+
+
 "YouCompleteMe 配置
-filetype on
+" filetype on
 " set runtimepath+=$VIM/vimfiles/bundle/YouCompleteMe
-let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
-let $PYTHON='$VIM/vimfiles/Python_3.5'
+" let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
+" let $PYTHON='$VIM/vimfiles/Python_3.5'
 " autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
 
 
@@ -248,10 +269,11 @@ let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
-augroup YourGroup
-    autocmd!
-    autocmd User ALELint call YourFunction()
-augroup END
+let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
+" augroup YourGroup
+"     autocmd!
+"     autocmd User ALELint call YourFunction()
+" augroup END
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
