@@ -11,7 +11,6 @@ colorscheme desert
 set laststatus=2
 set t_Co=256
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
-" set guifont=MONACO:h12
 set number
 set nowrap
 set shortmess=atI
@@ -98,10 +97,6 @@ call vundle#begin('$VIM/vimfiles/bundle/')
 
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
 
-Plugin 'git://github.com/Shougo/unite.vim.git'
-Plugin 'git://github.com/Shougo/vimproc.vim.git'
-Plugin 'git://github.com/Shougo/neocomplete.vim.git'
-" Plugin 'git://github.com/kien/ctrlp.vim.git'
 Plugin 'git://github.com/scrooloose/nerdtree.git'
 Plugin 'git://github.com/scrooloose/nerdcommenter.git'
 Plugin 'git://github.com/universal-ctags/ctags.git'
@@ -109,13 +104,11 @@ Plugin 'git://github.com/majutsushi/tagbar.git'
 Plugin 'git://github.com/easymotion/vim-easymotion.git'
 Plugin 'git://github.com/vim-airline/vim-airline.git'
 Plugin 'git://github.com/vim-airline/vim-airline-themes.git'
-" Plugin 'git://github.com/Valloric/YouCompleteMe.git'
 Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
 Plugin 'git://github.com/vim-scripts/a.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
-" Plugin 'git://github.com/tpope/vim-surround.git'
 Plugin 'git://github.com/Yggdroot/indentLine.git'
 Plugin 'git://github.com/w0rp/ale.git'
 
@@ -152,10 +145,6 @@ let g:multi_cursor_next_key='<C-n>'
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
-" let g:multi_cursor_start_key='<F4>'
-" let g:multi_cursor_start_word_key='g<C-n>'
-" highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
-" highlight link multiple_cursors_visual Visual
 
 
 "NERD_Tree 配置 <F5>
@@ -243,22 +232,9 @@ map <Leader>9 :b 9<CR>
 " call airline#add_statusline_func('ALEGetStatusLine')
 
 
-
 "IndentLine 配置
 let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
-
-
-"Vimproc 配置
-let g:vimproc_dll_path=$VIMRUNTIME."/vimproc_win32.dll"
-
-
-"YouCompleteMe 配置
-" filetype on
-" set runtimepath+=$VIM/vimfiles/bundle/YouCompleteMe
-" let $PATH='$VIM/vimfiles/Python_3.5;'.$PATH
-" let $PYTHON='$VIM/vimfiles/Python_3.5'
-" autocmd FileType c,cpp,h :let g:ycm_global_ycm_extra_conf = '$VIM/vimfiles/bundle/YouCompleteMe/third_party/.ycm_extra_conf.py'
 
 
 "ALE 配置
@@ -270,10 +246,6 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
 let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
-" augroup YourGroup
-"     autocmd!
-"     autocmd User ALELint call YourFunction()
-" augroup END
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
