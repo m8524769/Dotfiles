@@ -5,12 +5,14 @@ behave mswin
 
 "界面配置
 syntax on
-colorscheme desert
+let g:desert_termtrans=1
+" colorscheme desert
+" colorscheme GRB256
 " colorscheme solarized
 " colorscheme wombat256
 set laststatus=2
 set t_Co=256
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
+set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Regular\ 12
 " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
 " set guifont=Hack\ Regular\ 12
 set number
@@ -101,6 +103,7 @@ Plugin 'http://github.com/scrooloose/nerdcommenter.git'
 Plugin 'http://github.com/universal-ctags/ctags.git'
 Plugin 'http://github.com/majutsushi/tagbar.git'
 Plugin 'http://github.com/easymotion/vim-easymotion.git'
+Plugin 'http://github.com/Valloric/YouCompleteMe.git'
 Plugin 'http://github.com/vim-airline/vim-airline.git'
 Plugin 'http://github.com/vim-airline/vim-airline-themes.git'
 Plugin 'http://github.com/vim-scripts/a.vim.git'
