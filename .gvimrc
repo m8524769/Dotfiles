@@ -3,18 +3,26 @@ source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
+"配置<Leader>
+let mapleader=','
+let g:mapleader = ","
+
+"打开配置文件
+let $MYVIMRC='~/.vimrc'
+let $MYGVIMRC='~/.gvimrc'
+nmap <leader>v :split $MYVIMRC<cr>
+nmap <leader>gv :split $MYGVIMRC<cr>
+
 "界面配置
 syntax on
-let g:desert_termtrans=1
-" colorscheme desert
-" colorscheme GRB256
+colorscheme desert
 " colorscheme solarized
 " colorscheme wombat256
 set laststatus=2
 set t_Co=256
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Regular\ 12
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
 " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
-" set guifont=Hack\ Regular\ 12
+" set guifont=Hack\ Bold\ 12
 set number
 set nowrap
 set shortmess=atI
@@ -62,12 +70,14 @@ map <up> <c-w>k
 map <right> <c-w>l
 
 "插入模式快捷键映射
-imap <C-h> <Left>
-imap <C-j> <Down>
-imap <C-k> <Up>
-imap <C-l> <Right>
-imap <C-o> <Esc> o
-imap <C-u> <Esc> u
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+inoremap <C-u> <Esc> u
+inoremap <C-CR> <Nop>
+inoremap jk <Esc>
+imap <C-CR> +<Space><BS>
 
 "代码折叠
 set foldenable
@@ -84,6 +94,21 @@ set history=200
 
 "默认操作路径
 cd /home/yk/Projects
+
+"C/C++缩写词 <C-CR>
+iabbrev ui+ unsigned int<Space>
+iabbrev uc+ unsigned char<Space>
+iabbrev p+ printf("");<Esc>2hi
+iabbrev s+ scanf("", &);<Esc>5hi
+iabbrev switch+ switch ()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>default: <Up><Tab>case : <Up><Tab>case : <Up><Up><Left>
+iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Right><Right><Right>
+iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>private:<Up><Tab><Tab>~CLASSNAME() {}<Up><Tab><Tab>CLASSNAME() {}<Up><Tab>public:<Up><Esc>b
+iabbrev guard+ #ifndef HEADER_FILE_H<CR>#define HEADER_FILE_H<CR><CR>#endif // HEADER_FILE_H<ESC>3kb
+if expand("%:e") == "c"
+    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <stdio.h><CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
+elseif expand("%:e") == "cpp"
+    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <iostream><CR><CR>using namespace std;<CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
+endif
 
 
 
@@ -153,7 +178,7 @@ let g:multi_cursor_use_default_mapping=1
 
 "NERD_Tree 配置 <F5>
 map <F5> :NERDTreeToggle<CR>
-imap <F5> <Esc> :NERDTreeToggle<CR>
+inoremap <F5> <Esc> :NERDTreeToggle<CR>
 " autocmd vimenter * NERDTree
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -180,7 +205,7 @@ set tags+=./tags
 
 "TagBar 配置 <F6>
 map <F6> :TagbarToggle<CR>
-imap <F6> <Esc> :TagbarToggle<CR>
+inoremap <F6> <Esc> :TagbarToggle<CR>
 let g:tagbar_ctags_bin='ctags'
 let g:tagbar_width=30
 " autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
@@ -188,7 +213,7 @@ let g:tagbar_width=30
 
 "QuickFix <F2>
 map <F2> :call CloseFX()<CR>
-imap <F2> <Esc> :call CloseFX()<CR>
+inoremap <F2> <Esc> :call CloseFX()<CR>
 func! CloseFX()
 	exec "cclose"
 	exec "TagbarOpen"
@@ -196,7 +221,7 @@ endfunc
 
 
 "AirLine配置 <Ctrl + Tab>
-nmap <C-tab> :bn<CR>
+noremap <C-tab> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
 let g:airline#extensions#tabline#enabled = 1
@@ -230,22 +255,13 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
 let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
-" function! ALEGetStatusLine()
-"     if &filetype == 'c,cpp'
-"         let w:airline_section_a = 'ALEGetStatusLine'
-"         let w:airline_section_b = '%f'
-"         let w:airline_section_c = '%{ALEGetStatusLine()}'
-"         let g:airline_variable_referenced_in_statusline = 'foo'
-"     endif
-" endfunction
-" call airline#add_statusline_func('ALEGetStatusLine')
+noremap <silent> <C-k> <Plug>(ale_previous_wrap)
+noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
 "AsyncRun 配置 <F7>
 map <F7> :call AsyncRun()<CR>
-imap <F7> <Esc> :call AsyncRun()<CR>
+inoremap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
 	exec "w"
 	if expand("%:e") == "c"
@@ -264,7 +280,7 @@ endfunc
 
 "Debug 配置 <F8>
 map <F8> :call Debug()<CR>
-imap <F8> <Esc> :call Debug()<CR>
+inoremap <F8> <Esc> :call Debug()<CR>
 func! Debug()
 	exec "w"
 	if expand("%:e") == "c"
@@ -281,28 +297,6 @@ endfunc
 
 
 
-
-
-
-
-
-"头文件自动插入保护符
-" func! s:insert_gates()
-"     let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-"     exec "normal! i#ifndef _" . gatename
-"     exec "normal! o#define _" . gatename
-"     exec "normal! Go#endif // _" . gatename
-"     normal! kk
-" endfunc
-" autocmd BufNewFile *.{h,hpp,H} call insert_gates()
-
-
-
-
-
-
-
-
    
 if has("gui_running")  
     let g:isGUI = 1  
@@ -312,13 +306,13 @@ endif
 
 " F9 一键保存、编译、连接存并运行  
 map <F9> :call Run()<CR>  
-imap <F9> <ESC>:call Run()<CR>  
+inoremap <F9> <ESC>:call Run()<CR>  
 " Ctrl + F9 一键保存并编译  
 map <c-F9> :call Compile()<CR>  
-imap <c-F9> <ESC>:call Compile()<CR>  
+inoremap <c-F9> <ESC>:call Compile()<CR>  
 " Ctrl + F10 一键保存并连接  
 map <c-F10> :call Link()<CR>  
-imap <c-F10> <ESC>:call Link()<CR>  
+inoremap <c-F10> <ESC>:call Link()<CR>  
    
 let s:LastShellReturn_C = 0  
 let s:LastShellReturn_L = 0  
@@ -434,35 +428,6 @@ func! Run()
 endfunc  
 
 
-set diffexpr=MyDiff()
-func MyDiff()
-	let opt = '-a --binary '
-	if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-	if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-	let arg1 = v:fname_in
-	if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-	let arg2 = v:fname_new
-	if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-	let arg3 = v:fname_out
-	if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-	if $VIMRUNTIME =~ ' '
-		if &sh =~ '\<cmd'
-			if empty(&shellxquote)
-				let l:shxq_sav = ''
-				set shellxquote&
-			endif
-			let cmd = '"' . $VIMRUNTIME . '\diff"'
-		else
-			let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-		endif
-	else
-		let cmd = $VIMRUNTIME . '\diff'
-	endif
-	silent exec '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-	if exists('l:shxq_sav')
-		let &shellxquote=l:shxq_sav
-	endif
-endfunc
 
 
 runtime! debian.vim
@@ -479,4 +444,5 @@ endif
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
+
 
