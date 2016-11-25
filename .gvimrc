@@ -57,10 +57,8 @@ set nobackup
 set noswapfile
 set noundofile
 
-"禁用<F1>
+"禁用<F1>及Alt
 noremap <F1> <Esc>
-
-"禁用Alt
 set winaltkeys=no
 
 "方向键切换窗口
@@ -69,13 +67,18 @@ map <Down> <c-w>j
 map <up> <c-w>k
 map <right> <c-w>l
 
+"增强光标移动
+nmap H ^
+nmap J }
+nmap K {
+nmap L $
+
 "插入模式快捷键映射
 inoremap <C-h> <Left>
 inoremap <C-j> <Down>
 inoremap <C-k> <Up>
 inoremap <C-l> <Right>
 inoremap <C-u> <Esc> u
-inoremap <C-CR> <Nop>
 inoremap jk <Esc>
 imap <C-CR> +<Space><BS>
 
@@ -100,16 +103,20 @@ iabbrev ui+ unsigned int<Space>
 iabbrev uc+ unsigned char<Space>
 iabbrev p+ printf("");<Esc>2hi
 iabbrev s+ scanf("", &);<Esc>5hi
+iabbrev cout+ cout <<  << endl;<Esc>8hi
+iabbrev cin+ cin <<  << endl;<Esc>8hi
 iabbrev switch+ switch ()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>default: <Up><Tab>case : <Up><Tab>case : <Up><Up><Left>
-iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Right><Right><Right>
+iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Esc>4li
+iabbrev union+ union {};<Left><Left><CR><CR><Up><Tab><Up><Esc>3li
 iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>private:<Up><Tab><Tab>~CLASSNAME() {}<Up><Tab><Tab>CLASSNAME() {}<Up><Tab>public:<Up><Esc>b
+iabbrev #+ #include <><Left>
+iabbrev using+ using namespace<Space>
 iabbrev guard+ #ifndef HEADER_FILE_H<CR>#define HEADER_FILE_H<CR><CR>#endif // HEADER_FILE_H<ESC>3kb
 if expand("%:e") == "c"
     iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <stdio.h><CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
 elseif expand("%:e") == "cpp"
     iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <iostream><CR><CR>using namespace std;<CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
 endif
-
 
 
 
@@ -261,7 +268,7 @@ noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 "AsyncRun 配置 <F7>
 map <F7> :call AsyncRun()<CR>
-inoremap <F7> <Esc> :call AsyncRun()<CR>
+imap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
 	exec "w"
 	if expand("%:e") == "c"
@@ -280,16 +287,16 @@ endfunc
 
 "Debug 配置 <F8>
 map <F8> :call Debug()<CR>
-inoremap <F8> <Esc> :call Debug()<CR>
+imap <F8> <Esc> :call Debug()<CR>
 func! Debug()
 	exec "w"
 	if expand("%:e") == "c"
-		exec "!gcc -std=c11 % -g -o %<.exe"
-		exec "!gdb %<.exe"
+		exec "!gcc -std=c11 % -g -o %<.o"
+		exec "!gdb %<.o"
 		echohl WarningMsg | echo "Debug Done!"  	
 	elseif expand("%:e") == "cpp"  
-		exec "!g++ -std=c++14 % -g -o %<.exe"
-		exec "!gdb %<.exe"
+		exec "!g++ -std=c++14 % -g -o %<.o"
+		exec "!gdb %<.o"
 		echohl WarningMsg | echo "Debug Done!"  	
 	endif
 endfunc
@@ -304,21 +311,14 @@ else
     let g:isGUI = 0  
 endif  
 
-" F9 一键保存、编译、连接存并运行  
+"F9 一键保存、编译、连接存并运行  
 map <F9> :call Run()<CR>  
-inoremap <F9> <ESC>:call Run()<CR>  
-" Ctrl + F9 一键保存并编译  
-map <c-F9> :call Compile()<CR>  
-inoremap <c-F9> <ESC>:call Compile()<CR>  
-" Ctrl + F10 一键保存并连接  
-map <c-F10> :call Link()<CR>  
-inoremap <c-F10> <ESC>:call Link()<CR>  
-   
+imap <F9> <ESC>:call Run()<CR>  
+ 
 let s:LastShellReturn_C = 0  
 let s:LastShellReturn_L = 0  
 let s:ShowWarning = 1  
 let s:Obj_Extension = '.o'  
-let s:Exe_Extension = '.exe'  
 let s:Sou_Error = 0  
    
 let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
