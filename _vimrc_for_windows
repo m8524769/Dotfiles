@@ -3,6 +3,14 @@ source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
+"配置<Leader>
+let mapleader=','
+let g:mapleader = ","
+
+"打开配置文件
+let $MYGVIMRC='$VIM/_vimrc'
+nmap <leader>gv :split $MYGVIMRC<Cr>
+
 "界面配置
 syntax on
 colorscheme desert
@@ -11,6 +19,7 @@ colorscheme desert
 set laststatus=2
 set t_Co=256
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
+" set guifont=MONACO:h12
 set number
 set nowrap
 set shortmess=atI
@@ -45,10 +54,8 @@ set nobackup
 set noswapfile
 set noundofile
 
-"禁用<F1>
+"禁用<F1>及Alt
 noremap <F1> <Esc>
-
-"禁用Alt
 set winaltkeys=no
 
 "切换全屏<F11>
@@ -60,13 +67,20 @@ map <Down> <c-w>j
 map <up> <c-w>k
 map <right> <c-w>l
 
+"增强光标移动
+nmap H ^
+nmap J }
+nmap K {
+nmap L $
+
 "插入模式快捷键映射
-imap <C-h> <Left>
-imap <C-j> <Down>
-imap <C-k> <Up>
-imap <C-l> <Right>
-imap <C-o> <Esc> o
-imap <C-u> <Esc> u
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+inoremap <C-u> <Esc> u
+inoremap jk <Esc>
+imap <C-CR> +<Space><BS>
 
 "代码折叠
 set foldenable
@@ -84,6 +98,26 @@ set history=200
 "默认操作路径
 cd $VIM\Vim_Projects
 
+"C/C++缩写词 <C-CR>
+iabbrev ui+ unsigned int<Space>
+iabbrev uc+ unsigned char<Space>
+iabbrev p+ printf("");<Esc>2hi
+iabbrev s+ scanf("", &);<Esc>5hi
+iabbrev cout+ cout <<  << endl;<Esc>8hi
+iabbrev cin+ cin <<  << endl;<Esc>8hi
+iabbrev switch+ switch ()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>default: <Up><Tab>case : <Up><Tab>case : <Up><Up><Left>
+iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Esc>4li
+iabbrev union+ union {};<Left><Left><CR><CR><Up><Tab><Up><Esc>3li
+iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>private:<Up><Tab><Tab>~CLASSNAME() {}<Up><Tab><Tab>CLASSNAME() {}<Up><Tab>public:<Up><Esc>b
+iabbrev #+ #include <><Left>
+iabbrev using+ using namespace<Space>
+iabbrev guard+ #ifndef HEADER_FILE_H<CR>#define HEADER_FILE_H<CR><CR>#endif // HEADER_FILE_H<ESC>3kb
+if expand("%:e") == "c"
+    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <stdio.h><CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
+elseif expand("%:e") == "cpp"
+    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <iostream><CR><CR>using namespace std;<CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
+endif
+
 
 
 
@@ -97,6 +131,8 @@ call vundle#begin('$VIM/vimfiles/bundle/')
 
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
 
+Plugin 'git://github.com/Shougo/unite.vim.git'
+Plugin 'git://github.com/Shougo/vimproc.vim.git'
 Plugin 'git://github.com/scrooloose/nerdtree.git'
 Plugin 'git://github.com/scrooloose/nerdcommenter.git'
 Plugin 'git://github.com/universal-ctags/ctags.git'
@@ -141,10 +177,10 @@ map  N <Plug>(easymotion-prev)
 "multiple-cursors 配置
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
+" let g:multi_cursor_next_key='<C-n>'
+" let g:multi_cursor_prev_key='<C-p>'
+" let g:multi_cursor_skip_key='<C-x>'
+" let g:multi_cursor_quit_key='<Esc>'
 
 
 "NERD_Tree 配置 <F5>
@@ -221,20 +257,15 @@ map <Leader>6 :b 6<CR>
 map <Leader>7 :b 7<CR>
 map <Leader>8 :b 8<CR>
 map <Leader>9 :b 9<CR>
-" function! ALEGetStatusLine()
-"     if &filetype == 'c,cpp'
-"         let w:airline_section_a = 'ALEGetStatusLine'
-"         let w:airline_section_b = '%f'
-"         let w:airline_section_c = '%{ALEGetStatusLine()}'
-"         let g:airline_variable_referenced_in_statusline = 'foo'
-"     endif
-" endfunction
-" call airline#add_statusline_func('ALEGetStatusLine')
 
 
 "IndentLine 配置
 let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
+
+
+"Vimproc 配置
+let g:vimproc_dll_path=$VIMRUNTIME."/vimproc_win32.dll"
 
 
 "ALE 配置
@@ -299,12 +330,6 @@ endif
 " F9 一键保存、编译、连接存并运行  
 map <F9> :call Run()<CR>  
 imap <F9> <ESC>:call Run()<CR>  
-" Ctrl + F9 一键保存并编译  
-map <c-F9> :call Compile()<CR>  
-imap <c-F9> <ESC>:call Compile()<CR>  
-" Ctrl + F10 一键保存并连接  
-map <c-F10> :call Link()<CR>  
-imap <c-F10> <ESC>:call Link()<CR>  
 
 let g:iswindows = 1  
 let s:LastShellReturn_C = 0  
