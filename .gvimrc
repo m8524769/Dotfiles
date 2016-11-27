@@ -3,26 +3,28 @@ source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
-"配置<Leader>
+"配置<Leader>键
 let mapleader=','
 let g:mapleader = ","
 
-"打开配置文件
+"打开配置文件 <Leader>v <Leader>gv
 let $MYVIMRC='~/.vimrc'
 let $MYGVIMRC='~/.gvimrc'
-nmap <leader>v :split $MYVIMRC<cr>
-nmap <leader>gv :split $MYGVIMRC<cr>
+nmap <leader>v :split $MYVIMRC<Cr>
+nmap <leader>gv :split $MYGVIMRC<Cr>
 
 "界面配置
 syntax on
-colorscheme desert
-" colorscheme solarized
-" colorscheme wombat256
 set laststatus=2
 set t_Co=256
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
-" set guifont=Sauce\ Code\ Powerline\ Regular\ 12
-" set guifont=Hack\ Bold\ 12
+if (has("gui_running"))
+    colorscheme desert
+    " colorscheme solarized
+    " colorscheme wombat256
+    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
+    " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
+    " set guifont=Hack\ Bold\ 12
+endif
 set number
 set nowrap
 set shortmess=atI
@@ -62,10 +64,10 @@ noremap <F1> <Esc>
 set winaltkeys=no
 
 "方向键切换窗口
-map <Left> <c-w>h
-map <Down> <c-w>j
-map <up> <c-w>k
-map <right> <c-w>l
+nmap <Left> <C-w>h
+nmap <Down> <C-w>j
+nmap <up> <C-w>k
+nmap <right> <C-w>l
 
 "增强光标移动
 nmap H ^
@@ -74,12 +76,12 @@ nmap K {
 nmap L $
 
 "插入模式快捷键映射
-inoremap <C-h> <Left>
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
-inoremap <C-l> <Right>
-inoremap <C-u> <Esc> u
-inoremap jk <Esc>
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+imap <C-u> <Esc> u
+imap jk <Esc>
 imap <C-CR> +<Space><BS>
 
 "代码折叠
@@ -130,6 +132,7 @@ call vundle#begin('$VIM/vimfiles/bundle/')
 
 Plugin 'http://github.com/VundleVim/Vundle.vim.git'
 
+Plugin 'http://github.com/Shougo/unite.vim.git'
 Plugin 'http://github.com/scrooloose/nerdtree.git'
 Plugin 'http://github.com/scrooloose/nerdcommenter.git'
 Plugin 'http://github.com/universal-ctags/ctags.git'
@@ -139,7 +142,7 @@ Plugin 'http://github.com/Valloric/YouCompleteMe.git'
 Plugin 'http://github.com/vim-airline/vim-airline.git'
 Plugin 'http://github.com/vim-airline/vim-airline-themes.git'
 Plugin 'http://github.com/vim-scripts/a.vim.git'
-Plugin 'https://github.com/lambdalisue/vim-fullscreen.git'
+Plugin 'http://github.com/lambdalisue/vim-fullscreen.git'
 Plugin 'http://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'http://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'http://github.com/terryma/vim-multiple-cursors.git'
@@ -155,7 +158,7 @@ filetype plugin indent on
 
 
 
-"EasyMotion 配置
+"EasyMotion(快速跳转) 配置
 let mapleader=','
 let g:mapleader = ","
 let g:EasyMotion_smartcase = 1
@@ -174,7 +177,7 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 
-"multiple-cursors 配置
+"multiple-cursors(多行编辑) 配置
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
 " let g:multi_cursor_next_key='<C-n>'
@@ -183,7 +186,7 @@ let g:multi_cursor_use_default_mapping=1
 " let g:multi_cursor_quit_key='<Esc>'
 
 
-"NERD_Tree 配置 <F5>
+"NERD_Tree(目录树) 配置 <F5>
 map <F5> :NERDTreeToggle<CR>
 inoremap <F5> <Esc> :NERDTreeToggle<CR>
 " autocmd vimenter * NERDTree
@@ -194,7 +197,7 @@ let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
 
-"Nerd_Commenter 配置 <,CC> <,C<Space>>
+"Nerd_Commenter(多行注释) 配置 <Leader>cc <Leader>c<Space>
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
@@ -204,13 +207,13 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 
-"Ctags 配置
+"Ctags(生成tags代码索引) 配置
 set autochdir
 set tags+=$VIM/vimfiles/systags
 set tags+=./tags
 
 
-"TagBar 配置 <F6>
+"TagBar(函数列表) 配置 <F6>
 map <F6> :TagbarToggle<CR>
 inoremap <F6> <Esc> :TagbarToggle<CR>
 let g:tagbar_ctags_bin='ctags'
@@ -218,7 +221,7 @@ let g:tagbar_width=30
 " autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
-"QuickFix <F2>
+"Close_QuickFix(关闭编译信息窗口) <F2>
 map <F2> :call CloseFX()<CR>
 inoremap <F2> <Esc> :call CloseFX()<CR>
 func! CloseFX()
@@ -227,7 +230,7 @@ func! CloseFX()
 endfunc
 
 
-"AirLine配置 <Ctrl + Tab>
+"AirLine(状态栏及缓冲区标签) 配置 <C-Tab> <Leader>[1-9]
 noremap <C-tab> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
@@ -248,12 +251,28 @@ map <Leader>8 :b 8<CR>
 map <Leader>9 :b 9<CR>
 
 
-"IndentLine 配置
+"IndentLine(缩进对齐线) 配置
 let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
 
 
-"ALE 配置
+"更改Fullscreen(全屏)映射 <F11>
+if get(g:, 'fullscreen#enable_default_keymap', 1) == 1
+  nmap <silent> <F11> <Plug>(fullscreen-toggle)
+  imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
+endif
+
+
+"YouCompleteMe(自动代码补全) 配置
+let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
+highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
+
+
+"ALE(代码异步检测) 配置
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
@@ -266,7 +285,7 @@ noremap <silent> <C-k> <Plug>(ale_previous_wrap)
 noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"AsyncRun 配置 <F7>
+"AsyncRun(异步编译) 配置 <F7>
 map <F7> :call AsyncRun()<CR>
 imap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
@@ -311,7 +330,7 @@ else
     let g:isGUI = 0  
 endif  
 
-"F9 一键保存、编译、连接存并运行  
+"一键保存,编译,连接并运行 <F9>
 map <F9> :call Run()<CR>  
 imap <F9> <ESC>:call Run()<CR>  
  
@@ -432,10 +451,6 @@ endfunc
 
 runtime! debian.vim
 
-if has("syntax")
-  syntax on
-endif
-
 if has("autocmd")
   filetype plugin indent on
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
@@ -444,5 +459,4 @@ endif
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
-
 
