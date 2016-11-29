@@ -9,9 +9,7 @@ let g:mapleader = ","
 
 "打开配置文件 <Leader>v <Leader>gv
 let $MYVIMRC='~/.vimrc'
-let $MYGVIMRC='~/.gvimrc'
 nmap <leader>v :split $MYVIMRC<Cr>
-nmap <leader>gv :split $MYGVIMRC<Cr>
 
 "界面配置
 syntax on
@@ -272,7 +270,7 @@ highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
 highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
 
 
-"ALE(代码异步检测) 配置
+"ALE 配置
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
@@ -281,13 +279,13 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
 let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
-noremap <silent> <C-k> <Plug>(ale_previous_wrap)
-noremap <silent> <C-j> <Plug>(ale_next_wrap)
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"AsyncRun(异步编译) 配置 <F7>
+"AsyncRun 配置 <F7>
 map <F7> :call AsyncRun()<CR>
-imap <F7> <Esc> :call AsyncRun()<CR>
+inoremap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
 	exec "w"
 	if expand("%:e") == "c"
@@ -306,16 +304,16 @@ endfunc
 
 "Debug 配置 <F8>
 map <F8> :call Debug()<CR>
-imap <F8> <Esc> :call Debug()<CR>
+inoremap <F8> <Esc> :call Debug()<CR>
 func! Debug()
 	exec "w"
 	if expand("%:e") == "c"
-		exec "!gcc -std=c11 % -g -o %<.o"
-		exec "!gdb %<.o"
+		exec "!gcc -std=c11 % -g -o %<.exe"
+		exec "!gdb %<.exe"
 		echohl WarningMsg | echo "Debug Done!"  	
 	elseif expand("%:e") == "cpp"  
-		exec "!g++ -std=c++14 % -g -o %<.o"
-		exec "!gdb %<.o"
+		exec "!g++ -std=c++14 % -g -o %<.exe"
+		exec "!gdb %<.exe"
 		echohl WarningMsg | echo "Debug Done!"  	
 	endif
 endfunc
