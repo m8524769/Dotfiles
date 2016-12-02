@@ -17,7 +17,10 @@ set laststatus=2
 set t_Co=256
 if (has("gui_running"))
     colorscheme desert
+    highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
+    highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
     " colorscheme solarized
+    " colorscheme molokai
     " colorscheme wombat256
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
@@ -58,7 +61,7 @@ set noswapfile
 set noundofile
 
 "禁用<F1>及Alt
-noremap <F1> <Esc>
+nmap <F1> <Esc>
 set winaltkeys=no
 
 "方向键切换窗口
@@ -98,26 +101,52 @@ set history=200
 "默认操作路径
 cd /home/yk/Projects
 
-"C/C++缩写词 <C-CR>
+"C/C++缩写词及代码片段补全 <C-CR>
 iabbrev ui+ unsigned int<Space>
 iabbrev uc+ unsigned char<Space>
 iabbrev p+ printf("");<Esc>2hi
 iabbrev s+ scanf("", &);<Esc>5hi
 iabbrev cout+ cout <<  << endl;<Esc>8hi
 iabbrev cin+ cin <<  << endl;<Esc>8hi
-iabbrev switch+ switch ()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>default: <Up><Tab>case : <Up><Tab>case : <Up><Up><Left>
+iabbrev switch+ switch ()<CR>
+                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \default: <Up><Tab>
+                \case : <Up><Tab>
+                \case : <Up><Up><Left>
 iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Esc>4li
 iabbrev union+ union {};<Left><Left><CR><CR><Up><Tab><Up><Esc>3li
-iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>private:<Up><Tab><Tab>~CLASSNAME() {}<Up><Tab><Tab>CLASSNAME() {}<Up><Tab>public:<Up><Esc>b
+iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>
+                \private:<Up><Tab><Tab>
+                \~CLASSNAME() {}<Up><Tab><Tab>
+                \CLASSNAME() {}<Up><Tab>
+                \public:<Up><Esc>b
 iabbrev #+ #include <><Left>
 iabbrev using+ using namespace<Space>
-iabbrev guard+ #ifndef HEADER_FILE_H<CR>#define HEADER_FILE_H<CR><CR>#endif // HEADER_FILE_H<ESC>3kb
-if expand("%:e") == "c"
-    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <stdio.h><CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
-elseif expand("%:e") == "cpp"
-    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <iostream><CR><CR>using namespace std;<CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
-endif
+iabbrev guard+ #ifndef HEADER_FILE_H<CR>
+                \#define HEADER_FILE_H<CR><CR>
+                \#endif // HEADER_FILE_H<ESC>3kb
+iabbrev cmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \#include <stdio.h><CR><CR>
+                \int main()<CR>
+                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up><Tab>
+iabbrev cppmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \#include <iostream><CR><CR>
+                \using namespace std;<CR><CR>
+                \int main()<CR>
+                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up><Tab>
 
+"常用脚本缩写词
+iabbrev shmain+ #!/bin/bash<CR><CR>
+iabbrev pymain+ #!/usr/bin/python<CR><CR>
+
+"自动插入代码模板及头文件保护符
+autocmd BufNewFile *.c exec "normal icmain+\<Space>"
+autocmd BufNewFile *.cpp exec "normal icppmain+\<Space>"
+autocmd BufNewFile *.h exec "normal iguard\<C-CR>"
+autocmd BufNewFile *.sh exec "normal ishmain+\<Space>"
+autocmd BufNewFile *.py exec "normal ipymain+\<Space>"
 
 
 
@@ -181,7 +210,25 @@ let g:multi_cursor_use_default_mapping=1
 " let g:multi_cursor_next_key='<C-n>'
 " let g:multi_cursor_prev_key='<C-p>'
 " let g:multi_cursor_skip_key='<C-x>'
-" let g:multi_cursor_quit_key='<Esc>'
+let g:multi_cursor_quit_key='<CR>'
+
+
+"切换配色方案 <F4>
+let g:Color = 1
+let g:ColorList = { 0: "desert",
+                \   1: "solarized",
+                \   2: "molokai",
+                \   3: "wombat256"
+                \   }
+map <F4> :call SwitchColorscheme() <CR>
+imap <F4> <Esc> :call SwitchColorscheme() <CR>
+func! SwitchColorscheme()
+    exec "colorscheme " g:ColorList[g:Color]
+    let g:Color+=1
+    if g:Color == 4
+        let g:Color = 0
+    endif
+endfunc
 
 
 "NERD_Tree(目录树) 配置 <F5>
@@ -266,11 +313,9 @@ let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
-highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
-highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
 
 
-"ALE 配置
+"ALE(代码异步检测) 配置
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '>>'
 let g:ale_sign_warning = '--'
@@ -279,13 +324,13 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
 let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
+noremap <silent> <C-k> <Plug>(ale_previous_wrap)
+noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"AsyncRun 配置 <F7>
+"AsyncRun(异步编译) 配置 <F7>
 map <F7> :call AsyncRun()<CR>
-inoremap <F7> <Esc> :call AsyncRun()<CR>
+imap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
 	exec "w"
 	if expand("%:e") == "c"
@@ -304,16 +349,16 @@ endfunc
 
 "Debug 配置 <F8>
 map <F8> :call Debug()<CR>
-inoremap <F8> <Esc> :call Debug()<CR>
+imap <F8> <Esc> :call Debug()<CR>
 func! Debug()
 	exec "w"
 	if expand("%:e") == "c"
-		exec "!gcc -std=c11 % -g -o %<.exe"
-		exec "!gdb %<.exe"
+		exec "!gcc -std=c11 % -g -o %<.o"
+		exec "!gdb %<.o"
 		echohl WarningMsg | echo "Debug Done!"  	
 	elseif expand("%:e") == "cpp"  
-		exec "!g++ -std=c++14 % -g -o %<.exe"
-		exec "!gdb %<.exe"
+		exec "!g++ -std=c++14 % -g -o %<.o"
+		exec "!gdb %<.o"
 		echohl WarningMsg | echo "Debug Done!"  	
 	endif
 endfunc
@@ -446,15 +491,9 @@ endfunc
 
 
 
-
 runtime! debian.vim
 
 if has("autocmd")
-  filetype plugin indent on
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
-
-if filereadable("/etc/vim/vimrc.local")
-  source /etc/vim/vimrc.local
 endif
 
