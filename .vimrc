@@ -25,6 +25,7 @@ if (has("gui_running"))
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
     " set guifont=Hack\ Bold\ 12
+    set gfw=FZMiaoWuS-GB\ Regular\ 16
 endif
 set number
 set nowrap
@@ -42,6 +43,7 @@ set smarttab
 set cindent
 filetype on
 filetype indent on
+nnoremap <CR> ==<CR>
 
 "编码配置
 set encoding=utf-8
@@ -83,7 +85,6 @@ imap <C-k> <Up>
 imap <C-l> <Right>
 imap <C-u> <Esc> u
 imap jk <Esc>
-imap <C-CR> +<Space><BS>
 
 "代码折叠
 set foldenable
@@ -102,26 +103,36 @@ set history=200
 cd /home/yk/Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
-iabbrev ui+ unsigned int<Space>
-iabbrev uc+ unsigned char<Space>
-iabbrev p+ printf("");<Esc>2hi
-iabbrev s+ scanf("", &);<Esc>5hi
-iabbrev cout+ cout <<  << endl;<Esc>8hi
-iabbrev cin+ cin <<  << endl;<Esc>8hi
+imap <C-CR> +<Space><BS>
+iabbrev ui+ unsigned int <Esc>==$a
+iabbrev uc+ unsigned char <Esc>==$a
+iabbrev p+ printf("");<Esc>==7la
+iabbrev s+ scanf("", &);<Esc>==6la
+iabbrev cout+ cout <<  << endl;<Esc>==7la
+iabbrev cin+ cin <<  << endl;<Esc>==6la
+iabbrev for+ for (; ; )<CR>
+            \{}<Left><CR>
+            \<Esc>2k3==wa
+iabbrev do+ do<CR>
+            \{}while ();
+            \<Esc>k2==ja<CR><Esc>$hi
 iabbrev switch+ switch ()<CR>
-                \{}<Left><CR><CR><CR><CR><Up><Tab>
-                \default: <Up><Tab>
-                \case : <Up><Tab>
-                \case : <Up><Up><Left>
-iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Esc>4li
-iabbrev union+ union {};<Left><Left><CR><CR><Up><Tab><Up><Esc>3li
-iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>
-                \private:<Up><Tab><Tab>
-                \~CLASSNAME() {}<Up><Tab><Tab>
-                \CLASSNAME() {}<Up><Tab>
-                \public:<Up><Esc>b
+                \{}<Left><CR>
+                \case '': <CR>
+                \case '': <CR>
+                \default: <CR>
+                \<Esc>5k6==wa
+iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
+iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
+iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
+iabbrev class+ class CLASSNAME{};<Left><Left><CR>
+                \public:<CR>
+                \CLASSNAME() {}<CR>
+                \~CLASSNAME() {}<CR>
+                \private:<CR>
+                \<Esc>5k6==w
 iabbrev #+ #include <><Left>
-iabbrev using+ using namespace<Space>
+iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef HEADER_FILE_H<CR>
                 \#define HEADER_FILE_H<CR><CR>
                 \#endif // HEADER_FILE_H<ESC>3kb
@@ -147,6 +158,37 @@ autocmd BufNewFile *.cpp exec "normal icppmain+\<Space>"
 autocmd BufNewFile *.h exec "normal iguard\<C-CR>"
 autocmd BufNewFile *.sh exec "normal ishmain+\<Space>"
 autocmd BufNewFile *.py exec "normal ipymain+\<Space>"
+
+"括号自动补全
+inoremap ( ()<Esc>i
+inoremap ) <c-r>=ClosePair(')')<CR>
+inoremap [ []<Esc>i
+inoremap ] <c-r>=ClosePair(']')<CR>
+" inoremap { {}<Esc>i
+" inoremap } <c-r>=ClosePair('}')<CR>
+inoremap " <c-r>=QuoteDelim('"')<CR>
+inoremap ' <c-r>=QuoteDelim("'")<CR>
+
+func ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunc
+
+func QuoteDelim(char)
+    let line = getline('.')
+    let col = col('.')
+    if line[col - 2] == "\\"
+        return a:char
+    elseif line[col - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char.a:char."\<Esc>i"
+    endif
+endfunc
+
 
 
 
@@ -175,6 +217,7 @@ Plugin 'http://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'http://github.com/terryma/vim-multiple-cursors.git'
 Plugin 'http://github.com/Yggdroot/indentLine.git'
 Plugin 'http://github.com/w0rp/ale.git'
+Plugin 'http://github.com/mhinz/vim-startify.git'
 
 Plugin 'http://github.com/uguu-org/vim-matrix-screensaver.git'
 
@@ -306,6 +349,12 @@ if get(g:, 'fullscreen#enable_default_keymap', 1) == 1
   nmap <silent> <F11> <Plug>(fullscreen-toggle)
   imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
 endif
+
+
+"Startify(启动界面) 配置
+let g:startify_padding_left = 4
+let g:startify_disable_at_vimenter = 0
+autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 
 
 "YouCompleteMe(自动代码补全) 配置
@@ -496,4 +545,3 @@ runtime! debian.vim
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
-
