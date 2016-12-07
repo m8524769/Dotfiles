@@ -22,6 +22,7 @@ if (has("gui_running"))
     " colorscheme solarized
     " colorscheme molokai
     " colorscheme wombat256
+    " colorscheme lucius
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
     " set guifont=Hack\ Bold\ 12
@@ -41,21 +42,22 @@ set softtabstop=4
 set expandtab
 set smarttab
 set cindent
+set cino=g0
 filetype on
 filetype indent on
 nnoremap <CR> ==<CR>
 
 "编码配置
 set encoding=utf-8
+set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+set fileencodings=ucs-bom,utf-8,utf-16,cp936,gb18030,big5,euc-jp,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
-let &termencoding=&encoding
 
 "取消备份及交换文件
 set nobackup
@@ -261,14 +263,15 @@ let g:Color = 1
 let g:ColorList = { 0: "desert",
                 \   1: "solarized",
                 \   2: "molokai",
-                \   3: "wombat256"
+                \   3: "wombat256",
+                \   4: "lucius"
                 \   }
 map <F4> :call SwitchColorscheme() <CR>
 imap <F4> <Esc> :call SwitchColorscheme() <CR>
 func! SwitchColorscheme()
     exec "colorscheme " g:ColorList[g:Color]
     let g:Color+=1
-    if g:Color == 4
+    if g:Color == 5
         let g:Color = 0
     endif
 endfunc
@@ -314,7 +317,7 @@ map <F2> :call CloseFX()<CR>
 inoremap <F2> <Esc> :call CloseFX()<CR>
 func! CloseFX()
 	exec "cclose"
-	exec "TagbarOpen"
+    exec "TagbarOpen"
 endfunc
 
 
@@ -366,13 +369,17 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 
 "ALE(代码异步检测) 配置
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
+let g:ale_sign_error = '汪'
+let g:ale_sign_warning = '喵'
+let g:ale_echo_msg_error_str = '汪'
+let g:ale_echo_msg_warning_str = '喵'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
-let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
+let g:ale_linters = {'c': ['gcc'],
+                    \'c++': ['gcc'],
+                    \'Bash': ['shell'],
+                    \'Python': ['flake8'],
+                    \'Vim': ['vint']
+                    \}
 noremap <silent> <C-k> <Plug>(ale_previous_wrap)
 noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
@@ -382,17 +389,16 @@ map <F7> :call AsyncRun()<CR>
 imap <F7> <Esc> :call AsyncRun()<CR>
 func! AsyncRun()
 	exec "w"
-	if expand("%:e") == "c"
-		exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
-		exec "TagbarClose"
-		exec "copen"
-		echohl WarningMsg | echo "AsyncRun Done!"  	
-	elseif expand("%:e") == "cpp"  
-		exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
-		exec "TagbarClose"
-		exec "copen"
-		echohl WarningMsg | echo "AsyncRun Done!"  	
-	endif
+    if expand("%:e") == "c"
+        exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
+        exec "TagbarClose"
+        echohl WarningMsg | echo "AsyncRun Done!"
+    elseif expand("%:e") == "cpp"  
+        exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
+        exec "TagbarClose"
+        echohl WarningMsg | echo "AsyncRun Done!"
+    endif
+    exec "copen"
 endfunc
 
 
@@ -400,22 +406,22 @@ endfunc
 map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
 func! Debug()
-	exec "w"
-	if expand("%:e") == "c"
-		exec "!gcc -std=c11 % -g -o %<.o"
-		exec "!gdb %<.o"
-		echohl WarningMsg | echo "Debug Done!"  	
-	elseif expand("%:e") == "cpp"  
-		exec "!g++ -std=c++14 % -g -o %<.o"
-		exec "!gdb %<.o"
-		echohl WarningMsg | echo "Debug Done!"  	
-	endif
+    exec "w"
+    if expand("%:e") == "c"
+        exec "!gcc -std=c11 % -g -o %<.o"
+        exec "!gdb %<.o"
+        echohl WarningMsg | echo "Debug Done!"  	
+    elseif expand("%:e") == "cpp"  
+        exec "!g++ -std=c++14 % -g -o %<.o"
+        exec "!gdb %<.o"
+        echohl WarningMsg | echo "Debug Done!"  	
+    endif
 endfunc
 
 
 
 
-   
+
 if has("gui_running")  
     let g:isGUI = 1  
 else  
@@ -425,16 +431,16 @@ endif
 "一键保存,编译,连接并运行 <F9>
 map <F9> :call Run()<CR>  
 imap <F9> <ESC>:call Run()<CR>  
- 
+
 let s:LastShellReturn_C = 0  
 let s:LastShellReturn_L = 0  
 let s:ShowWarning = 1  
 let s:Obj_Extension = '.o'  
 let s:Sou_Error = 0  
-   
+
 let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
 let s:linux_CPPFlags = 'g++\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-   
+
 func! Compile()  
     exe "w"
     exe ":ccl"  
@@ -475,7 +481,7 @@ func! Compile()
     endif  
     exe ":setlocal makeprg=make"  
 endfunc  
-   
+
 func! Link()  
     call Compile()  
     if s:Sou_Error || s:LastShellReturn_C != 0  
@@ -514,7 +520,7 @@ func! Link()
     endif  
     setlocal makeprg=make  
 endfunc  
-   
+
 func! Run()  
     let s:ShowWarning = 0  
     call Link()  
@@ -543,5 +549,5 @@ endfunc
 runtime! debian.vim
 
 if has("autocmd")
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
