@@ -19,9 +19,9 @@ if (has("gui_running"))
     colorscheme desert
     highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
     highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
-    " colorscheme solarized
     " colorscheme molokai
-    " colorscheme wombat256
+    " colorscheme Monokai
+    " colorscheme wombat
     " colorscheme lucius
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
@@ -33,6 +33,7 @@ set nowrap
 set shortmess=atI
 set cursorcolumn
 set cursorline
+set cmdheight=1
 set go=
 
 "缩进配置
@@ -51,7 +52,7 @@ nnoremap <CR> ==<CR>
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,utf-16,cp936,gb18030,big5,euc-jp,latin1
+set fileencodings=ucs-bom,iso-2022-jp,utf-8,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
@@ -87,6 +88,7 @@ imap <C-k> <Up>
 imap <C-l> <Right>
 imap <C-u> <Esc> u
 imap jk <Esc>
+imap JK <Esc>
 
 "代码折叠
 set foldenable
@@ -220,6 +222,7 @@ Plugin 'http://github.com/terryma/vim-multiple-cursors.git'
 Plugin 'http://github.com/Yggdroot/indentLine.git'
 Plugin 'http://github.com/w0rp/ale.git'
 Plugin 'http://github.com/mhinz/vim-startify.git'
+Plugin 'http://github.com/iamcco/dict.vim.git'
 
 Plugin 'http://github.com/uguu-org/vim-matrix-screensaver.git'
 
@@ -261,9 +264,9 @@ let g:multi_cursor_quit_key='<CR>'
 "切换配色方案 <F4>
 let g:Color = 1
 let g:ColorList = { 0: "desert",
-                \   1: "solarized",
-                \   2: "molokai",
-                \   3: "wombat256",
+                \   1: "molokai",
+                \   2: "Monokai",
+                \   3: "wombat",
                 \   4: "lucius"
                 \   }
 map <F4> :call SwitchColorscheme() <CR>
@@ -274,6 +277,7 @@ func! SwitchColorscheme()
     if g:Color == 5
         let g:Color = 0
     endif
+    echom g:ColorList[g:Color] 
 endfunc
 
 
@@ -380,8 +384,25 @@ let g:ale_linters = {'c': ['gcc'],
                     \'Python': ['flake8'],
                     \'Vim': ['vint']
                     \}
+let g:ale_python_flake8_executable = 'python'
+let g:ale_python_flake8_args = '-m flake8'
 noremap <silent> <C-k> <Plug>(ale_previous_wrap)
 noremap <silent> <C-j> <Plug>(ale_next_wrap)
+
+
+"有道翻译 配置
+let g:api_key = "1932136763"
+let g:keyfrom = "aioiyuuko"
+" <Leader>d 翻译光标下的文本，并在命令行回显
+nmap <silent> <Leader>d <Plug>DictSearch
+vmap <silent> <Leader>d <Plug>DictVSearch
+" <Leader>t 翻译光标下的文本，并且在Dict新窗口显示
+nmap <silent> <Leader>t <Plug>DictWSearch
+vmap <silent> <Leader>t <Plug>DictWVSearch
+" <Leader>r 翻译光标下的单词，并替换为翻译的结果
+nmap <silent> <Leader>r <Plug>DictRSearch
+vmap <silent> <Leader>r <Plug>DictRVSearch
+" Dict窗口中 q 键关闭Dict窗口
 
 
 "AsyncRun(异步编译) 配置 <F7>
