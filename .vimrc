@@ -7,7 +7,7 @@ behave mswin
 let mapleader=','
 let g:mapleader = ","
 
-"打开配置文件 <Leader>v <Leader>gv
+"打开配置文件 <Leader>v
 let $MYVIMRC='~/.vimrc'
 nmap <leader>v :split $MYVIMRC<Cr>
 
@@ -26,7 +26,7 @@ if (has("gui_running"))
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
     " set guifont=Hack\ Bold\ 12
-    set gfw=FZMiaoWuS-GB\ Regular\ 16
+    set guifontwide=FZMiaoWuS-GB\ Regular\ 16
 endif
 set number
 set nowrap
@@ -90,6 +90,14 @@ imap <C-u> <Esc> u
 imap jk <Esc>
 imap JK <Esc>
 
+"Operator-Pending映射
+onoremap in( :<c-u>normal! f(vi(<CR>
+onoremap in[ :<c-u>normal! f[vi[<CR>
+onoremap in{ :<c-u>normal! f{vi{<CR>
+onoremap in< :<c-u>normal! f<vi<<CR>
+onoremap in" :<c-u>normal! f"vi"<CR>
+onoremap in' :<c-u>normal! f'vi'<CR>
+
 "代码折叠
 set foldenable
 set foldmethod=syntax
@@ -110,8 +118,8 @@ cd /home/yk/Projects
 imap <C-CR> +<Space><BS>
 iabbrev ui+ unsigned int <Esc>==$a
 iabbrev uc+ unsigned char <Esc>==$a
-iabbrev p+ printf("");<Esc>==7la
-iabbrev s+ scanf("", &);<Esc>==6la
+iabbrev pf+ printf("");<Esc>==f"a
+iabbrev sf+ scanf("", &);<Esc>==f"a
 iabbrev cout+ cout <<  << endl;<Esc>==7la
 iabbrev cin+ cin <<  << endl;<Esc>==6la
 iabbrev for+ for (; ; )<CR>
@@ -129,7 +137,7 @@ iabbrev switch+ switch ()<CR>
 iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
 iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
 iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
-iabbrev class+ class CLASSNAME{};<Left><Left><CR>
+iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
                 \~CLASSNAME() {}<CR>
@@ -140,12 +148,12 @@ iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef HEADER_FILE_H<CR>
                 \#define HEADER_FILE_H<CR><CR>
                 \#endif // HEADER_FILE_H<ESC>3kb
-iabbrev cmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
-iabbrev cppmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <iostream><CR><CR>
                 \using namespace std;<CR><CR>
                 \int main()<CR>
@@ -173,15 +181,15 @@ inoremap ] <c-r>=ClosePair(']')<CR>
 inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
-func ClosePair(char)
+function ClosePair(char)
     if getline('.')[col('.') - 1] == a:char
         return "\<Right>"
     else
         return a:char
     endif
-endfunc
+endfunction
 
-func QuoteDelim(char)
+function QuoteDelim(char)
     let line = getline('.')
     let col = col('.')
     if line[col - 2] == "\\"
@@ -191,7 +199,7 @@ func QuoteDelim(char)
     else
         return a:char.a:char."\<Esc>i"
     endif
-endfunc
+endfunction
 
 
 
@@ -261,24 +269,57 @@ let g:multi_cursor_use_default_mapping=1
 let g:multi_cursor_quit_key='<CR>'
 
 
+"Grep 运算符(Operator)
+nnoremap <leader>g :set operatorfunc=GrepOperator<CR>g@
+vnoremap <leader>g :<c-u>call GrepOperator(visualmode())<CR>
+function! GrepOperator(type)
+    let saved_unnamed_register = @@
+    if a:type ==# 'v'
+        normal! `<v`>y
+    elseif a:type ==# 'char'
+        normal! `[v`]y
+    else
+        return
+    endif
+    silent execute "grep! -R " . shellescape(@@) . " ."
+    copen
+    let @@ = saved_unnamed_register
+endfunction
+
+
 "切换配色方案 <F4>
-let g:Color = 1
+map <F4> :call ColorschemeToggle() <CR>
+imap <F4> <Esc> :call ColorschemeToggle() <CR>
+let g:ColorNumber = 1
 let g:ColorList = { 0: "desert",
                 \   1: "molokai",
                 \   2: "Monokai",
                 \   3: "wombat",
                 \   4: "lucius"
                 \   }
-map <F4> :call SwitchColorscheme() <CR>
-imap <F4> <Esc> :call SwitchColorscheme() <CR>
-func! SwitchColorscheme()
-    exec "colorscheme " g:ColorList[g:Color]
-    let g:Color+=1
-    if g:Color == 5
-        let g:Color = 0
+function! ColorschemeToggle()
+    execute "colorscheme " g:ColorList[g:ColorNumber]
+    let g:ColorNumber+=1
+    if g:ColorNumber == 5
+        let g:ColorNumber = 0
     endif
-    echom g:ColorList[g:Color] 
-endfunc
+    echo g:ColorList[g:ColorNumber] 
+endfunction
+
+
+"显示折叠状态条(fold column) <Leader>z
+nnoremap <Leader>z :call FoldColumnToggle()<CR>
+function! FoldColumnToggle()
+    if &foldcolumn
+        setlocal foldcolumn=0
+    else
+        setlocal foldcolumn=1
+    endif
+endfunction
+
+
+"Unite 配置
+nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 
 
 "NERD_Tree(目录树) 配置 <F5>
@@ -316,13 +357,22 @@ let g:tagbar_width=30
 " autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
-"Close_QuickFix(关闭编译信息窗口) <F2>
-map <F2> :call CloseFX()<CR>
-inoremap <F2> <Esc> :call CloseFX()<CR>
-func! CloseFX()
-	exec "cclose"
-    exec "TagbarOpen"
-endfunc
+"QuickFix (编译信息窗口) <F2>
+nnoremap <F2> :call QuickfixToggle()<CR>
+let g:quickfix_is_open = 0
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        let g:quickfix_is_open = 0
+        execute "cclose"
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "TagbarOpen"
+    else
+        let g:quickfix_is_open = 1
+        let g:quickfix_return_to_window = winnr()
+        execute "TagbarClose"
+        execute "copen"
+    endif
+endfunction
 
 
 "AirLine(状态栏及缓冲区标签) 配置 <C-Tab> <Leader>[1-9]
@@ -408,36 +458,36 @@ vmap <silent> <Leader>r <Plug>DictRVSearch
 "AsyncRun(异步编译) 配置 <F7>
 map <F7> :call AsyncRun()<CR>
 imap <F7> <Esc> :call AsyncRun()<CR>
-func! AsyncRun()
-	exec "w"
+function! AsyncRun()
+	execute "w"
     if expand("%:e") == "c"
-        exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
-        exec "TagbarClose"
+        execute "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
+        execute "TagbarClose"
         echohl WarningMsg | echo "AsyncRun Done!"
     elseif expand("%:e") == "cpp"  
-        exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
-        exec "TagbarClose"
+        execute "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
+        execute "TagbarClose"
         echohl WarningMsg | echo "AsyncRun Done!"
     endif
-    exec "copen"
-endfunc
+    execute "copen"
+endfunction
 
 
 "Debug 配置 <F8>
 map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
-func! Debug()
-    exec "w"
+function! Debug()
+    execute "w"
     if expand("%:e") == "c"
-        exec "!gcc -std=c11 % -g -o %<.o"
-        exec "!gdb %<.o"
+        execute "!gcc -std=c11 % -g -o %<.o"
+        execute "!gdb %<.o"
         echohl WarningMsg | echo "Debug Done!"  	
     elseif expand("%:e") == "cpp"  
-        exec "!g++ -std=c++14 % -g -o %<.o"
-        exec "!gdb %<.o"
+        execute "!g++ -std=c++14 % -g -o %<.o"
+        execute "!gdb %<.o"
         echohl WarningMsg | echo "Debug Done!"  	
     endif
-endfunc
+endfunction
 
 
 
