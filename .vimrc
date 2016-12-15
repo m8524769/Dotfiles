@@ -52,7 +52,7 @@ nnoremap <CR> ==<CR>
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,iso-2022-jp,utf-8,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
@@ -125,9 +125,7 @@ iabbrev cin+ cin <<  << endl;<Esc>==6la
 iabbrev for+ for (; ; )<CR>
             \{}<Left><CR>
             \<Esc>2k3==wa
-iabbrev do+ do<CR>
-            \{}while ();
-            \<Esc>k2==ja<CR><Esc>$hi
+iabbrev do+ do {}while ();<Esc>==f{a<CR><Esc>f(a
 iabbrev switch+ switch ()<CR>
                 \{}<Left><CR>
                 \case '': <CR>
@@ -143,6 +141,11 @@ iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \~CLASSNAME() {}<CR>
                 \private:<CR>
                 \<Esc>5k6==w
+iabbrev try+ try {}<Left><CR>
+                \throw runtime_error("Runtime Error");<CR>
+                \<Right> catch (runtime_error err) {}<Left><CR>
+                \std::cout << err.what() << std::endl;<CR>
+                \<Esc>4k5==o
 iabbrev #+ #include <><Left>
 iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef HEADER_FILE_H<CR>
