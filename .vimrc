@@ -148,16 +148,20 @@ iabbrev try+ try {}<Left><CR>
                 \<Esc>4k5==o
 iabbrev #+ #include <><Left>
 iabbrev using+ using namespace <Esc>==$a
-iabbrev guard+ #ifndef HEADER_FILE_H<CR>
-                \#define HEADER_FILE_H<CR><CR>
-                \#endif // HEADER_FILE_H<ESC>3kb
+iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
+                \#define <c-r>=expand("%")<CR><CR>
+                \#endif // <c-r>=expand("%")<CR>
+                \<ESC>2k
+                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
 iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
 iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
-                \#include <iostream><CR><CR>
+                \#include <iostream><CR>
+                \// #include <vector><CR>
+                \// #include <string><CR><CR>
                 \using namespace std;<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
@@ -168,11 +172,11 @@ iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #!/usr/bin/python<CR><CR>
 
 "自动插入代码模板及头文件保护符
-autocmd BufNewFile *.c exec "normal icmain+\<Space>"
-autocmd BufNewFile *.cpp exec "normal icppmain+\<Space>"
-autocmd BufNewFile *.h exec "normal iguard\<C-CR>"
-autocmd BufNewFile *.sh exec "normal ishmain+\<Space>"
-autocmd BufNewFile *.py exec "normal ipymain+\<Space>"
+autocmd BufNewFile *.c execute "normal icmain+\<Space>"
+autocmd BufNewFile *.cpp execute "normal icppmain+\<Space>"
+autocmd BufNewFile *.h execute "normal iguard+\<Space>"
+autocmd BufNewFile *.sh execute "normal ishmain+\<Space>"
+autocmd BufNewFile *.py execute "normal ipymain+\<Space>"
 
 "括号自动补全
 inoremap ( ()<Esc>i
@@ -235,7 +239,7 @@ Plugin 'http://github.com/w0rp/ale.git'
 Plugin 'http://github.com/mhinz/vim-startify.git'
 Plugin 'http://github.com/iamcco/dict.vim.git'
 
-Plugin 'http://github.com/uguu-org/vim-matrix-screensaver.git'
+" Plugin 'http://github.com/uguu-org/vim-matrix-screensaver.git'
 
 call vundle#end()
 filetype plugin indent on
@@ -327,7 +331,7 @@ nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 
 "NERD_Tree(目录树) 配置 <F5>
 map <F5> :NERDTreeToggle<CR>
-inoremap <F5> <Esc> :NERDTreeToggle<CR>
+imap <F5> <Esc> :NERDTreeToggle<CR>
 " autocmd vimenter * NERDTree
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -364,6 +368,7 @@ let g:tagbar_width=30
 nnoremap <F2> :call QuickfixToggle()<CR>
 let g:quickfix_is_open = 0
 function! QuickfixToggle()
+    execute "cclose"
     if g:quickfix_is_open
         let g:quickfix_is_open = 0
         execute "cclose"
@@ -458,165 +463,183 @@ vmap <silent> <Leader>r <Plug>DictRVSearch
 " Dict窗口中 q 键关闭Dict窗口
 
 
-"AsyncRun(异步编译) 配置 <F7>
-map <F7> :call AsyncRun()<CR>
-imap <F7> <Esc> :call AsyncRun()<CR>
-function! AsyncRun()
+"编译 & 连接选项 <C-[F7|F9]>为手动执行命令
+autocmd FileType c call C_CompileOptions()
+autocmd FileType cpp call CPP_CompileOptions()
+function! C_CompileOptions()
+    let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!gcc %<.o -o %<"
+    map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
+    map <C-F9> :!gcc %<.o -o %< && ./%<
+    imap <C-F9> <Esc> :!gcc %<.o -o %< && ./%<
+endfunction
+function! CPP_CompileOptions()
+    let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!g++ %<.o -o %<"
+    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
+    map <C-F9> :!g++ %<.o -o %< && ./%<
+    imap <C-F9> <Esc> :!g++ %<.o -o %< && ./%<
+endfunction
+let g:RunCommand = "!./%<"
+
+
+"AsyncRun(异步编译) 配置 <F7> <C-F7>
+"保存并编译生成目标文件
+map <F7> :call AsyncCompile()<CR>
+imap <F7> <Esc> :call AsyncCompile()<CR>
+function! AsyncCompile()
 	execute "w"
-    if expand("%:e") == "c"
-        execute "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
-        execute "TagbarClose"
-        echohl WarningMsg | echo "AsyncRun Done!"
-    elseif expand("%:e") == "cpp"  
-        execute "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
-        execute "TagbarClose"
-        echohl WarningMsg | echo "AsyncRun Done!"
-    endif
+    execute g:CompileCommand
+    execute "TagbarClose"
     execute "copen"
+    echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
 endfunction
 
 
 "Debug 配置 <F8>
+"保存编译并调试
 map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
 function! Debug()
     execute "w"
-    if expand("%:e") == "c"
-        execute "!gcc -std=c11 % -g -o %<.o"
-        execute "!gdb %<.o"
-        echohl WarningMsg | echo "Debug Done!"  	
-    elseif expand("%:e") == "cpp"  
-        execute "!g++ -std=c++14 % -g -o %<.o"
-        execute "!gdb %<.o"
-        echohl WarningMsg | echo "Debug Done!"  	
-    endif
+    execute g:CompileCommand
+    execute g:LinkCommand
+    execute "!gdb %<"
+    echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+endfunction
+
+
+"Link & Run 配置 <F9> <C-F9>
+"链接生成可执行文件并运行
+map <F9> :call Link_Run()<CR>
+imap <F9> <Esc> :call Link_Run()<CR>
+function! Link_Run()
+    execute g:LinkCommand
+    execute g:RunCommand
+    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
 endfunction
 
 
 
-
-
-if has("gui_running")  
-    let g:isGUI = 1  
-else  
-    let g:isGUI = 0  
-endif  
-
-"一键保存,编译,连接并运行 <F9>
-map <F9> :call Run()<CR>  
-imap <F9> <ESC>:call Run()<CR>  
-
-let s:LastShellReturn_C = 0  
-let s:LastShellReturn_L = 0  
-let s:ShowWarning = 1  
-let s:Obj_Extension = '.o'  
-let s:Sou_Error = 0  
-
-let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-let s:linux_CPPFlags = 'g++\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-
-func! Compile()  
-    exe "w"
-    exe ":ccl"  
-    exe ":update"  
-    if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-        let s:Sou_Error = 0  
-        let s:LastShellReturn_C = 0  
-        let Sou = expand("%:p")  
-        let Obj = expand("%:p:r").s:Obj_Extension  
-        let Obj_Name = expand("%:p:t:r").s:Obj_Extension  
-        let v:statusmsg = ''  
-        if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))  
-            redraw!  
-            if expand("%:e") == "c"  
-                exe ":setlocal makeprg=".s:linux_CFlags  
-                echohl WarningMsg | echo " compiling..."  
-                silent make  
-            elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-                exe ":setlocal makeprg=".s:linux_CPPFlags  
-                echohl WarningMsg | echo " compiling..."  
-                silent make  
-            endif  
-            redraw!  
-            if v:shell_error != 0  
-                let s:LastShellReturn_C = v:shell_error  
-            endif  
-            if empty(v:statusmsg)  
-                echohl WarningMsg | echo " compilation successful"  
-            else  
-                exe ":bo cope"  
-            endif  
-        else  
-            echohl WarningMsg | echo ""Obj_Name"is up to date"  
-        endif  
-    else  
-        let s:Sou_Error = 1  
-        echohl WarningMsg | echo " please choose the correct source file"  
-    endif  
-    exe ":setlocal makeprg=make"  
-endfunc  
-
-func! Link()  
-    call Compile()  
-    if s:Sou_Error || s:LastShellReturn_C != 0  
-        return  
-    endif  
-    let s:LastShellReturn_L = 0  
-    let Sou = expand("%:p")  
-    let Obj = expand("%:p:r").s:Obj_Extension  
-    let Exe = expand("%:p:r")  
-    let Exe_Name = expand("%:p:t:r")  
-    let v:statusmsg = ''  
-    if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))  
-        redraw!  
-        if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))  
-            if expand("%:e") == "c"  
-                setlocal makeprg=gcc\ -o\ %<\ %<.o  
-                echohl WarningMsg | echo " linking..."  
-                silent make  
-            elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-                setlocal makeprg=g++\ -o\ %<\ %<.o  
-                echohl WarningMsg | echo " linking..."  
-                silent make  
-            endif  
-            redraw!  
-            if v:shell_error != 0  
-                let s:LastShellReturn_L = v:shell_error  
-            endif  
-            if empty(v:statusmsg)  
-                echohl WarningMsg | echo " linking successful"  
-            else  
-                exe ":bo cope"  
-            endif  
-        else  
-            echohl WarningMsg | echo ""Exe_Name"is up to date"  
-        endif  
-    endif  
-    setlocal makeprg=make  
-endfunc  
-
-func! Run()  
-    let s:ShowWarning = 0  
-    call Link()  
-    let s:ShowWarning = 1  
-    if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0  
-        return  
-    endif  
-    let Sou = expand("%:p")  
-    let Obj = expand("%:p:r").s:Obj_Extension  
-    let Exe = expand("%:p:r")  
-    if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)  
-        redraw!  
-        echohl WarningMsg | echo " running..."  
-        if g:isGUI  
-            exe ":!gnome-terminal -e ./%<"  
-        else  
-            exe ":!./%<"  
-        endif  
-        redraw!  
-        echohl WarningMsg | echo " running finish"  
-    endif  
-endfunc  
+" if has("gui_running")
+"     let g:isGUI = 1
+" else
+"     let g:isGUI = 0
+" endif
+"
+" let s:LastShellReturn_C = 0
+" let s:LastShellReturn_L = 0
+" let s:ShowWarning = 1
+" let s:Obj_Extension = '.o'
+" let s:Sou_Error = 0
+"
+" let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
+" let s:linux_CPPFlags = 'g++\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
+"
+" func! Compile()
+"     exe "w"
+"     exe ":ccl"
+"     exe ":update"
+"     if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"
+"         let s:Sou_Error = 0
+"         let s:LastShellReturn_C = 0
+"         let Sou = expand("%:p")
+"         let Obj = expand("%:p:r").s:Obj_Extension
+"         let Obj_Name = expand("%:p:t:r").s:Obj_Extension
+"         let v:statusmsg = ''
+"         if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))
+"             redraw!
+"             if expand("%:e") == "c"
+"                 exe ":setlocal makeprg=".s:linux_CFlags
+"                 echohl WarningMsg | echo " compiling..."
+"                 silent make
+"             elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
+"                 exe ":setlocal makeprg=".s:linux_CPPFlags
+"                 echohl WarningMsg | echo " compiling..."
+"                 silent make
+"             endif
+"             redraw!
+"             if v:shell_error != 0
+"                 let s:LastShellReturn_C = v:shell_error
+"             endif
+"             if empty(v:statusmsg)
+"                 echohl WarningMsg | echo " compilation successful"
+"             else
+"                 exe ":bo cope"
+"             endif
+"         else
+"             echohl WarningMsg | echo ""Obj_Name"is up to date"
+"         endif
+"     else
+"         let s:Sou_Error = 1
+"         echohl WarningMsg | echo " please choose the correct source file"
+"     endif
+"     exe ":setlocal makeprg=make"
+" endfunc
+"
+" func! Link()
+"     call Compile()
+"     if s:Sou_Error || s:LastShellReturn_C != 0
+"         return
+"     endif
+"     let s:LastShellReturn_L = 0
+"     let Sou = expand("%:p")
+"     let Obj = expand("%:p:r").s:Obj_Extension
+"     let Exe = expand("%:p:r")
+"     let Exe_Name = expand("%:p:t:r")
+"     let v:statusmsg = ''
+"     if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))
+"         redraw!
+"         if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))
+"             if expand("%:e") == "c"
+"                 setlocal makeprg=gcc\ -o\ %<\ %<.o
+"                 echohl WarningMsg | echo " linking..."
+"                 silent make
+"             elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
+"                 setlocal makeprg=g++\ -o\ %<\ %<.o
+"                 echohl WarningMsg | echo " linking..."
+"                 silent make
+"             endif
+"             redraw!
+"             if v:shell_error != 0
+"                 let s:LastShellReturn_L = v:shell_error
+"             endif
+"             if empty(v:statusmsg)
+"                 echohl WarningMsg | echo " linking successful"
+"             else
+"                 exe ":bo cope"
+"             endif
+"         else
+"             echohl WarningMsg | echo ""Exe_Name"is up to date"
+"         endif
+"     endif
+"     setlocal makeprg=make
+" endfunc
+"
+" func! Run()
+"     let s:ShowWarning = 0
+"     call Link()
+"     let s:ShowWarning = 1
+"     if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0
+"         return
+"     endif
+"     let Sou = expand("%:p")
+"     let Obj = expand("%:p:r").s:Obj_Extension
+"     let Exe = expand("%:p:r")
+"     if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)
+"         redraw!
+"         echohl WarningMsg | echo " running..."
+"         if g:isGUI
+"             exe ":!gnome-terminal -e ./%<"
+"         else
+"             exe ":!./%<"
+"         endif
+"         redraw!
+"         echohl WarningMsg | echo " running finish"
+"     endif
+" endfunc
 
 
 
