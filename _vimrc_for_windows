@@ -9,22 +9,24 @@ let g:mapleader = ","
 
 "打开配置文件
 let $MYGVIMRC='$VIM/_vimrc'
-nmap <leader>gv :split $MYGVIMRC<Cr>
+nmap <leader>v :split $MYGVIMRC<CR>
 
 "界面配置
 syntax on
+set t_Co=256
+set laststatus=2
 colorscheme desert
 " colorscheme solarized
-" colorscheme wombat256
-set laststatus=2
-set t_Co=256
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
-" set guifont=MONACO:h12
+" colorscheme molokai
+" colorscheme Monokai
+" colorscheme wombat
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h14
 set number
 set nowrap
 set shortmess=atI
 set cursorcolumn
 set cursorline
+set cmdheight=1
 set go=
 
 "缩进配置
@@ -34,20 +36,22 @@ set softtabstop=4
 set expandtab
 set smarttab
 set cindent
+set cino=g0
 filetype on
 filetype indent on
+nnoremap <CR> ==<CR>
 
 "编码配置
 set encoding=utf-8
+set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
 source$VIMRUNTIME/delmenu.vim
 source$VIMRUNTIME/menu.vim
-let &termencoding=&encoding
 
 "取消备份及交换文件
 set nobackup
@@ -62,10 +66,10 @@ set winaltkeys=no
 imap <F11> <Esc> :call ToggleFullscreen()<CR>
 
 "方向键切换窗口
-map <Left> <c-w>h
-map <Down> <c-w>j
-map <up> <c-w>k
-map <right> <c-w>l
+nmap <Left> <c-w>h
+nmap <Down> <c-w>j
+nmap <up> <c-w>k
+nmap <right> <c-w>l
 
 "增强光标移动
 nmap H ^
@@ -80,7 +84,15 @@ inoremap <C-k> <Up>
 inoremap <C-l> <Right>
 inoremap <C-u> <Esc> u
 inoremap jk <Esc>
-imap <C-CR> +<Space><BS>
+inoremap JK <Esc>
+
+"Operator-Pending映射
+onoremap in( :<c-u>normal! f(vi(<CR>
+onoremap in[ :<c-u>normal! f[vi[<CR>
+onoremap in{ :<c-u>normal! f{vi{<CR>
+onoremap in< :<c-u>normal! f<vi<<CR>
+onoremap in" :<c-u>normal! f"vi"<CR>
+onoremap in' :<c-u>normal! f'vi'<CR>
 
 "代码折叠
 set foldenable
@@ -98,27 +110,86 @@ set history=200
 "默认操作路径
 cd $VIM\Vim_Projects
 
-"C/C++缩写词 <C-CR>
-iabbrev ui+ unsigned int<Space>
-iabbrev uc+ unsigned char<Space>
-iabbrev p+ printf("");<Esc>2hi
-iabbrev s+ scanf("", &);<Esc>5hi
-iabbrev cout+ cout <<  << endl;<Esc>8hi
-iabbrev cin+ cin <<  << endl;<Esc>8hi
-iabbrev switch+ switch ()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>default: <Up><Tab>case : <Up><Tab>case : <Up><Up><Left>
-iabbrev struct+ struct {};<Left><Left><CR><CR><Up><Tab><Up><Esc>4li
-iabbrev union+ union {};<Left><Left><CR><CR><Up><Tab><Up><Esc>3li
-iabbrev class+ class CLASSNAME{};<Left><Left><CR><CR><CR><CR><CR><CR><Up><Tab><Tab><Up><Tab>private:<Up><Tab><Tab>~CLASSNAME() {}<Up><Tab><Tab>CLASSNAME() {}<Up><Tab>public:<Up><Esc>b
+"C/C++缩写词及代码片段补全 <C-CR>
+imap <C-CR> +<Space><BS>
+iabbrev ui+ unsigned int <Esc>==$a
+iabbrev uc+ unsigned char <Esc>==$a
+iabbrev pf+ printf("");<Esc>==f"a
+iabbrev sf+ scanf("", &);<Esc>==f"a
+iabbrev cout+ cout <<  << endl;<Esc>==7la
+iabbrev cin+ cin <<  << endl;<Esc>==6la
+iabbrev for+ for (; ; )<CR>
+            \{}<Left><CR>
+            \<Esc>2k3==wa
+iabbrev do+ do {}while ();<Esc>==f{a<CR><Esc>f(a
+iabbrev switch+ switch ()<CR>
+                \{}<Left><CR>
+                \case '': <CR>
+                \case '': <CR>
+                \default: <CR>
+                \<Esc>5k6==wa
+iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
+iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
+iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
+iabbrev class+ class CLASSNAME{};<Left><Left><CR>
+                \public:<CR>
+                \CLASSNAME() {}<CR>
+                \~CLASSNAME() {}<CR>
+                \private:<CR>
+                \<Esc>5k6==w
 iabbrev #+ #include <><Left>
-iabbrev using+ using namespace<Space>
-iabbrev guard+ #ifndef HEADER_FILE_H<CR>#define HEADER_FILE_H<CR><CR>#endif // HEADER_FILE_H<ESC>3kb
-if expand("%:e") == "c"
-    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <stdio.h><CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
-elseif expand("%:e") == "cpp"
-    iabbrev main+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>#include <iostream><CR><CR>using namespace std;<CR><CR>int main()<CR>{}<Left><CR><CR><CR><CR><Up><Tab>return 0;<Up><Up><Tab>
-endif
+iabbrev using+ using namespace <Esc>==$a
+iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
+                \#define <c-r>=expand("%")<CR><CR>
+                \#endif // <c-r>=expand("%")<CR>
+                \<ESC>2k
+                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
+iabbrev cmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \#include <stdio.h><CR><CR>
+                \int main()<CR>
+                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up><Tab>
+iabbrev cppmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \#include <iostream><CR><CR>
+                \using namespace std;<CR><CR>
+                \int main()<CR>
+                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up><Tab>
 
+"自动插入代码模板及头文件保护符
+autocmd BufNewFile *.c exec "normal icmain+\<Space>"
+autocmd BufNewFile *.cpp exec "normal icppmain+\<Space>"
+autocmd BufNewFile *.h execute "normal iguard+\<Space>"
 
+"括号自动补全
+inoremap ( ()<Esc>i
+inoremap ) <c-r>=ClosePair(')')<CR>
+inoremap [ []<Esc>i
+inoremap ] <c-r>=ClosePair(']')<CR>
+" inoremap { {}<Esc>i
+" inoremap } <c-r>=ClosePair('}')<CR>
+inoremap " <c-r>=QuoteDelim('"')<CR>
+inoremap ' <c-r>=QuoteDelim("'")<CR>
+
+func ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunc
+
+func QuoteDelim(char)
+    let line = getline('.')
+    let col = col('.')
+    if line[col - 2] == "\\"
+        return a:char
+    elseif line[col - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char.a:char."\<Esc>i"
+    endif
+endfunc
 
 
 
@@ -131,8 +202,6 @@ call vundle#begin('$VIM/vimfiles/bundle/')
 
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
 
-Plugin 'git://github.com/Shougo/unite.vim.git'
-Plugin 'git://github.com/Shougo/vimproc.vim.git'
 Plugin 'git://github.com/scrooloose/nerdtree.git'
 Plugin 'git://github.com/scrooloose/nerdcommenter.git'
 Plugin 'git://github.com/universal-ctags/ctags.git'
@@ -147,10 +216,10 @@ Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
 Plugin 'git://github.com/Yggdroot/indentLine.git'
 Plugin 'git://github.com/w0rp/ale.git'
+Plugin 'git://github.com/mhinz/vim-startify.git'
 
 call vundle#end()
 filetype plugin indent on
-
 
 
 
@@ -180,7 +249,44 @@ let g:multi_cursor_use_default_mapping=1
 " let g:multi_cursor_next_key='<C-n>'
 " let g:multi_cursor_prev_key='<C-p>'
 " let g:multi_cursor_skip_key='<C-x>'
-" let g:multi_cursor_quit_key='<Esc>'
+let g:multi_cursor_quit_key='<CR>'
+
+
+"Grep 运算符(Operator)
+nnoremap <leader>g :set operatorfunc=GrepOperator<CR>g@
+vnoremap <leader>g :<c-u>call GrepOperator(visualmode())<CR>
+function! GrepOperator(type)
+    let saved_unnamed_register = @@
+    if a:type ==# 'v'
+        normal! `<v`>y
+    elseif a:type ==# 'char'
+        normal! `[v`]y
+    else
+        return
+    endif
+    silent execute "grep! -R " . shellescape(@@) . " ."
+    copen
+    let @@ = saved_unnamed_register
+endfunction
+
+
+"切换配色方案 <F4>
+let g:Color = 1
+let g:ColorList = { 0: "desert",
+                \   1: "molokai",
+                \   2: "Monokai",
+                \   3: "wombat",
+                \   4: "lucius"
+                \   }
+map <F4> :call SwitchColorscheme() <CR>
+imap <F4> <Esc> :call SwitchColorscheme() <CR>
+func! SwitchColorscheme()
+    exec "colorscheme " g:ColorList[g:Color]
+    let g:Color+=1
+    if g:Color == 5
+        let g:Color = 0
+    endif
+endfunc
 
 
 "NERD_Tree 配置 <F5>
@@ -194,7 +300,7 @@ let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
 
-"Nerd_Commenter 配置 <,CC> <,C<Space>>
+"Nerd_Commenter(多行注释) 配置 <Leader>cc <Leader>c<Space>
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
@@ -218,13 +324,23 @@ let g:tagbar_width=30
 " autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
-"QuickFix <F2>
-map <F2> :call CloseFX()<CR>
-imap <F2> <Esc> :call CloseFX()<CR>
-func! CloseFX()
-	exec "cclose"
-	exec "TagbarOpen"
-endfunc
+"QuickFix (编译信息窗口) <F2>
+nnoremap <F2> :call QuickfixToggle()<CR>
+let g:quickfix_is_open = 0
+function! QuickfixToggle()
+    execute "cclose"
+    if g:quickfix_is_open
+        let g:quickfix_is_open = 0
+        execute "cclose"
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "TagbarOpen"
+    else
+        let g:quickfix_is_open = 1
+        let g:quickfix_return_to_window = winnr()
+        execute "TagbarClose"
+        execute "copen"
+    endif
+endfunction
 
 
 "AirLine配置 <Ctrl + Tab>
@@ -237,17 +353,6 @@ let g:Powerline_symbols="fancy"
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.linenr = ''
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-let g:airline#extensions#tabline#right_sep = ''
-let g:airline#extensions#tabline#right_alt_sep = ''
 map <Leader>1 :b 1<CR>
 map <Leader>2 :b 2<CR>
 map <Leader>3 :b 3<CR>
@@ -264,205 +369,84 @@ let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
 
 
-"Vimproc 配置
-let g:vimproc_dll_path=$VIMRUNTIME."/vimproc_win32.dll"
+"Startify(启动界面) 配置 
+let g:startify_padding_left = 4 
+let g:startify_disable_at_vimenter = 0 
+autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers) 
 
 
 "ALE 配置
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '--'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
+let g:ale_sign_error = '汪'
+let g:ale_sign_warning = '喵'
+let g:ale_echo_msg_error_str = '汪'
+let g:ale_echo_msg_warning_str = '喵'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_statusline_format = ['x %d', '⚠ %d', '> ok']
-let g:ale_linters = {'c': ['gcc'],'c++': ['gcc']}
+let g:ale_linters = {'c': ['gcc'],
+                    \'c++': ['gcc'],
+                    \'Vim': ['vint']
+                    \}
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"AsyncRun 配置 <F7>
-map <F7> :call AsyncRun()<CR>
-imap <F7> <Esc> :call AsyncRun()<CR>
-func! AsyncRun()
-	exec "w"
-	if expand("%:e") == "c"
-		exec "AsyncRun gcc -std=c11 -Wall -g -O0 -c % -o %<.o"
-		exec "TagbarClose"
-		exec "copen"
-		echohl WarningMsg | echo "AsyncRun Done!"  	
-	elseif expand("%:e") == "cpp"  
-		exec "AsyncRun g++ -std=c++14 -Wall -g -O0 -c % -o %<.o"
-		exec "TagbarClose"
-		exec "copen"
-		echohl WarningMsg | echo "AsyncRun Done!"  	
-	endif
-endfunc
+"编译 & 连接选项 <C-[F7|F9]>为手动执行命令
+autocmd FileType c call C_CompileOptions()
+autocmd FileType cpp call CPP_CompileOptions()
+function! C_CompileOptions()
+    let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!gcc %<.o -o %<.exe"
+    map <C-F7> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    map <C-F9> :!gcc %<.o -o %< && %<.exe
+    imap <C-F9> <Esc> :!gcc %<.o -o %< && %<.exe
+endfunction
+function! CPP_CompileOptions()
+    let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!g++ %<.o -o %<.exe"
+    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    map <C-F9> :!g++ %<.o -o %< && %<.exe
+    imap <C-F9> <Esc> :!g++ %<.o -o %< && %<.exe
+endfunction
+let g:RunCommand = "!%<.exe"
+
+
+"AsyncRun(异步编译) 配置 <F7> <C-F7>
+"保存并编译生成目标文件
+map <F7> :call AsyncCompile()<CR>
+imap <F7> <Esc> :call AsyncCompile()<CR>
+function! AsyncCompile()
+	execute "w"
+    execute g:CompileCommand
+    execute "TagbarClose"
+    execute "copen"
+    echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
+endfunction
 
 
 "Debug 配置 <F8>
+"保存编译并调试
 map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
-func! Debug()
-	exec "w"
-	if expand("%:e") == "c"
-		exec "!gcc -std=c11 % -g -o %<.exe"
-		exec "!gdb %<.exe"
-		echohl WarningMsg | echo "Debug Done!"  	
-	elseif expand("%:e") == "cpp"  
-		exec "!g++ -std=c++14 % -g -o %<.exe"
-		exec "!gdb %<.exe"
-		echohl WarningMsg | echo "Debug Done!"  	
-	endif
-endfunc
+function! Debug()
+    execute "w"
+    execute g:CompileCommand
+    execute g:LinkCommand
+    execute "!gdb %<.exe"
+    echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+endfunction
 
 
-
-
-
-"一键编译运行(请确保文件名不含中文)
-if has("gui_running")  
-	let g:isGUI = 1  
-else  
-	let g:isGUI = 0  
-endif  
-
-" F9 一键保存、编译、连接存并运行  
-map <F9> :call Run()<CR>  
-imap <F9> <ESC>:call Run()<CR>  
-
-let g:iswindows = 1  
-let s:LastShellReturn_C = 0  
-let s:LastShellReturn_L = 0  
-let s:ShowWarning = 1  
-let s:Obj_Extension = '.o'  
-let s:Exe_Extension = '.exe'  
-let s:Sou_Error = 0  
-
-let s:windows_CFlags = 'gcc\ -fexec-charset=gbk\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-let s:windows_CPPFlags = 'g++\ -fexec-charset=gbk\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'  
-
-func! Compile()
-	exe "w"
-	exe ":ccl"
-	exe ":update"
-	if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-		let s:Sou_Error = 0
-		let s:LastShellReturn_C = 0
-		let Sou = expand("%:p")  
-		let Obj = expand("%:p:r").s:Obj_Extension
-		let Obj_Name = expand("%:p:t:r").s:Obj_Extension
-		let v:statusmsg = ''
-		if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))  
-			redraw!
-		if expand("%:e") == "c"
-			exe ":setlocal makeprg=".s:windows_CFlags  
-			echohl WarningMsg | echo " compiling..."  
-			silent make  
-		elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-			exe ":setlocal makeprg=".s:windows_CPPFlags  
-			echohl WarningMsg | echo " compiling..."  
-			silent make  
-		endif  
-		redraw!  
-		if v:shell_error != 0  
-			let s:LastShellReturn_C = v:shell_error  
-		endif  
-		if s:LastShellReturn_C != 0  
-			exe ":bo cope"  
-			echohl WarningMsg | echo " compilation failed"  
-		else  
-			if s:ShowWarning  
-				exe ":bo cw"  
-			endif  
-			echohl WarningMsg | echo " compilation successful"  
-		endif  
-		else  
-			echohl WarningMsg | echo ""Obj_Name"is up to date"  
-		endif  
-	else  
-		let s:Sou_Error = 1  
-		echohl WarningMsg | echo " please choose the correct source file"  
-	endif  
-	exe ":setlocal makeprg=make"  
-endfunc  
-
-func! Link()  
-	call Compile()  
-	if s:Sou_Error || s:LastShellReturn_C != 0  
-		return  
-	endif  
-	let s:LastShellReturn_L = 0  
-	let Sou = expand("%:p")  
-	let Obj = expand("%:p:r").s:Obj_Extension  
-	let Exe = expand("%:p:r").s:Exe_Extension  
-	let Exe_Name = expand("%:p:t:r").s:Exe_Extension  
-	let v:statusmsg = ''  
-	if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))  
-		redraw!  
-		if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))  
-			if expand("%:e") == "c"  
-				setlocal makeprg=gcc\ -o\ %<\ %<.o  
-				echohl WarningMsg | echo " linking..."  
-				silent make  
-			elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"  
-				setlocal makeprg=g++\ -o\ %<\ %<.o  
-				echohl WarningMsg | echo " linking..."  
-				silent make  
-			endif  
-			redraw!  
-			if v:shell_error != 0  
-				let s:LastShellReturn_L = v:shell_error  
-			endif  
-			if s:LastShellReturn_L != 0  
-				exe ":bo cope"  
-				echohl WarningMsg | echo " linking failed"  
-			else  
-				if s:ShowWarning  
-					exe ":bo cw"  
-				endif  
-				echohl WarningMsg | echo " linking successful"  
-			endif  
-		else  
-			echohl WarningMsg | echo ""Exe_Name"is up to date"  
-		endif  
-	endif  
-	setlocal makeprg=make  
-endfunc  
-
-func! Run()  
-	let s:ShowWarning = 0  
-	call Link()  
-	let s:ShowWarning = 1  
-	if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0  
-		return  
-	endif  
-	let Sou = expand("%:p")  
-	let Obj = expand("%:p:r").s:Obj_Extension  
-	let Exe = expand("%:p:r").s:Exe_Extension  
-	if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)  
-		redraw!  
-		echohl WarningMsg | echo " running..."  
-		exe ":!%<.exe"  
-		redraw!  
-		echohl WarningMsg | echo " running finish"  
-	endif  
-endfunc  
-
-
-
-
-"头文件自动插入保护符
-" func! s:insert_gates()
-"     let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-"     exec "normal! i#ifndef _" . gatename
-"     exec "normal! o#define _" . gatename
-"     exec "normal! Go#endif // _" . gatename
-"     normal! kk
-" endfunc
-" autocmd BufNewFile *.{h,hpp,H} call insert_gates()
-
-
+"Link & Run 配置 <F9> <C-F9>
+"链接生成可执行文件并运行
+map <F9> :call Link_Run()<CR>
+imap <F9> <Esc> :call Link_Run()<CR>
+function! Link_Run()
+    execute g:LinkCommand
+    execute g:RunCommand
+    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+endfunction
 
 
 
@@ -495,4 +479,3 @@ func MyDiff()
 		let &shellxquote=l:shxq_sav
 	endif
 endfunc
-
