@@ -140,7 +140,8 @@ iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \CLASSNAME() {}<CR>
                 \~CLASSNAME() {}<CR>
                 \private:<CR>
-                \<Esc>5k6==w
+                \<Esc>5k6==
+                \:.,.+3s/CLASSNAME//g<Left><Left>
 iabbrev try+ try {}<Left><CR>
                 \throw runtime_error("Runtime Error");<CR>
                 \<Right> catch (runtime_error err) {}<Left><CR>
@@ -170,6 +171,8 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
 "常用脚本缩写词
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #!/usr/bin/python<CR><CR>
+                \# import py_compile<CR>
+                \# py_compile.compile('<c-r>=expand("%")<CR>')<CR><CR>
 
 "自动插入代码模板及头文件保护符
 autocmd BufNewFile *.c execute "normal icmain+\<Space>"
@@ -463,26 +466,47 @@ vmap <silent> <Leader>r <Plug>DictRVSearch
 " Dict窗口中 q 键关闭Dict窗口
 
 
-"编译 & 连接选项 <C-[F7|F9]>为手动执行命令
+"编译 & 连接选项 <C-(F7|F9)>为手动执行命令
 autocmd FileType c call C_CompileOptions()
-autocmd FileType cpp call CPP_CompileOptions()
+autocmd FileType cpp,cxx call CPP_CompileOptions()
+autocmd FileType sh call SH_CompileOptions()
+autocmd FileType python call PYHTON_CompileOptions()
+
 function! C_CompileOptions()
     let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!gcc %<.o -o %<"
+    let g:LinkCommand = "!gcc ./*.o -o Run"
+    let g:RunCommand = "!./Run"
     map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!gcc %<.o -o %< && ./%<
-    imap <C-F9> <Esc> :!gcc %<.o -o %< && ./%<
+    map <C-F9> :!gcc ./*.o -o Run && ./Run
+    imap <C-F9> <Esc> :!gcc ./*.o -o Run && ./Run
 endfunction
+
 function! CPP_CompileOptions()
     let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!g++ %<.o -o %<"
+    let g:LinkCommand = "!g++ ./*.o -o Run"
+    let g:RunCommand = "!./Run"
     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!g++ %<.o -o %< && ./%<
-    imap <C-F9> <Esc> :!g++ %<.o -o %< && ./%<
+    map <C-F9> :!g++ ./*.o -o Run && ./Run
+    imap <C-F9> <Esc> :!g++ ./*.o -o Run && ./Run
 endfunction
-let g:RunCommand = "!./%<"
+
+function! SH_CompileOptions()
+    let g:CompileCommand = ""
+    let g:LinkCommand = ""
+    let g:RunCommand = "!bash %"
+    map <C-F9> :!bash %
+    imap <C-F9> <Esc> :!bash %
+endfunction
+
+function! PYHTON_CompileOptions()
+    let g:CompileCommand = ""
+    let g:LinkCommand = ""
+    let g:RunCommand = "!python2.7 %"
+    map <C-F9> :!python2.7 %
+    imap <C-F9> <Esc> :!python2.7 %
+endfunction
 
 
 "AsyncRun(异步编译) 配置 <F7> <C-F7>
@@ -512,7 +536,7 @@ endfunction
 
 
 "Link & Run 配置 <F9> <C-F9>
-"链接生成可执行文件并运行
+"链接当前目录的所有目标文件, 生成可执行文件并运行
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
@@ -522,125 +546,13 @@ function! Link_Run()
 endfunction
 
 
-
-" if has("gui_running")
-"     let g:isGUI = 1
-" else
-"     let g:isGUI = 0
-" endif
-"
-" let s:LastShellReturn_C = 0
-" let s:LastShellReturn_L = 0
-" let s:ShowWarning = 1
-" let s:Obj_Extension = '.o'
-" let s:Sou_Error = 0
-"
-" let s:linux_CFlags = 'gcc\ -std=c11\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
-" let s:linux_CPPFlags = 'g++\ -std=c++14\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
-"
-" func! Compile()
-"     exe "w"
-"     exe ":ccl"
-"     exe ":update"
-"     if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"
-"         let s:Sou_Error = 0
-"         let s:LastShellReturn_C = 0
-"         let Sou = expand("%:p")
-"         let Obj = expand("%:p:r").s:Obj_Extension
-"         let Obj_Name = expand("%:p:t:r").s:Obj_Extension
-"         let v:statusmsg = ''
-"         if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))
-"             redraw!
-"             if expand("%:e") == "c"
-"                 exe ":setlocal makeprg=".s:linux_CFlags
-"                 echohl WarningMsg | echo " compiling..."
-"                 silent make
-"             elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
-"                 exe ":setlocal makeprg=".s:linux_CPPFlags
-"                 echohl WarningMsg | echo " compiling..."
-"                 silent make
-"             endif
-"             redraw!
-"             if v:shell_error != 0
-"                 let s:LastShellReturn_C = v:shell_error
-"             endif
-"             if empty(v:statusmsg)
-"                 echohl WarningMsg | echo " compilation successful"
-"             else
-"                 exe ":bo cope"
-"             endif
-"         else
-"             echohl WarningMsg | echo ""Obj_Name"is up to date"
-"         endif
-"     else
-"         let s:Sou_Error = 1
-"         echohl WarningMsg | echo " please choose the correct source file"
-"     endif
-"     exe ":setlocal makeprg=make"
-" endfunc
-"
-" func! Link()
-"     call Compile()
-"     if s:Sou_Error || s:LastShellReturn_C != 0
-"         return
-"     endif
-"     let s:LastShellReturn_L = 0
-"     let Sou = expand("%:p")
-"     let Obj = expand("%:p:r").s:Obj_Extension
-"     let Exe = expand("%:p:r")
-"     let Exe_Name = expand("%:p:t:r")
-"     let v:statusmsg = ''
-"     if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))
-"         redraw!
-"         if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))
-"             if expand("%:e") == "c"
-"                 setlocal makeprg=gcc\ -o\ %<\ %<.o
-"                 echohl WarningMsg | echo " linking..."
-"                 silent make
-"             elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
-"                 setlocal makeprg=g++\ -o\ %<\ %<.o
-"                 echohl WarningMsg | echo " linking..."
-"                 silent make
-"             endif
-"             redraw!
-"             if v:shell_error != 0
-"                 let s:LastShellReturn_L = v:shell_error
-"             endif
-"             if empty(v:statusmsg)
-"                 echohl WarningMsg | echo " linking successful"
-"             else
-"                 exe ":bo cope"
-"             endif
-"         else
-"             echohl WarningMsg | echo ""Exe_Name"is up to date"
-"         endif
-"     endif
-"     setlocal makeprg=make
-" endfunc
-"
-" func! Run()
-"     let s:ShowWarning = 0
-"     call Link()
-"     let s:ShowWarning = 1
-"     if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0
-"         return
-"     endif
-"     let Sou = expand("%:p")
-"     let Obj = expand("%:p:r").s:Obj_Extension
-"     let Exe = expand("%:p:r")
-"     if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)
-"         redraw!
-"         echohl WarningMsg | echo " running..."
-"         if g:isGUI
-"             exe ":!gnome-terminal -e ./%<"
-"         else
-"             exe ":!./%<"
-"         endif
-"         redraw!
-"         echohl WarningMsg | echo " running finish"
-"     endif
-" endfunc
-
+"清除当前目录的所有目标文件 <F10>
+map <F10> :call CleanObjFile()<CR>
+imap <F10> <Esc> :call CleanObjFile()<CR>
+function! CleanObjFile()
+    execute "!rm ./*.o"
+    echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
+endfunction
 
 
 runtime! debian.vim
