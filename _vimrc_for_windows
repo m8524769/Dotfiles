@@ -394,6 +394,7 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 autocmd FileType c call C_CompileOptions()
 autocmd FileType cpp call CPP_CompileOptions()
 function! C_CompileOptions()
+<<<<<<< HEAD
     let b:CompileCommand = "AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
     let b:LinkCommand = "!gcc *.o -o Run.exe"
     map <C-F7> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
@@ -410,6 +411,24 @@ function! CPP_CompileOptions()
     imap <C-F9> <Esc> :!g++ *.o -o Run.exe && Run.exe
 endfunction
 let b:RunCommand = "!Run.exe"
+=======
+    let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!gcc %<.o -o %<.exe"
+    map <C-F7> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    map <C-F9> :!gcc %<.o -o %< && %<.exe
+    imap <C-F9> <Esc> :!gcc %<.o -o %< && %<.exe
+endfunction
+function! CPP_CompileOptions()
+    let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
+    let g:LinkCommand = "!g++ %<.o -o %<.exe"
+    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
+    map <C-F9> :!g++ %<.o -o %< && %<.exe
+    imap <C-F9> <Esc> :!g++ %<.o -o %< && %<.exe
+endfunction
+let g:RunCommand = "!%<.exe"
+>>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
 
 
 "AsyncRun(异步编译) 配置 <F7> <C-F7>
@@ -418,11 +437,17 @@ map <F7> :call AsyncCompile()<CR>
 imap <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
 	execute "w"
+<<<<<<< HEAD
     execute b:CompileCommand
     execute "TagbarClose"
     execute "copen"
     let g:quickfix_is_open = 1
     let g:quickfix_return_to_window = winnr()
+=======
+    execute g:CompileCommand
+    execute "TagbarClose"
+    execute "copen"
+>>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
     echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
 endfunction
 
@@ -433,9 +458,15 @@ map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
 function! Debug()
     execute "w"
+<<<<<<< HEAD
     execute b:CompileCommand
     execute b:LinkCommand
     execute "!gdb Run.exe"
+=======
+    execute g:CompileCommand
+    execute g:LinkCommand
+    execute "!gdb %<.exe"
+>>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
     echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
 endfunction
 
@@ -445,10 +476,18 @@ endfunction
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
+<<<<<<< HEAD
     execute b:LinkCommand
     execute b:RunCommand
     echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
 endfunction
+=======
+    execute g:LinkCommand
+    execute g:RunCommand
+    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+endfunction
+
+>>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
 
 
 set diffexpr=MyDiff()

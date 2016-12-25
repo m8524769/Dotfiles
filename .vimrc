@@ -531,7 +531,7 @@ function! Debug()
     execute "w"
     execute b:CompileCommand
     execute b:LinkCommand
-    execute "!gdb %<"
+    execute "!gdb ./Run"
     echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
 endfunction
 
