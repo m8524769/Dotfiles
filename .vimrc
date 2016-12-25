@@ -370,8 +370,8 @@ let g:tagbar_width=30
 "QuickFix (编译信息窗口) <F2>
 nnoremap <F2> :call QuickfixToggle()<CR>
 let g:quickfix_is_open = 0
+let g:quickfix_return_to_window = winnr()
 function! QuickfixToggle()
-    execute "cclose"
     if g:quickfix_is_open
         let g:quickfix_is_open = 0
         execute "cclose"
@@ -473,9 +473,9 @@ autocmd FileType sh call SH_CompileOptions()
 autocmd FileType python call PYHTON_CompileOptions()
 
 function! C_CompileOptions()
-    let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!gcc ./*.o -o Run"
-    let g:RunCommand = "!./Run"
+    let b:CompileCommand = "AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %"
+    let b:LinkCommand = "!gcc ./*.o -o Run"
+    let b:RunCommand = "!./Run"
     map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     map <C-F9> :!gcc ./*.o -o Run && ./Run
@@ -483,9 +483,9 @@ function! C_CompileOptions()
 endfunction
 
 function! CPP_CompileOptions()
-    let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!g++ ./*.o -o Run"
-    let g:RunCommand = "!./Run"
+    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
+    let b:LinkCommand = "!g++ ./*.o -o Run"
+    let b:RunCommand = "!./Run"
     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     map <C-F9> :!g++ ./*.o -o Run && ./Run
@@ -493,17 +493,17 @@ function! CPP_CompileOptions()
 endfunction
 
 function! SH_CompileOptions()
-    let g:CompileCommand = ""
-    let g:LinkCommand = ""
-    let g:RunCommand = "!bash %"
+    let b:CompileCommand = ""
+    let b:LinkCommand = ""
+    let b:RunCommand = "!bash %"
     map <C-F9> :!bash %
     imap <C-F9> <Esc> :!bash %
 endfunction
 
 function! PYHTON_CompileOptions()
-    let g:CompileCommand = ""
-    let g:LinkCommand = ""
-    let g:RunCommand = "!python2.7 %"
+    let b:CompileCommand = ""
+    let b:LinkCommand = ""
+    let b:RunCommand = "!python2.7 %"
     map <C-F9> :!python2.7 %
     imap <C-F9> <Esc> :!python2.7 %
 endfunction
@@ -515,9 +515,10 @@ map <F7> :call AsyncCompile()<CR>
 imap <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
 	execute "w"
-    execute g:CompileCommand
+    execute b:CompileCommand
     execute "TagbarClose"
     execute "copen"
+    let g:quickfix_is_open = 1
     echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
 endfunction
 
@@ -528,8 +529,8 @@ map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
 function! Debug()
     execute "w"
-    execute g:CompileCommand
-    execute g:LinkCommand
+    execute b:CompileCommand
+    execute b:LinkCommand
     execute "!gdb %<"
     echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
 endfunction
@@ -540,8 +541,8 @@ endfunction
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
-    execute g:LinkCommand
-    execute g:RunCommand
+    execute b:LinkCommand
+    execute b:RunCommand
     echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
 endfunction
 
