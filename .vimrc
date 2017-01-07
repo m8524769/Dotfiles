@@ -9,26 +9,28 @@ let g:mapleader = ","
 
 "打开配置文件 <Leader>v
 let $MYVIMRC='~/.vimrc'
-nmap <leader>v :split $MYVIMRC<Cr>
+nmap <leader>v :vi $MYVIMRC<Cr>
 
 "界面配置
 syntax on
 set laststatus=2
 set t_Co=256
 if (has("gui_running"))
-    colorscheme desert
-    highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
-    highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
-    " colorscheme molokai
+    " colorscheme desert
+    " highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
+    " highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
+    colorscheme molokai
     " colorscheme Monokai
     " colorscheme wombat
     " colorscheme lucius
     set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
     " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
     " set guifont=Hack\ Bold\ 12
-    set guifontwide=FZMiaoWuS-GB\ Regular\ 16
+    set guifontwide=Microsoft\ YaHei\ Bold\ 12
+    " set guifontwide=FZMiaoWuS-GB\ Bold\ 16
 endif
 set number
+set relativenumber
 set nowrap
 set shortmess=atI
 set cursorcolumn
@@ -170,16 +172,17 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
 
 "常用脚本缩写词
 iabbrev shmain+ #!/bin/bash<CR><CR>
-iabbrev pymain+ #!/usr/bin/python<CR><CR>
+iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
+                \#!/usr/bin/env python<CR><CR>
                 \# import py_compile<CR>
                 \# py_compile.compile('<c-r>=expand("%")<CR>')<CR><CR>
 
 "自动插入代码模板及头文件保护符
-autocmd BufNewFile *.c execute "normal icmain+\<Space>"
+autocmd BufNewFile *.c   execute "normal icmain+\<Space>"
 autocmd BufNewFile *.cpp execute "normal icppmain+\<Space>"
-autocmd BufNewFile *.h execute "normal iguard+\<Space>"
-autocmd BufNewFile *.sh execute "normal ishmain+\<Space>"
-autocmd BufNewFile *.py execute "normal ipymain+\<Space>"
+autocmd BufNewFile *.h   execute "normal iguard+\<Space>"
+autocmd BufNewFile *.sh  execute "normal ishmain+\<Space>"
+autocmd BufNewFile *.py  execute "normal ipymain+\<Space>"
 
 "括号自动补全
 inoremap ( ()<Esc>i
@@ -241,12 +244,12 @@ Plugin 'http://github.com/Yggdroot/indentLine.git'
 Plugin 'http://github.com/w0rp/ale.git'
 Plugin 'http://github.com/mhinz/vim-startify.git'
 Plugin 'http://github.com/iamcco/dict.vim.git'
-
-" Plugin 'http://github.com/uguu-org/vim-matrix-screensaver.git'
+Plugin 'http://github.com/m8524769/Baidu.vim.git'
+Plugin 'http://github.com/terryma/vim-smooth-scroll.git'
+Plugin 'http://github.com/justinmk/vim-sneak.git'
 
 call vundle#end()
 filetype plugin indent on
-
 
 
 
@@ -268,6 +271,22 @@ map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
 map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
+
+
+"Sneak 增强f
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+xmap f <Plug>Sneak_f
+xmap F <Plug>Sneak_F
+omap f <Plug>Sneak_f
+omap F <Plug>Sneak_F
+
+
+"平滑滚屏
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
 
 "multiple-cursors(多行编辑) 配置
@@ -297,12 +316,27 @@ function! GrepOperator(type)
 endfunction
 
 
+"垂直分屏 <F3>
+map <F3> :call VerticalSplit()<CR>
+imap <F3> <Esc> :call VerticalSplit()<CR>
+let g:is_vsplit = 0
+function! VerticalSplit()
+    if g:is_vsplit
+        execute "only"
+        let g:is_vsplit = 0
+    else
+        execute "vsplit"
+        let g:is_vsplit = 1
+    endif
+endfunction
+
+
 "切换配色方案 <F4>
-map <F4> :call ColorschemeToggle() <CR>
-imap <F4> <Esc> :call ColorschemeToggle() <CR>
+map <silent> <F4> :call ColorschemeToggle() <CR>
+imap <silent> <F4> <Esc> :call ColorschemeToggle() <CR>
 let g:ColorNumber = 1
-let g:ColorList = { 0: "desert",
-                \   1: "molokai",
+let g:ColorList = { 0: "molokai",
+                \   1: "desert",
                 \   2: "Monokai",
                 \   3: "wombat",
                 \   4: "lucius"
@@ -313,7 +347,7 @@ function! ColorschemeToggle()
     if g:ColorNumber == 5
         let g:ColorNumber = 0
     endif
-    echo g:ColorList[g:ColorNumber] 
+    echo g:ColorList[g:ColorNumber]
 endfunction
 
 
@@ -387,7 +421,7 @@ endfunction
 
 
 "AirLine(状态栏及缓冲区标签) 配置 <C-Tab> <Leader>[1-9]
-noremap <C-tab> :bn<CR>
+noremap <silent> <C-tab> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
 let g:airline#extensions#tabline#enabled = 1
@@ -493,16 +527,12 @@ function! CPP_CompileOptions()
 endfunction
 
 function! SH_CompileOptions()
-    let b:CompileCommand = ""
-    let b:LinkCommand = ""
     let b:RunCommand = "!bash %"
     map <C-F9> :!bash %
     imap <C-F9> <Esc> :!bash %
 endfunction
 
 function! PYHTON_CompileOptions()
-    let b:CompileCommand = ""
-    let b:LinkCommand = ""
     let b:RunCommand = "!python2.7 %"
     map <C-F9> :!python2.7 %
     imap <C-F9> <Esc> :!python2.7 %
@@ -514,12 +544,16 @@ endfunction
 map <F7> :call AsyncCompile()<CR>
 imap <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
-	execute "w"
-    execute b:CompileCommand
-    execute "TagbarClose"
-    execute "copen"
-    let g:quickfix_is_open = 1
-    echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
+    if exists('b:CompileCommand')
+        execute "w"
+        execute b:CompileCommand
+        execute "TagbarClose"
+        execute "copen"
+        let g:quickfix_is_open = 1
+        echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
+    else
+        echohl WarningMsg | echo "当前文件并不能进行编译.. ╮(￣▽￣)╭"
+    endif
 endfunction
 
 
@@ -528,11 +562,14 @@ endfunction
 map <F8> :call Debug()<CR>
 imap <F8> <Esc> :call Debug()<CR>
 function! Debug()
-    execute "w"
-    execute b:CompileCommand
-    execute b:LinkCommand
-    execute "!gdb ./Run"
-    echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+    if exists('b:CompileCommand')
+        execute "w"
+        execute b:CompileCommand
+        execute "!gdb ./%<.o"
+        echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+    else
+        echohl WarningMsg | echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
+    endif
 endfunction
 
 
@@ -541,20 +578,25 @@ endfunction
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
-    execute b:LinkCommand
-    execute b:RunCommand
-    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+    if exists('b:LinkCommand')
+        execute b:LinkCommand
+    endif
+    if exists('b:RunCommand')
+        execute b:RunCommand
+        echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+    else
+        echohl WarningMsg | echo "Excuse me??"
+    endif
 endfunction
 
 
-"清除当前目录的所有目标文件 <F10>
+"清除当前目录的所有目标文件及可执行文件 <F10>
 map <F10> :call CleanObjFile()<CR>
 imap <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
-    execute "!rm ./*.o"
+    execute "!rm ./*.o ./*.pyc ./Run"
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
-
 
 runtime! debian.vim
 
