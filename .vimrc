@@ -9,26 +9,22 @@ let g:mapleader = ","
 
 "打开配置文件 <Leader>v
 let $MYVIMRC='~/.vimrc'
-nmap <leader>v :vi $MYVIMRC<Cr>
+nmap <leader>v :vi $MYVIMRC<CR>
 
 "界面配置
 syntax on
 set laststatus=2
 set t_Co=256
-if (has("gui_running"))
-    " colorscheme desert
-    " highlight Pmenu term=bold ctermbg=4 guibg=DarkGrey
-    " highlight PmenuSel term=bold ctermbg=4 guibg=Cyan
-    colorscheme molokai
-    " colorscheme Monokai
-    " colorscheme wombat
-    " colorscheme lucius
-    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Bold\ 12
-    " set guifont=Sauce\ Code\ Powerline\ Regular\ 12
-    " set guifont=Hack\ Bold\ 12
-    set guifontwide=Microsoft\ YaHei\ Bold\ 12
-    " set guifontwide=FZMiaoWuS-GB\ Bold\ 16
+colorscheme molokai2
+" colorscheme desert
+" colorscheme monokai
+" colorscheme wombat
+if (!has("gui_running"))
+    colorscheme lucius
 endif
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Regular\ 14
+set guifontwide=Microsoft\ YaHei\ Regular\ 14
+" set guifontwide=FZMiaoWuS-GB\ Bold\ 14
 set number
 set relativenumber
 set nowrap
@@ -67,9 +63,9 @@ set nobackup
 set noswapfile
 set noundofile
 
-"禁用<F1>及Alt
+"禁用<F1>
 nmap <F1> <Esc>
-set winaltkeys=no
+" set winaltkeys=no
 
 "方向键切换窗口
 nmap <Left> <C-w>h
@@ -82,6 +78,9 @@ nmap H ^
 nmap J }
 nmap K {
 nmap L $
+
+"拼接行
+nnoremap <C-j> J
 
 "插入模式快捷键映射
 imap <C-h> <Left>
@@ -123,7 +122,7 @@ iabbrev uc+ unsigned char <Esc>==$a
 iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
 iabbrev cout+ cout <<  << endl;<Esc>==7la
-iabbrev cin+ cin <<  << endl;<Esc>==6la
+iabbrev cin+ cin >> ;<Esc>==$i
 iabbrev for+ for (; ; )<CR>
             \{}<Left><CR>
             \<Esc>2k3==wa
@@ -145,10 +144,9 @@ iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \<Esc>5k6==
                 \:.,.+3s/CLASSNAME//g<Left><Left>
 iabbrev try+ try {}<Left><CR>
-                \throw runtime_error("Runtime Error");<CR>
-                \<Right> catch (runtime_error err) {}<Left><CR>
-                \std::cout << err.what() << std::endl;<CR>
-                \<Esc>4k5==o
+                \<Right> catch () {}<Left><CR>
+                \<Right> catch () {}<Left><CR>
+                \<Esc>3k4==o
 iabbrev #+ #include <><Left>
 iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
@@ -215,40 +213,35 @@ function QuoteDelim(char)
 endfunction
 
 
-
-
-"Vundle及Vim插件
+"Vim-Plug配置及Vim插件列表
 filetype plugin on
 set nocompatible
 filetype off
-set rtp+=$VIM/vimfiles/bundle/Vundle.vim
-call vundle#begin('$VIM/vimfiles/bundle/')
-
-Plugin 'http://github.com/VundleVim/Vundle.vim.git'
-
-Plugin 'http://github.com/Shougo/unite.vim.git'
-Plugin 'http://github.com/scrooloose/nerdtree.git'
-Plugin 'http://github.com/scrooloose/nerdcommenter.git'
-Plugin 'http://github.com/universal-ctags/ctags.git'
-Plugin 'http://github.com/majutsushi/tagbar.git'
-Plugin 'http://github.com/easymotion/vim-easymotion.git'
-Plugin 'http://github.com/Valloric/YouCompleteMe.git'
-Plugin 'http://github.com/vim-airline/vim-airline.git'
-Plugin 'http://github.com/vim-airline/vim-airline-themes.git'
-Plugin 'http://github.com/vim-scripts/a.vim.git'
-Plugin 'http://github.com/lambdalisue/vim-fullscreen.git'
-Plugin 'http://github.com/skywind3000/asyncrun.vim.git'
-Plugin 'http://github.com/pbrisbin/vim-mkdir.git'
-Plugin 'http://github.com/terryma/vim-multiple-cursors.git'
-Plugin 'http://github.com/Yggdroot/indentLine.git'
-Plugin 'http://github.com/w0rp/ale.git'
-Plugin 'http://github.com/mhinz/vim-startify.git'
-Plugin 'http://github.com/iamcco/dict.vim.git'
-Plugin 'http://github.com/m8524769/Baidu.vim.git'
-Plugin 'http://github.com/terryma/vim-smooth-scroll.git'
-Plugin 'http://github.com/justinmk/vim-sneak.git'
-
-call vundle#end()
+call plug#begin('$VIM/vimfiles/bundle')
+Plug 'junegunn/vim-plug'
+Plug 'Shougo/unite.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'universal-ctags/ctags'
+Plug 'majutsushi/tagbar'
+Plug 'easymotion/vim-easymotion'
+Plug 'Valloric/YouCompleteMe'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-scripts/a.vim'
+Plug 'lambdalisue/vim-fullscreen'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'pbrisbin/vim-mkdir'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'Yggdroot/indentLine'
+Plug 'w0rp/ale'
+Plug 'mhinz/vim-startify'
+Plug 'iamcco/dict.vim'
+Plug 'm8524769/Baidu.vim'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'justinmk/vim-sneak'
+Plug 'octol/vim-cpp-enhanced-highlight'
+call plug#end()
 filetype plugin indent on
 
 
@@ -273,7 +266,7 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 
-"Sneak 增强f
+"Sneak 增强查找
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F
 xmap f <Plug>Sneak_f
@@ -283,10 +276,10 @@ omap F <Plug>Sneak_F
 
 
 "平滑滚屏
-noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+noremap <silent> <C-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> <C-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+noremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
 
 "multiple-cursors(多行编辑) 配置
@@ -317,8 +310,8 @@ endfunction
 
 
 "垂直分屏 <F3>
-map <F3> :call VerticalSplit()<CR>
-imap <F3> <Esc> :call VerticalSplit()<CR>
+map <silent> <F3> :call VerticalSplit()<CR>
+imap <silent> <F3> <Esc> :call VerticalSplit()<CR>
 let g:is_vsplit = 0
 function! VerticalSplit()
     if g:is_vsplit
@@ -335,9 +328,9 @@ endfunction
 map <silent> <F4> :call ColorschemeToggle() <CR>
 imap <silent> <F4> <Esc> :call ColorschemeToggle() <CR>
 let g:ColorNumber = 1
-let g:ColorList = { 0: "molokai",
+let g:ColorList = { 0: "molokai2",
                 \   1: "desert",
-                \   2: "Monokai",
+                \   2: "monokai",
                 \   3: "wombat",
                 \   4: "lucius"
                 \   }
@@ -351,8 +344,14 @@ function! ColorschemeToggle()
 endfunction
 
 
+"C++ 语法高亮
+let g:cpp_class_scope_highlight = 1
+let g:cpp_experimental_simple_template_highlight = 1
+let g:cpp_concepts_highlight = 1
+
+
 "显示折叠状态条(fold column) <Leader>z
-nnoremap <Leader>z :call FoldColumnToggle()<CR>
+nmap <silent> <Leader>z :call FoldColumnToggle()<CR>
 function! FoldColumnToggle()
     if &foldcolumn
         setlocal foldcolumn=0
@@ -367,8 +366,8 @@ nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 
 
 "NERD_Tree(目录树) 配置 <F5>
-map <F5> :NERDTreeToggle<CR>
-imap <F5> <Esc> :NERDTreeToggle<CR>
+map <silent> <F5> :NERDTreeToggle<CR>
+imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
 " autocmd vimenter * NERDTree
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -394,15 +393,16 @@ set tags+=./tags
 
 
 "TagBar(函数列表) 配置 <F6>
-map <F6> :TagbarToggle<CR>
-inoremap <F6> <Esc> :TagbarToggle<CR>
+map <silent> <F6> :TagbarToggle<CR>
+imap <silent> <F6> <Esc> :TagbarToggle<CR>
 let g:tagbar_ctags_bin='ctags'
 let g:tagbar_width=30
 " autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
 
 
 "QuickFix (编译信息窗口) <F2>
-nnoremap <F2> :call QuickfixToggle()<CR>
+map <silent> <F2> :call QuickfixToggle()<CR>
+imap <silent> <F2> <Esc>:call QuickfixToggle()<CR>
 let g:quickfix_is_open = 0
 let g:quickfix_return_to_window = winnr()
 function! QuickfixToggle()
@@ -410,11 +410,11 @@ function! QuickfixToggle()
         let g:quickfix_is_open = 0
         execute "cclose"
         execute g:quickfix_return_to_window . "wincmd w"
-        execute "TagbarOpen"
+        " execute "TagbarOpen"
     else
         let g:quickfix_is_open = 1
         let g:quickfix_return_to_window = winnr()
-        execute "TagbarClose"
+        " execute "TagbarClose"
         execute "copen"
     endif
 endfunction
@@ -481,8 +481,8 @@ let g:ale_linters = {'c': ['gcc'],
                     \}
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
-noremap <silent> <C-k> <Plug>(ale_previous_wrap)
-noremap <silent> <C-j> <Plug>(ale_next_wrap)
+" noremap <silent> <C-k> <Plug>(ale_previous_wrap)
+" noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
 "有道翻译 配置
@@ -513,7 +513,7 @@ function! C_CompileOptions()
     map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     map <C-F9> :!gcc ./*.o -o Run && ./Run
-    imap <C-F9> <Esc> :!gcc ./*.o -o Run && ./Run
+    imap <C-F9> <Esc> :!time gcc ./*.o -o Run && ./Run
 endfunction
 
 function! CPP_CompileOptions()
@@ -523,7 +523,7 @@ function! CPP_CompileOptions()
     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     map <C-F9> :!g++ ./*.o -o Run && ./Run
-    imap <C-F9> <Esc> :!g++ ./*.o -o Run && ./Run
+    imap <C-F9> <Esc> :!time g++ ./*.o -o Run && ./Run
 endfunction
 
 function! SH_CompileOptions()
@@ -552,7 +552,7 @@ function! AsyncCompile()
         let g:quickfix_is_open = 1
         echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
     else
-        echohl WarningMsg | echo "当前文件并不能进行编译.. ╮(￣▽￣)╭"
+        echohl WarningMsg | echo "当前文件并不能编译.. ╮(￣▽￣)╭"
     endif
 endfunction
 
