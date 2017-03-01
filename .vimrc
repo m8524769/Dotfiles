@@ -4,7 +4,7 @@ source $VIMRUNTIME/mswin.vim
 behave mswin
 
 "配置<Leader>键
-let mapleader=','
+let mapleader=","
 let g:mapleader = ","
 
 "打开配置文件 <Leader>v
@@ -62,6 +62,9 @@ source$VIMRUNTIME/menu.vim
 set nobackup
 set noswapfile
 set noundofile
+"set backup
+"set backupext=.bak
+"set backupdir=/tmp/vim_backup/
 
 "禁用<F1>
 nmap <F1> <Esc>
@@ -75,9 +78,13 @@ nmap <right> <C-w>l
 
 "增强光标移动
 nmap H ^
+omap H ^
 nmap J }
+omap J }
 nmap K {
+omap K {
 nmap L $
+omap L $
 
 "拼接行
 nnoremap <C-j> J
@@ -241,6 +248,7 @@ Plug 'm8524769/Baidu.vim'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'justinmk/vim-sneak'
 Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'airblade/vim-gitgutter'
 call plug#end()
 filetype plugin indent on
 
@@ -248,8 +256,6 @@ filetype plugin indent on
 
 
 "EasyMotion(快速跳转) 配置
-let mapleader=','
-let g:mapleader = ","
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 1
 let g:EasyMotion_startofline = 0
@@ -407,15 +413,13 @@ let g:quickfix_is_open = 0
 let g:quickfix_return_to_window = winnr()
 function! QuickfixToggle()
     if g:quickfix_is_open
-        let g:quickfix_is_open = 0
-        execute "cclose"
         execute g:quickfix_return_to_window . "wincmd w"
-        " execute "TagbarOpen"
+        execute "cclose"
+        let g:quickfix_is_open = 0
     else
-        let g:quickfix_is_open = 1
         let g:quickfix_return_to_window = winnr()
-        " execute "TagbarClose"
         execute "copen"
+        let g:quickfix_is_open = 1
     endif
 endfunction
 
@@ -512,17 +516,17 @@ function! C_CompileOptions()
     let b:RunCommand = "!./Run"
     map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!gcc ./*.o -o Run && ./Run
+    map <C-F9> :!time gcc ./*.o -o Run && ./Run
     imap <C-F9> <Esc> :!time gcc ./*.o -o Run && ./Run
 endfunction
 
 function! CPP_CompileOptions()
     let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
     let b:LinkCommand = "!g++ ./*.o -o Run"
-    let b:RunCommand = "!./Run"
+    let b:RunCommand = "!time ./Run"
     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
     imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!g++ ./*.o -o Run && ./Run
+    map <C-F9> :!time g++ ./*.o -o Run && ./Run
     imap <C-F9> <Esc> :!time g++ ./*.o -o Run && ./Run
 endfunction
 
@@ -533,9 +537,9 @@ function! SH_CompileOptions()
 endfunction
 
 function! PYHTON_CompileOptions()
-    let b:RunCommand = "!python2.7 %"
-    map <C-F9> :!python2.7 %
-    imap <C-F9> <Esc> :!python2.7 %
+    let b:RunCommand = "!python %"
+    map <C-F9> :!python %
+    imap <C-F9> <Esc> :!python %
 endfunction
 
 
@@ -548,9 +552,10 @@ function! AsyncCompile()
         execute "w"
         execute b:CompileCommand
         execute "TagbarClose"
+        let g:quickfix_return_to_window = winnr()
         execute "copen"
         let g:quickfix_is_open = 1
-        echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
+        execute g:quickfix_return_to_window . "wincmd w"
     else
         echohl WarningMsg | echo "当前文件并不能编译.. ╮(￣▽￣)╭"
     endif
@@ -578,6 +583,11 @@ endfunction
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
+    if g:quickfix_is_open
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "cclose"
+        let g:quickfix_is_open = 0
+    endif
     if exists('b:LinkCommand')
         execute b:LinkCommand
     endif
@@ -594,7 +604,7 @@ endfunction
 map <F10> :call CleanObjFile()<CR>
 imap <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
-    execute "!rm ./*.o ./*.pyc ./Run"
+    execute "!rm ./*.o ./Run"
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
 
