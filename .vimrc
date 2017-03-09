@@ -79,10 +79,6 @@ nmap <right> <C-w>l
 "增强光标移动
 nmap H ^
 omap H ^
-nmap J }
-omap J }
-nmap K {
-omap K {
 nmap L $
 omap L $
 
@@ -113,7 +109,8 @@ set foldcolumn=0
 set foldlevelstart=99
 
 "与Linux共享剪切
-set clipboard+=unnamed
+set clipboard=unnamedplus
+" autocmd VimLeave * call system("xsel -ib", getreg('+'))
 
 "自动载入
 set autoread
@@ -128,7 +125,7 @@ iabbrev ui+ unsigned int <Esc>==$a
 iabbrev uc+ unsigned char <Esc>==$a
 iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
-iabbrev cout+ cout <<  << endl;<Esc>==7la
+iabbrev cout+ cout <<  << endl;<Esc>==f<2la
 iabbrev cin+ cin >> ;<Esc>==$i
 iabbrev for+ for (; ; )<CR>
             \{}<Left><CR>
@@ -168,8 +165,9 @@ iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \return 0;<Up><Up><Tab>
 iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <iostream><CR>
-                \// #include <vector><CR>
-                \// #include <string><CR><CR>
+                \#include <algorithm><CR>
+                \#include <vector><CR>
+                \#include <string><CR><CR>
                 \using namespace std;<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
@@ -246,12 +244,11 @@ Plug 'mhinz/vim-startify'
 Plug 'iamcco/dict.vim'
 Plug 'm8524769/Baidu.vim'
 Plug 'terryma/vim-smooth-scroll'
-Plug 'justinmk/vim-sneak'
+" Plug 'justinmk/vim-sneak'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'airblade/vim-gitgutter'
 call plug#end()
 filetype plugin indent on
-
 
 
 
@@ -273,19 +270,19 @@ map  N <Plug>(easymotion-prev)
 
 
 "Sneak 增强查找
-nmap f <Plug>Sneak_f
-nmap F <Plug>Sneak_F
-xmap f <Plug>Sneak_f
-xmap F <Plug>Sneak_F
-omap f <Plug>Sneak_f
-omap F <Plug>Sneak_F
+" nmap f <Plug>Sneak_f
+" nmap F <Plug>Sneak_F
+" xmap f <Plug>Sneak_f
+" xmap F <Plug>Sneak_F
+" omap f <Plug>Sneak_f
+" omap F <Plug>Sneak_F
 
 
 "平滑滚屏
-noremap <silent> <C-u> :call smooth_scroll#up(&scroll, 0, 2)<CR>
-noremap <silent> <C-d> :call smooth_scroll#down(&scroll, 0, 2)<CR>
-noremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-noremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
+noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
+" noremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
+" noremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 
 
 "multiple-cursors(多行编辑) 配置
