@@ -1,27 +1,23 @@
-"模仿Windows快捷键
-source $VIMRUNTIME/vimrc_example.vim
+﻿"模仿Windows快捷键
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
 "配置<Leader>
 let mapleader=','
-let g:mapleader = ","
+let g:mapleader = ','
 
 "打开配置文件
 let $MYGVIMRC='$VIM/_vimrc'
-nmap <leader>v :split $MYGVIMRC<CR>
+nmap <leader>v :vi $MYGVIMRC<CR>
 
 "界面配置
 syntax on
 set t_Co=256
 set laststatus=2
-colorscheme desert
-" colorscheme solarized
-" colorscheme molokai
-" colorscheme Monokai
-" colorscheme wombat
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h14
+colorscheme molokai2
+set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h16
 set number
+set relativenumber
 set nowrap
 set shortmess=atI
 set cursorcolumn
@@ -73,9 +69,9 @@ nmap <right> <c-w>l
 
 "增强光标移动
 nmap H ^
-nmap J }
-nmap K {
 nmap L $
+omap H ^
+omap L $
 
 "插入模式快捷键映射
 inoremap <C-h> <Left>
@@ -117,7 +113,7 @@ iabbrev uc+ unsigned char <Esc>==$a
 iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
 iabbrev cout+ cout <<  << endl;<Esc>==7la
-iabbrev cin+ cin <<  << endl;<Esc>==6la
+iabbrev cin+ cin >> ;<Esc>==$i
 iabbrev for+ for (; ; )<CR>
             \{}<Left><CR>
             \<Esc>2k3==wa
@@ -131,12 +127,17 @@ iabbrev switch+ switch ()<CR>
 iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
 iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
 iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
-iabbrev class+ class CLASSNAME{};<Left><Left><CR>
+iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
                 \~CLASSNAME() {}<CR>
                 \private:<CR>
-                \<Esc>5k6==w
+                \<Esc>5k6==
+                \:.,.+3s/CLASSNAME//g<Left><Left>
+iabbrev try+ try {}<Left><CR>
+                \<Right> catch () {}<Left><CR>
+                \<Right> catch () {}<Left><CR>
+                \<Esc>3k4==o
 iabbrev #+ #include <><Left>
 iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
@@ -144,13 +145,15 @@ iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
                 \#endif // <c-r>=expand("%")<CR>
                 \<ESC>2k
                 \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
-iabbrev cmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
-iabbrev cppmain+ /* <C-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
-                \#include <iostream><CR><CR>
+iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \#include <iostream><CR>
+                \#include <vector><CR>
+                \#include <string><CR><CR>
                 \using namespace std;<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
@@ -166,8 +169,6 @@ inoremap ( ()<Esc>i
 inoremap ) <c-r>=ClosePair(')')<CR>
 inoremap [ []<Esc>i
 inoremap ] <c-r>=ClosePair(']')<CR>
-" inoremap { {}<Esc>i
-" inoremap } <c-r>=ClosePair('}')<CR>
 inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
@@ -199,9 +200,7 @@ set nocompatible
 filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim
 call vundle#begin('$VIM/vimfiles/bundle/')
-
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
-
 Plugin 'git://github.com/scrooloose/nerdtree.git'
 Plugin 'git://github.com/scrooloose/nerdcommenter.git'
 Plugin 'git://github.com/universal-ctags/ctags.git'
@@ -217,7 +216,9 @@ Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
 Plugin 'git://github.com/Yggdroot/indentLine.git'
 Plugin 'git://github.com/w0rp/ale.git'
 Plugin 'git://github.com/mhinz/vim-startify.git'
-
+Plugin 'git://github.com/terryma/vim-smooth-scroll.git'
+Plugin 'git://github.com/octol/vim-cpp-enhanced-highlight.git'
+" Plugin 'git://github.com/m8524769/Baidu.vim.git'
 call vundle#end()
 filetype plugin indent on
 
@@ -225,8 +226,6 @@ filetype plugin indent on
 
 
 "EasyMotion 配置
-let mapleader=','
-let g:mapleader = ","
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 1
 let g:EasyMotion_startofline = 0
@@ -243,37 +242,21 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 
+"平滑滚屏
+noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
+
+
 "multiple-cursors 配置
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
-" let g:multi_cursor_next_key='<C-n>'
-" let g:multi_cursor_prev_key='<C-p>'
-" let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<CR>'
-
-
-"Grep 运算符(Operator)
-nnoremap <leader>g :set operatorfunc=GrepOperator<CR>g@
-vnoremap <leader>g :<c-u>call GrepOperator(visualmode())<CR>
-function! GrepOperator(type)
-    let saved_unnamed_register = @@
-    if a:type ==# 'v'
-        normal! `<v`>y
-    elseif a:type ==# 'char'
-        normal! `[v`]y
-    else
-        return
-    endif
-    silent execute "grep! -R " . shellescape(@@) . " ."
-    copen
-    let @@ = saved_unnamed_register
-endfunction
 
 
 "切换配色方案 <F4>
 let g:Color = 1
 let g:ColorList = { 0: "desert",
-                \   1: "molokai",
+                \   1: "molokai2",
                 \   2: "Monokai",
                 \   3: "wombat",
                 \   4: "lucius"
@@ -289,15 +272,24 @@ func! SwitchColorscheme()
 endfunc
 
 
+"C++ 语法高亮
+let g:cpp_class_scope_highlight = 1
+let g:cpp_experimental_simple_template_highlight = 1
+let g:cpp_concepts_highlight = 1
+
+
 "NERD_Tree 配置 <F5>
 map <F5> :NERDTreeToggle<CR>
 imap <F5> <Esc>:NERDTreeToggle<CR>
-" autocmd vimenter * NERDTree
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeChDirMode = 2
+let g:NERDTreeIgnore = ['\.o$', '\~$']
+let g:NERDTreeQuitOnOpen = 1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeAutoDeleteBuffer = 1
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
 "Nerd_Commenter(多行注释) 配置 <Leader>cc <Leader>c<Space>
@@ -305,8 +297,7 @@ let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-let g:NERDCommentEmptyLines = 1
+let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
 
 
@@ -319,32 +310,35 @@ set tags+=./tags
 "TagBar 配置 <F6>
 map <F6> :TagbarToggle<CR>
 imap <F6> <Esc> :TagbarToggle<CR>
-let g:tagbar_ctags_bin='ctags'
-let g:tagbar_width=30
-" autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
+let g:tagbar_ctags_bin = 'ctags'
+let g:tagbar_width = 30
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
+let g:tagbar_compact = 1
+let g:tagbar_autopreview = 1
+let g:tagbar_autoshowtag = 1
 
 
 "QuickFix (编译信息窗口) <F2>
-nnoremap <F2> :call QuickfixToggle()<CR>
+map <silent> <F2> :call QuickfixToggle()<CR>
+imap <silent> <F2> <Esc>:call QuickfixToggle()<CR>
 let g:quickfix_is_open = 0
+let g:quickfix_return_to_window = winnr()
 function! QuickfixToggle()
-    execute "cclose"
     if g:quickfix_is_open
-        let g:quickfix_is_open = 0
-        execute "cclose"
         execute g:quickfix_return_to_window . "wincmd w"
-        execute "TagbarOpen"
+        execute "cclose"
+        let g:quickfix_is_open = 0
     else
-        let g:quickfix_is_open = 1
         let g:quickfix_return_to_window = winnr()
-        execute "TagbarClose"
         execute "copen"
+        let g:quickfix_is_open = 1
     endif
 endfunction
 
 
 "AirLine配置 <Ctrl + Tab>
-nmap <C-tab> :bn<CR>
+nmap <silent> <C-tab> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
 let g:airline#extensions#tabline#enabled = 1
@@ -386,108 +380,76 @@ let g:ale_linters = {'c': ['gcc'],
                     \'c++': ['gcc'],
                     \'Vim': ['vint']
                     \}
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"编译 & 连接选项 <C-[F7|F9]>为手动执行命令
-autocmd FileType c call C_CompileOptions()
+"编译 & 连接选项
 autocmd FileType cpp call CPP_CompileOptions()
-function! C_CompileOptions()
-<<<<<<< HEAD
-    let b:CompileCommand = "AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
-    let b:LinkCommand = "!gcc *.o -o Run.exe"
-    map <C-F7> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    map <C-F9> :!gcc *.o -o Run.exe && Run.exe
-    imap <C-F9> <Esc> :!gcc *.o -o Run && Run.exe
-endfunction
 function! CPP_CompileOptions()
-    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
-    let b:LinkCommand = "!g++ *.o -o Run.exe"
-    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    map <C-F9> :!g++ *.o -o Run.exe && Run.exe
-    imap <C-F9> <Esc> :!g++ *.o -o Run.exe && Run.exe
+    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
+    let b:RunCommand = "!g++ *.o -o Run.exe && Run.exe"
 endfunction
-let b:RunCommand = "!Run.exe"
-=======
-    let g:CompileCommand = "AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!gcc %<.o -o %<.exe"
-    map <C-F7> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    map <C-F9> :!gcc %<.o -o %< && %<.exe
-    imap <C-F9> <Esc> :!gcc %<.o -o %< && %<.exe
-endfunction
-function! CPP_CompileOptions()
-    let g:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %"
-    let g:LinkCommand = "!g++ %<.o -o %<.exe"
-    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -fexec-charset=gbk -lpthread -g -O0 -c %
-    map <C-F9> :!g++ %<.o -o %< && %<.exe
-    imap <C-F9> <Esc> :!g++ %<.o -o %< && %<.exe
-endfunction
-let g:RunCommand = "!%<.exe"
->>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
 
 
-"AsyncRun(异步编译) 配置 <F7> <C-F7>
+"AsyncRun(异步编译) 配置 <F7>
 "保存并编译生成目标文件
-map <F7> :call AsyncCompile()<CR>
-imap <F7> <Esc> :call AsyncCompile()<CR>
+map <silent> <F7> :call AsyncCompile()<CR>
+imap <silent> <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
-	execute "w"
-<<<<<<< HEAD
-    execute b:CompileCommand
-    execute "TagbarClose"
-    execute "copen"
-    let g:quickfix_is_open = 1
-    let g:quickfix_return_to_window = winnr()
-=======
-    execute g:CompileCommand
-    execute "TagbarClose"
-    execute "copen"
->>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
-    echohl WarningMsg | echo "AsyncCompile Done! (๑•̀ㅂ•́)و✧"
+    if exists('b:CompileCommand')
+        execute "w"
+        execute b:CompileCommand
+        execute "TagbarClose"
+        let g:quickfix_return_to_window = winnr()
+        execute "copen"
+        let g:quickfix_is_open = 1
+        execute g:quickfix_return_to_window . "wincmd w"
+    else
+        echohl WarningMsg | echo "当前文件并不能编译.. ╮(￣▽￣)╭"
+    endif
 endfunction
 
 
-"Debug 配置 <F8>
-"保存编译并调试
-map <F8> :call Debug()<CR>
-imap <F8> <Esc> :call Debug()<CR>
+"Debug <F8> 保存编译并调试
+map <silent> <F8> :call Debug()<CR>
+imap <silent> <F8> <Esc> :call Debug()<CR>
 function! Debug()
-    execute "w"
-<<<<<<< HEAD
-    execute b:CompileCommand
-    execute b:LinkCommand
-    execute "!gdb Run.exe"
-=======
-    execute g:CompileCommand
-    execute g:LinkCommand
-    execute "!gdb %<.exe"
->>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
-    echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+    if exists('b:CompileCommand')
+        execute "w"
+        execute b:CompileCommand
+        execute "!gdb ./%<.o"
+        echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
+    else
+        echohl WarningMsg | echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
+    endif
 endfunction
 
 
-"Link & Run 配置 <F9> <C-F9>
-"链接生成可执行文件并运行
+"Link & Run 配置 <F9>
+"链接当前目录的所有目标文件, 生成可执行文件并运行
 map <F9> :call Link_Run()<CR>
 imap <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
-<<<<<<< HEAD
-    execute b:LinkCommand
-    execute b:RunCommand
-    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
-endfunction
-=======
-    execute g:LinkCommand
-    execute g:RunCommand
-    echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+    if g:quickfix_is_open
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "cclose"
+        let g:quickfix_is_open = 0
+    endif
+    if exists('b:RunCommand')
+        execute b:RunCommand
+        echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+    else
+        echohl WarningMsg | echo "Excuse me??"
+    endif
 endfunction
 
->>>>>>> 51b513a39450991ec75ce8828b3f8026c0709c63
+
+"清除当前目录的所有目标文件及可执行文件 <F10>
+map <F10> :call CleanObjFile()<CR>
+imap <F10> <Esc> :call CleanObjFile()<CR>
+function! CleanObjFile()
+    execute "!del /q *.o Run.exe"
+    echohl WarningMsg | echo "Cleaning Successfully!"
+endfunction
 
 
 set diffexpr=MyDiff()

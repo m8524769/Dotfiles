@@ -1,5 +1,7 @@
-"模拟Windows快捷键并开启映射
 source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/gvimrc_example.vim
+
+"模拟Windows快捷键并开启映射
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
@@ -233,7 +235,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/a.vim'
+" Plug 'vim-scripts/a.vim'
 Plug 'lambdalisue/vim-fullscreen'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'pbrisbin/vim-mkdir'
@@ -244,7 +246,6 @@ Plug 'mhinz/vim-startify'
 Plug 'iamcco/dict.vim'
 Plug 'm8524769/Baidu.vim'
 Plug 'terryma/vim-smooth-scroll'
-" Plug 'justinmk/vim-sneak'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'airblade/vim-gitgutter'
 call plug#end()
@@ -252,7 +253,7 @@ filetype plugin indent on
 
 
 
-"EasyMotion(快速跳转) 配置
+"EasyMotion (快速跳转)
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 1
 let g:EasyMotion_startofline = 0
@@ -269,28 +270,14 @@ map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
 
-"Sneak 增强查找
-" nmap f <Plug>Sneak_f
-" nmap F <Plug>Sneak_F
-" xmap f <Plug>Sneak_f
-" xmap F <Plug>Sneak_F
-" omap f <Plug>Sneak_f
-" omap F <Plug>Sneak_F
-
-
 "平滑滚屏
-noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
 noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
-" noremap <silent> <C-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
-" noremap <silent> <C-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
+noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
 
 
-"multiple-cursors(多行编辑) 配置
+"multiple-cursors(多行编辑) <C-(n|p|x)>
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
-" let g:multi_cursor_next_key='<C-n>'
-" let g:multi_cursor_prev_key='<C-p>'
-" let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<CR>'
 
 
@@ -353,54 +340,49 @@ let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 
 
-"显示折叠状态条(fold column) <Leader>z
-nmap <silent> <Leader>z :call FoldColumnToggle()<CR>
-function! FoldColumnToggle()
-    if &foldcolumn
-        setlocal foldcolumn=0
-    else
-        setlocal foldcolumn=1
-    endif
-endfunction
-
-
-"Unite 配置
+"Unite
 nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 
 
-"NERD_Tree(目录树) 配置 <F5>
+"NERD_Tree (目录树) <F5>
 map <silent> <F5> :NERDTreeToggle<CR>
 imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
-" autocmd vimenter * NERDTree
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let g:NERDTreeChDirMode = 2
+let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$']
+let g:NERDTreeQuitOnOpen = 1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeAutoDeleteBuffer = 1
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
-"Nerd_Commenter(多行注释) 配置 <Leader>cc <Leader>c<Space>
+"Nerd_Commenter (多行注释) <Leader>cc <Leader>c<Space>
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
-let g:NERDCommentEmptyLines = 1
+let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
 
 
-"Ctags(生成tags代码索引) 配置
+"Ctags (tags代码索引)
 set autochdir
 set tags+=$VIM/vimfiles/systags
 set tags+=./tags
 
 
-"TagBar(函数列表) 配置 <F6>
+"TagBar (函数列表) <F6>
 map <silent> <F6> :TagbarToggle<CR>
 imap <silent> <F6> <Esc> :TagbarToggle<CR>
-let g:tagbar_ctags_bin='ctags'
-let g:tagbar_width=30
-" autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
+let g:tagbar_ctags_bin = 'ctags'
+let g:tagbar_width = 30
+let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
+let g:tagbar_compact = 1
+let g:tagbar_autopreview = 1
+let g:tagbar_autoshowtag = 1
 
 
 "QuickFix (编译信息窗口) <F2>
@@ -421,8 +403,9 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine(状态栏及缓冲区标签) 配置 <C-Tab> <Leader>[1-9]
-noremap <silent> <C-tab> :bn<CR>
+"AirLine (状态栏及缓冲区标签) <C-Tab> <Leader>[1-9]
+map <silent> <C-tab> :bn<CR>
+imap <silent> <C-tab> <Esc> :bn<CR>
 let g:airline_theme="luna" 
 let g:airline_powerline_fonts = 1   
 let g:airline#extensions#tabline#enabled = 1
@@ -442,32 +425,32 @@ map <Leader>8 :b 8<CR>
 map <Leader>9 :b 9<CR>
 
 
-"IndentLine(缩进对齐线) 配置
+"IndentLine(缩进对齐线)
 let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
 
 
-"更改Fullscreen(全屏)映射 <F11>
+"更改Fullscreen映射 <F11>
 if get(g:, 'fullscreen#enable_default_keymap', 1) == 1
   nmap <silent> <F11> <Plug>(fullscreen-toggle)
   imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
 endif
 
 
-"Startify(启动界面) 配置
+"Startify (启动界面)
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
 autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 
 
-"YouCompleteMe(自动代码补全) 配置
+"YouCompleteMe (自动代码补全)
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 
 
-"ALE(代码异步检测) 配置
+"ALE (代码异步检测)
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '汪'
 let g:ale_sign_warning = '喵'
@@ -486,19 +469,16 @@ let g:ale_python_flake8_args = '-m flake8'
 " noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
-"有道翻译 配置
+"有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
 let g:api_key = "1932136763"
 let g:keyfrom = "aioiyuuko"
-" <Leader>d 翻译光标下的文本，并在命令行回显
 nmap <silent> <Leader>d <Plug>DictSearch
 vmap <silent> <Leader>d <Plug>DictVSearch
-" <Leader>t 翻译光标下的文本，并且在Dict新窗口显示
 nmap <silent> <Leader>t <Plug>DictWSearch
 vmap <silent> <Leader>t <Plug>DictWVSearch
-" <Leader>r 翻译光标下的单词，并替换为翻译的结果
 nmap <silent> <Leader>r <Plug>DictRSearch
 vmap <silent> <Leader>r <Plug>DictRVSearch
-" Dict窗口中 q 键关闭Dict窗口
+" <q> 关闭Dict窗口
 
 
 "编译 & 连接选项 <C-(F7|F9)>为手动执行命令
@@ -534,16 +514,16 @@ function! SH_CompileOptions()
 endfunction
 
 function! PYHTON_CompileOptions()
-    let b:RunCommand = "!python %"
-    map <C-F9> :!python %
-    imap <C-F9> <Esc> :!python %
+    let b:RunCommand = "!python3 %"
+    map <C-F9> :!python3 %
+    imap <C-F9> <Esc> :!python3 %
 endfunction
 
 
-"AsyncRun(异步编译) 配置 <F7> <C-F7>
+"AsyncRun(异步编译) <F7> <C-F7>
 "保存并编译生成目标文件
-map <F7> :call AsyncCompile()<CR>
-imap <F7> <Esc> :call AsyncCompile()<CR>
+map <silent> <F7> :call AsyncCompile()<CR>
+imap <silent> <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
     if exists('b:CompileCommand')
         execute "w"
@@ -559,10 +539,9 @@ function! AsyncCompile()
 endfunction
 
 
-"Debug 配置 <F8>
-"保存编译并调试
-map <F8> :call Debug()<CR>
-imap <F8> <Esc> :call Debug()<CR>
+"Debug <F8> 保存编译并调试
+map <silent> <F8> :call Debug()<CR>
+imap <silent> <F8> <Esc> :call Debug()<CR>
 function! Debug()
     if exists('b:CompileCommand')
         execute "w"
@@ -575,10 +554,10 @@ function! Debug()
 endfunction
 
 
-"Link & Run 配置 <F9> <C-F9>
+"Link & Run <F9> <C-F9>
 "链接当前目录的所有目标文件, 生成可执行文件并运行
-map <F9> :call Link_Run()<CR>
-imap <F9> <Esc> :call Link_Run()<CR>
+map <silent> <F9> :call Link_Run()<CR>
+imap <silent> <F9> <Esc> :call Link_Run()<CR>
 function! Link_Run()
     if g:quickfix_is_open
         execute g:quickfix_return_to_window . "wincmd w"
@@ -598,10 +577,14 @@ endfunction
 
 
 "清除当前目录的所有目标文件及可执行文件 <F10>
-map <F10> :call CleanObjFile()<CR>
-imap <F10> <Esc> :call CleanObjFile()<CR>
+map <silent> <F10> :call CleanObjFile()<CR>
+imap <silent> <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
-    execute "!rm ./*.o ./Run"
+    if(has("win32") || has("win64"))
+        execute "!del /q *.o Run.exe"
+    else
+        execute "!rm ./*.o ./Run"
+    endif
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
 
