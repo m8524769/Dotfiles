@@ -119,7 +119,7 @@ set autoread
 set history=200
 
 "默认操作路径
-cd /home/yk/Projects
+cd ~/Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
@@ -179,8 +179,8 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
                 \#!/usr/bin/env python<CR><CR>
-                \# import py_compile<CR>
-                \# py_compile.compile('<c-r>=expand("%")<CR>')<CR><CR>
+                " \# import py_compile<CR>
+                " \# py_compile.compile('<c-r>=expand("%")<CR>')<CR><CR>
 
 "自动插入代码模板及头文件保护符
 autocmd BufNewFile *.c   execute "normal icmain+\<Space>"
@@ -397,7 +397,7 @@ function! QuickfixToggle()
         let g:quickfix_is_open = 0
     else
         let g:quickfix_return_to_window = winnr()
-        execute "copen"
+        execute "copen 9"
         let g:quickfix_is_open = 1
     endif
 endfunction
@@ -440,7 +440,20 @@ endif
 "Startify (启动界面)
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
+let g:startify_bookmarks = [ '~/Projects/My_Code/.vimrc', '~/script/Clean.sh' ]
 autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+let g:startify_custom_header =
+            \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
+let g:startify_list_order = [
+            \ ['   Oh! My Holy Working Directory!'],
+            \ 'dir',
+            \ ['   Recently Used Files'],
+            \ 'files',
+            \ ['   My Bookmarks:'],
+            \ 'bookmarks',
+            \ ]
+let g:startify_custom_footer =
+            \ ['', "   Happy Viming!!"]
 
 
 "YouCompleteMe (自动代码补全)
@@ -454,19 +467,17 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '汪'
 let g:ale_sign_warning = '喵'
-let g:ale_echo_msg_error_str = '汪'
-let g:ale_echo_msg_warning_str = '喵'
+let g:ale_echo_msg_error_str = '汪汪汪！'
+let g:ale_echo_msg_warning_str = '喵喵喵？'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_linters = {'c': ['gcc'],
-                    \'c++': ['gcc'],
+let g:ale_linters = {'c': ['clang'],
+                    \'c++': ['clang'],
                     \'Bash': ['shell'],
                     \'Python': ['flake8'],
                     \'Vim': ['vint']
                     \}
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
-" noremap <silent> <C-k> <Plug>(ale_previous_wrap)
-" noremap <silent> <C-j> <Plug>(ale_next_wrap)
 
 
 "有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
@@ -481,30 +492,53 @@ vmap <silent> <Leader>r <Plug>DictRVSearch
 " <q> 关闭Dict窗口
 
 
+"进入C++项目工作空间, 若不存在则创建
+"需要 pbrisbin/vim-mkdir 插件支持
+if !exists(':Project')
+    command! -nargs=1 Project call EnterProject(<q-args>)
+endif
+function! EnterProject(name) abort
+    silent execute "vi ~/Projects/" . a:name . "/main.cpp"
+    silent execute "w"
+    silent execute "cd ~/Projects/" . a:name
+    echo "已进入该项目, 位于 ~/Projects/" . a:name . "\tEnjoy Coding!"
+endfunction
+
+
 "编译 & 连接选项 <C-(F7|F9)>为手动执行命令
 autocmd FileType c call C_CompileOptions()
 autocmd FileType cpp,cxx call CPP_CompileOptions()
 autocmd FileType sh call SH_CompileOptions()
 autocmd FileType python call PYHTON_CompileOptions()
 
-function! C_CompileOptions()
-    let b:CompileCommand = "AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %"
-    let b:LinkCommand = "!gcc ./*.o -o Run"
-    let b:RunCommand = "!./Run"
-    map <C-F7> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun gcc -std=c11 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!time gcc ./*.o -o Run && ./Run
-    imap <C-F9> <Esc> :!time gcc ./*.o -o Run && ./Run
+function! C_CompileOptions() " Use LLVM/Clang Compiler
+    let b:CompileCommand = "AsyncRun clang -std=c14 -Wall -O1 -c %"
+    let b:LinkCommand    = "!clang ./*.o -o Run"
+    let b:RunCommand     = "!time ./Run"
+    map <C-F7> :AsyncRun clang -std=c14 -Wall -g -O1 -c %
+    imap <C-F7> <Esc> <C-F7>
+    map <C-F9> :!clang ./*.o -o Run && time ./Run
+    imap <C-F9> <Esc> <C-F9>
 endfunction
 
-function! CPP_CompileOptions()
-    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
-    let b:LinkCommand = "!g++ ./*.o -o Run"
-    let b:RunCommand = "!time ./Run"
-    map <C-F7> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
-    imap <C-F7> <Esc> :AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %
-    map <C-F9> :!time g++ ./*.o -o Run && ./Run
-    imap <C-F9> <Esc> :!time g++ ./*.o -o Run && ./Run
+" function! CPP_CompileOptions() " Use GCC Compiler
+"     let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -O1 -c %"
+"     let b:LinkCommand    = "!g++ ./*.o -o Run"
+"     let b:RunCommand     = "!time ./Run"
+"     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -g -O1 -c %
+"     imap <C-F7> <Esc> <C-F7>
+"     map <C-F9> :!g++ ./*.o -o Run && time ./Run
+"     imap <C-F9> <Esc> <C-F9>
+" endfunction
+
+function! CPP_CompileOptions() " Use LLVM/Clang Compiler
+    let b:CompileCommand = "AsyncRun clang++ -std=c++14 -stdlib=libc++ -Wall -Weffc++ -O1 -c %"
+    let b:LinkCommand    = "!clang++ -lc++ -lc++abi ./*.o -o Run"
+    let b:RunCommand     = "!./Run"
+    map <C-F7> :AsyncRun clang++ -std=c++14 -stdlib=libc++ -Weverything -g -O1 -c %
+    imap <C-F7> <Esc> <C-F7>
+    map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && time ./Run
+    imap <C-F9> <Esc> <C-F9>
 endfunction
 
 function! SH_CompileOptions()
@@ -530,11 +564,11 @@ function! AsyncCompile()
         execute b:CompileCommand
         execute "TagbarClose"
         let g:quickfix_return_to_window = winnr()
-        execute "copen"
+        execute "copen 9"
         let g:quickfix_is_open = 1
         execute g:quickfix_return_to_window . "wincmd w"
     else
-        echohl WarningMsg | echo "当前文件并不能编译.. ╮(￣▽￣)╭"
+        echo "当前文件并不能编译.. ╮(￣▽￣)╭"
     endif
 endfunction
 
@@ -549,7 +583,7 @@ function! Debug()
         execute "!gdb ./%<.o"
         echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
     else
-        echohl WarningMsg | echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
+        echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
     endif
 endfunction
 
@@ -571,7 +605,7 @@ function! Link_Run()
         execute b:RunCommand
         echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
     else
-        echohl WarningMsg | echo "Excuse me??"
+        echo "不是可执行文件.."
     endif
 endfunction
 
@@ -587,6 +621,31 @@ function! CleanObjFile()
     endif
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
+
+
+" nmap <silent> <F4> :call ClangCheck()<CR><CR>
+" function! ClangCheckImpl(cmd)
+"     if &autowrite | wall | endif
+"     echo "Running " . a:cmd . " ..."
+"     let l:output = system(a:cmd)
+"     cexpr l:output
+"     cwindow
+"     let w:quickfix_title = a:cmd
+"     if v:shell_error != 0
+"         cc
+"     endif
+"     let g:clang_check_last_cmd = a:cmd
+" endfunction
+" function! ClangCheck()
+"     let l:filename = expand('%')
+"     if l:filename =~ '\.\(cpp\|cxx\|cc\|c\)$'
+"         call ClangCheckImpl("clang-check " . l:filename)
+"     elseif exists("g:clang_check_last_cmd")
+"         call ClangCheckImpl(g:clang_check_last_cmd)
+"     else
+"         echo "Can't detect file's compilation arguments and no previous clang-check invocation!"
+"     endif
+" endfunction
 
 runtime! debian.vim
 
