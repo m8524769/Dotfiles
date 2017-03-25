@@ -1,20 +1,18 @@
+runtime! debian.vim                         " 载入默认配置
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/gvimrc_example.vim
-
-"模拟Windows快捷键并开启映射
-source $VIMRUNTIME/mswin.vim
+source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
+source $VIMRUNTIME/menu.vim
+source $VIMRUNTIME/mswin.vim                " 模仿Windows快捷键
 behave mswin
 
-"配置<Leader>键
-let mapleader=","
+let mapleader=","                           " 默认<Leader>键
 let g:mapleader = ","
 
-"打开配置文件 <Leader>v
-let $MYVIMRC='~/.vimrc'
+let $MYVIMRC='~/Projects/My_Code/.vimrc'    " <Leader>v 打开.vimrc
 nmap <leader>v :vi $MYVIMRC<CR>
 
 "界面配置
-syntax on
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
@@ -24,13 +22,11 @@ colorscheme molokai2
 if (!has("gui_running"))
     colorscheme lucius
 endif
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ Regular\ 14
+set guifont=DejaVuSansMonoforPowerline\ Nerd\ Font\ 14
 set guifontwide=Microsoft\ YaHei\ Regular\ 14
-" set guifontwide=FZMiaoWuS-GB\ Bold\ 14
 set number
 set relativenumber
 set nowrap
-set shortmess=atI
 set cursorcolumn
 set cursorline
 set cmdheight=1
@@ -57,8 +53,6 @@ set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
-source$VIMRUNTIME/delmenu.vim
-source$VIMRUNTIME/menu.vim
 
 "取消备份及交换文件
 set nobackup
@@ -70,7 +64,6 @@ set noundofile
 
 "禁用<F1>
 nmap <F1> <Esc>
-" set winaltkeys=no
 
 "方向键切换窗口
 nmap <Left> <C-w>h
@@ -112,7 +105,6 @@ set foldlevelstart=99
 
 "与Linux共享剪切
 set clipboard=unnamedplus
-" autocmd VimLeave * call system("xsel -ib", getreg('+'))
 
 "自动载入
 set autoread
@@ -167,10 +159,12 @@ iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \return 0;<Up><Up><Tab>
 iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <iostream><CR>
+                \#include <fstream><CR>
                 \#include <algorithm><CR>
-                \#include <vector><CR>
-                \#include <string><CR><CR>
-                \using namespace std;<CR><CR>
+                \#include <vector><CR><CR>
+                \using namespace std;<CR>
+                \std::ifstream tcin("./inTest.txt");<CR>
+                \std::ofstream tcout("./outTest.txt");<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
@@ -179,8 +173,6 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
                 \#!/usr/bin/env python<CR><CR>
-                " \# import py_compile<CR>
-                " \# py_compile.compile('<c-r>=expand("%")<CR>')<CR><CR>
 
 "自动插入代码模板及头文件保护符
 autocmd BufNewFile *.c   execute "normal icmain+\<Space>"
@@ -221,8 +213,6 @@ endfunction
 
 
 "Vim-Plug配置及Vim插件列表
-filetype plugin on
-set nocompatible
 filetype off
 call plug#begin('$VIM/vimfiles/bundle')
 Plug 'junegunn/vim-plug'
@@ -248,6 +238,8 @@ Plug 'm8524769/Baidu.vim'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'airblade/vim-gitgutter'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 filetype plugin indent on
 
@@ -281,24 +273,6 @@ let g:multi_cursor_use_default_mapping=1
 let g:multi_cursor_quit_key='<CR>'
 
 
-"Grep 运算符(Operator)
-nnoremap <leader>g :set operatorfunc=GrepOperator<CR>g@
-vnoremap <leader>g :<c-u>call GrepOperator(visualmode())<CR>
-function! GrepOperator(type)
-    let saved_unnamed_register = @@
-    if a:type ==# 'v'
-        normal! `<v`>y
-    elseif a:type ==# 'char'
-        normal! `[v`]y
-    else
-        return
-    endif
-    silent execute "grep! -R " . shellescape(@@) . " ."
-    copen
-    let @@ = saved_unnamed_register
-endfunction
-
-
 "垂直分屏 <F3>
 map <silent> <F3> :call VerticalSplit()<CR>
 imap <silent> <F3> <Esc> :call VerticalSplit()<CR>
@@ -314,30 +288,17 @@ function! VerticalSplit()
 endfunction
 
 
-"切换配色方案 <F4>
-map <silent> <F4> :call ColorschemeToggle() <CR>
-imap <silent> <F4> <Esc> :call ColorschemeToggle() <CR>
-let g:ColorNumber = 1
-let g:ColorList = { 0: "molokai2",
-                \   1: "desert",
-                \   2: "monokai",
-                \   3: "wombat",
-                \   4: "lucius"
-                \   }
-function! ColorschemeToggle()
-    execute "colorscheme " g:ColorList[g:ColorNumber]
-    let g:ColorNumber+=1
-    if g:ColorNumber == 5
-        let g:ColorNumber = 0
-    endif
-    echo g:ColorList[g:ColorNumber]
-endfunction
-
-
 "C++ 语法高亮
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
+
+
+"Devicons
+if (!has("gui_running"))
+    let g:webdevicons_enable = 0
+endif
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
 
 
 "Unite
@@ -348,13 +309,13 @@ nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 map <silent> <F5> :NERDTreeToggle<CR>
 imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$']
+let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
+" let g:NERDTreeDirArrowExpandable = '▸'
+" let g:NERDTreeDirArrowCollapsible = '▾'
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
@@ -397,7 +358,7 @@ function! QuickfixToggle()
         let g:quickfix_is_open = 0
     else
         let g:quickfix_return_to_window = winnr()
-        execute "copen 9"
+        execute "copen 8"
         let g:quickfix_is_open = 1
     endif
 endfunction
@@ -411,6 +372,12 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:Powerline_symbols="fancy"
+if (has("gui_running"))
+    let g:airline_left_sep = "\ue0b8"
+    let g:airline_left_alt_sep = "\ue0b9"
+    let g:airline_right_sep = "\ue0ba"
+    let g:airline_right_alt_sep = "\ue0bb"
+endif
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -431,17 +398,19 @@ let g:indentLine_char = '¦'
 
 
 "更改Fullscreen映射 <F11>
-if get(g:, 'fullscreen#enable_default_keymap', 1) == 1
-  nmap <silent> <F11> <Plug>(fullscreen-toggle)
-  imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
-endif
+nmap <silent> <F11> <Plug>(fullscreen-toggle)
+imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
 
 
 "Startify (启动界面)
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
-let g:startify_bookmarks = [ '~/Projects/My_Code/.vimrc', '~/script/Clean.sh' ]
-autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+let g:startify_bookmarks = [
+            \ '~/.vimrc',
+            \ '~/.zshrc',
+            \ '~/.conkyrc',
+            \ '~/script/Clean.sh',
+            \ '~/script/SORA.py']
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
 let g:startify_list_order = [
@@ -454,6 +423,7 @@ let g:startify_list_order = [
             \ ]
 let g:startify_custom_footer =
             \ ['', "   Happy Viming!!"]
+autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 
 
 "YouCompleteMe (自动代码补全)
@@ -478,6 +448,9 @@ let g:ale_linters = {'c': ['clang'],
                     \}
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
+if !hlexists('ALEErrorSign')
+    highlight link ALEErrorSign todo
+endif
 
 
 "有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
@@ -489,10 +462,10 @@ nmap <silent> <Leader>t <Plug>DictWSearch
 vmap <silent> <Leader>t <Plug>DictWVSearch
 nmap <silent> <Leader>r <Plug>DictRSearch
 vmap <silent> <Leader>r <Plug>DictRVSearch
-" <q> 关闭Dict窗口
+" 'q' 关闭Dict窗口
 
 
-"进入C++项目工作空间, 若不存在则创建
+":Project命令 进入C++项目工作空间, 若不存在则创建
 "需要 pbrisbin/vim-mkdir 插件支持
 if !exists(':Project')
     command! -nargs=1 Project call EnterProject(<q-args>)
@@ -501,7 +474,21 @@ function! EnterProject(name) abort
     silent execute "vi ~/Projects/" . a:name . "/main.cpp"
     silent execute "w"
     silent execute "cd ~/Projects/" . a:name
-    echo "已进入该项目, 位于 ~/Projects/" . a:name . "\tEnjoy Coding!"
+    echo "已进入该项目, 位于 ~/Projects/" . a:name . "\Happy Coding!"
+endfunction
+
+
+":Test命令 在当前目录下创建输入文件
+if !exists(':Test')
+    command! -nargs=0 Test silent execute "vi inTest.txt"
+endif
+if !exists(':Notest')
+    command! -nargs=0 Notest call CleanTest()
+endif
+function! CleanTest()
+    silent g/inTest\|outTest/d
+    silent! %s/tcin >>/cin >>/g
+    silent! %s/tcout <</cout <</g
 endfunction
 
 
@@ -564,7 +551,7 @@ function! AsyncCompile()
         execute b:CompileCommand
         execute "TagbarClose"
         let g:quickfix_return_to_window = winnr()
-        execute "copen 9"
+        execute "copen 8"
         let g:quickfix_is_open = 1
         execute g:quickfix_return_to_window . "wincmd w"
     else
@@ -621,33 +608,6 @@ function! CleanObjFile()
     endif
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
-
-
-" nmap <silent> <F4> :call ClangCheck()<CR><CR>
-" function! ClangCheckImpl(cmd)
-"     if &autowrite | wall | endif
-"     echo "Running " . a:cmd . " ..."
-"     let l:output = system(a:cmd)
-"     cexpr l:output
-"     cwindow
-"     let w:quickfix_title = a:cmd
-"     if v:shell_error != 0
-"         cc
-"     endif
-"     let g:clang_check_last_cmd = a:cmd
-" endfunction
-" function! ClangCheck()
-"     let l:filename = expand('%')
-"     if l:filename =~ '\.\(cpp\|cxx\|cc\|c\)$'
-"         call ClangCheckImpl("clang-check " . l:filename)
-"     elseif exists("g:clang_check_last_cmd")
-"         call ClangCheckImpl(g:clang_check_last_cmd)
-"     else
-"         echo "Can't detect file's compilation arguments and no previous clang-check invocation!"
-"     endif
-" endfunction
-
-runtime! debian.vim
 
 if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
