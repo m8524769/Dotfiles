@@ -137,10 +137,11 @@ iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
 iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
-                \~CLASSNAME() {}<CR>
+                \CLASSNAME(CLASSNAME const &) {}<CR>
+                \virtual ~CLASSNAME() {}<CR>
                 \private:<CR>
-                \<Esc>5k6==
-                \:.,.+3s/CLASSNAME//g<Left><Left>
+                \<Esc>6k7==
+                \:.,.+4s/CLASSNAME//g<Left><Left>
 iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
@@ -163,8 +164,7 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <algorithm><CR>
                 \#include <vector><CR><CR>
                 \using namespace std;<CR>
-                \std::ifstream tcin("./inTest.txt");<CR>
-                \std::ofstream tcout("./outTest.txt");<CR><CR>
+                \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
@@ -172,7 +172,7 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
 "常用脚本缩写词
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
-                \#!/usr/bin/env python<CR><CR>
+                \#!/usr/bin/env python3<CR><CR>
 
 "自动插入代码模板及头文件保护符
 autocmd BufNewFile *.c   execute "normal icmain+\<Space>"
@@ -225,7 +225,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'vim-scripts/a.vim'
+Plug 'vim-scripts/a.vim'
 Plug 'lambdalisue/vim-fullscreen'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'pbrisbin/vim-mkdir'
@@ -358,7 +358,7 @@ function! QuickfixToggle()
         let g:quickfix_is_open = 0
     else
         let g:quickfix_return_to_window = winnr()
-        execute "copen 8"
+        execute "copen 8 | setl wrap"
         let g:quickfix_is_open = 1
     endif
 endfunction
@@ -479,8 +479,10 @@ endfunction
 
 
 ":Test命令 在当前目录下创建输入文件
+map <F4> :Test<CR>
+imap <F4> <Esc> :Test<CR>
 if !exists(':Test')
-    command! -nargs=0 Test silent execute "vi inTest.txt"
+    command! -nargs=0 Test 20vsplit inTest.txt
 endif
 if !exists(':Notest')
     command! -nargs=0 Notest call CleanTest()
@@ -489,6 +491,7 @@ function! CleanTest()
     silent g/inTest\|outTest/d
     silent! %s/tcin >>/cin >>/g
     silent! %s/tcout <</cout <</g
+    silent execute "w"
 endfunction
 
 
@@ -519,10 +522,10 @@ endfunction
 " endfunction
 
 function! CPP_CompileOptions() " Use LLVM/Clang Compiler
-    let b:CompileCommand = "AsyncRun clang++ -std=c++14 -stdlib=libc++ -Wall -Weffc++ -O1 -c %"
+    let b:CompileCommand = "AsyncRun clang++ -std=c++1z -stdlib=libc++ -Wall -Weffc++ -O1 -c %"
     let b:LinkCommand    = "!clang++ -lc++ -lc++abi ./*.o -o Run"
     let b:RunCommand     = "!./Run"
-    map <C-F7> :AsyncRun clang++ -std=c++14 -stdlib=libc++ -Weverything -g -O1 -c %
+    map <C-F7> :AsyncRun clang++ -std=c++1z -stdlib=libc++ -Weverything -g -O1 -c %
     imap <C-F7> <Esc> <C-F7>
     map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && time ./Run
     imap <C-F9> <Esc> <C-F9>
@@ -551,7 +554,8 @@ function! AsyncCompile()
         execute b:CompileCommand
         execute "TagbarClose"
         let g:quickfix_return_to_window = winnr()
-        execute "copen 8"
+        execute "copen 8 | setl wrap"
+        " setl wrap
         let g:quickfix_is_open = 1
         execute g:quickfix_return_to_window . "wincmd w"
     else
