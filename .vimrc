@@ -115,8 +115,6 @@ cd ~/Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
-iabbrev ui+ unsigned int <Esc>==$a
-iabbrev uc+ unsigned char <Esc>==$a
 iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
 iabbrev cout+ cout <<  << endl;<Esc>==f<2la
@@ -138,7 +136,7 @@ iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
                 \CLASSNAME(CLASSNAME const &) {}<CR>
-                \virtual ~CLASSNAME() {}<CR>
+                \virtual ~CLASSNAME() = default;<CR>
                 \private:<CR>
                 \<Esc>6k7==
                 \:.,.+4s/CLASSNAME//g<Left><Left>
@@ -147,7 +145,6 @@ iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Esc>3k4==o
 iabbrev #+ #include <><Left>
-iabbrev using+ using namespace <Esc>==$a
 iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
                 \#define <c-r>=expand("%")<CR><CR>
                 \#endif // <c-r>=expand("%")<CR>
@@ -225,7 +222,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/a.vim'
+" Plug 'vim-scripts/a.vim'
 Plug 'lambdalisue/vim-fullscreen'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'pbrisbin/vim-mkdir'
@@ -405,12 +402,14 @@ imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
 "Startify (启动界面)
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
+let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
             \ '~/.conkyrc',
             \ '~/script/Clean.sh',
-            \ '~/script/SORA.py']
+            \ '~/script/SORA.py'
+            \ ]
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
 let g:startify_list_order = [
@@ -440,17 +439,24 @@ let g:ale_sign_warning = '喵'
 let g:ale_echo_msg_error_str = '汪汪汪！'
 let g:ale_echo_msg_warning_str = '喵喵喵？'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_set_quickfix = 1
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_text_changed = 'normal'
 let g:ale_linters = {'c': ['clang'],
                     \'c++': ['clang'],
                     \'Bash': ['shell'],
                     \'Python': ['flake8'],
                     \'Vim': ['vint']
                     \}
+let g:ale_cpp_clang_options = '-std=c++1z -Wall'
+let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, modernize-*']
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
 if !hlexists('ALEErrorSign')
     highlight link ALEErrorSign todo
 endif
+nmap <silent> N <Plug>(ale_next_wrap)
+nmap <silent> P <Plug>(ale_previous_wrap)
 
 
 "有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
@@ -524,10 +530,10 @@ endfunction
 function! CPP_CompileOptions() " Use LLVM/Clang Compiler
     let b:CompileCommand = "AsyncRun clang++ -std=c++1z -stdlib=libc++ -Wall -Weffc++ -O1 -c %"
     let b:LinkCommand    = "!clang++ -lc++ -lc++abi ./*.o -o Run"
-    let b:RunCommand     = "!./Run"
+    let b:RunCommand     = '!./Run'
     map <C-F7> :AsyncRun clang++ -std=c++1z -stdlib=libc++ -Weverything -g -O1 -c %
     imap <C-F7> <Esc> <C-F7>
-    map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && time ./Run
+    map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && ./Run
     imap <C-F9> <Esc> <C-F9>
 endfunction
 
@@ -555,7 +561,6 @@ function! AsyncCompile()
         execute "TagbarClose"
         let g:quickfix_return_to_window = winnr()
         execute "copen 8 | setl wrap"
-        " setl wrap
         let g:quickfix_is_open = 1
         execute g:quickfix_return_to_window . "wincmd w"
     else
