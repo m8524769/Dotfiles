@@ -244,19 +244,10 @@ filetype plugin indent on
 
 "EasyMotion (快速跳转)
 let g:EasyMotion_smartcase = 1
-let g:EasyMotion_do_mapping = 1
+let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_startofline = 0
-map <Leader> <Plug>(easymotion-prefix)
-nmap s <Plug>(easymotion-s2)
-nmap t <Plug>(easymotion-t2)
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
 
 
 "平滑滚屏
@@ -311,8 +302,8 @@ let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-" let g:NERDTreeDirArrowExpandable = '▸'
-" let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeDirArrowExpandable = "\uf07b"
+let g:NERDTreeDirArrowCollapsible = "\uf07c"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
@@ -556,13 +547,17 @@ map <silent> <F7> :call AsyncCompile()<CR>
 imap <silent> <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
     if exists('b:CompileCommand')
-        execute "w"
+        silent execute "w"
         execute b:CompileCommand
-        execute "TagbarClose"
-        let g:quickfix_return_to_window = winnr()
-        execute "copen 8 | setl wrap"
-        let g:quickfix_is_open = 1
-        execute g:quickfix_return_to_window . "wincmd w"
+        if g:ale#engine#GetLoclist(buffer_number("%")) == [] 
+            echo "Compiled Successfully!! o(*≧▽≦)ツ"
+        else
+            execute "TagbarClose"
+            let g:quickfix_return_to_window = winnr()
+            execute "copen 8 | setl wrap"
+            let g:quickfix_is_open = 1
+            execute g:quickfix_return_to_window . "wincmd w"
+        endif
     else
         echo "当前文件并不能编译.. ╮(￣▽￣)╭"
     endif
