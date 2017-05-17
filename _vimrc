@@ -1,4 +1,6 @@
 ﻿"模仿Windows快捷键
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
@@ -15,11 +17,10 @@ syntax on
 set t_Co=256
 set laststatus=2
 colorscheme molokai2
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h16
+set guifont=DejaVuSansMono\ NF:h12
 set number
 set relativenumber
 set nowrap
-set shortmess=atI
 set cursorcolumn
 set cursorline
 set cmdheight=1
@@ -41,13 +42,11 @@ nnoremap <CR> ==<CR>
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,iso-2022-jp,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
 let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
-source$VIMRUNTIME/delmenu.vim
-source$VIMRUNTIME/menu.vim
 
 "取消备份及交换文件
 set nobackup
@@ -69,8 +68,8 @@ nmap <right> <c-w>l
 
 "增强光标移动
 nmap H ^
-nmap L $
 omap H ^
+nmap L $
 omap L $
 
 "插入模式快捷键映射
@@ -101,18 +100,16 @@ set clipboard+=unnamed
 
 "自动载入
 set autoread
-set history=200
+set history=20
 
 "默认操作路径
 cd $VIM\Vim_Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
-iabbrev ui+ unsigned int <Esc>==$a
-iabbrev uc+ unsigned char <Esc>==$a
 iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
-iabbrev cout+ cout <<  << endl;<Esc>==7la
+iabbrev cout+ cout <<  << endl;<Esc>==f<2la
 iabbrev cin+ cin >> ;<Esc>==$i
 iabbrev for+ for (; ; )<CR>
             \{}<Left><CR>
@@ -130,10 +127,11 @@ iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
 iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
-                \~CLASSNAME() {}<CR>
+                \CLASSNAME(CLASSNAME const &) {}<CR>
+                \virtual ~CLASSNAME() = default;<CR>
                 \private:<CR>
-                \<Esc>5k6==
-                \:.,.+3s/CLASSNAME//g<Left><Left>
+                \<Esc>6k7==
+                \:.,.+4s/CLASSNAME//g<Left><Left>
 iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
@@ -152,9 +150,11 @@ iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \return 0;<Up><Up><Tab>
 iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \#include <iostream><CR>
-                \#include <vector><CR>
-                \#include <string><CR><CR>
-                \using namespace std;<CR><CR>
+                \#include <fstream><CR>
+                \#include <algorithm><CR>
+                \#include <vector><CR><CR>
+                \using namespace std;<CR>
+                \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
@@ -195,9 +195,6 @@ endfunc
 
 
 "Vundle及Vim插件
-filetype plugin on
-set nocompatible
-filetype off
 set rtp+=$VIM/vimfiles/bundle/Vundle.vim
 call vundle#begin('$VIM/vimfiles/bundle/')
 Plugin 'git://github.com/VundleVim/Vundle.vim.git'
@@ -209,7 +206,6 @@ Plugin 'git://github.com/easymotion/vim-easymotion.git'
 Plugin 'git://github.com/vim-airline/vim-airline.git'
 Plugin 'git://github.com/vim-airline/vim-airline-themes.git'
 Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
-Plugin 'git://github.com/vim-scripts/a.vim.git'
 Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
 Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
 Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
@@ -218,10 +214,9 @@ Plugin 'git://github.com/w0rp/ale.git'
 Plugin 'git://github.com/mhinz/vim-startify.git'
 Plugin 'git://github.com/terryma/vim-smooth-scroll.git'
 Plugin 'git://github.com/octol/vim-cpp-enhanced-highlight.git'
-" Plugin 'git://github.com/m8524769/Baidu.vim.git'
+Plugin 'git://github.com/ryanoasis/vim-devicons.git'
 call vundle#end()
 filetype plugin indent on
-
 
 
 
@@ -229,17 +224,8 @@ filetype plugin indent on
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 1
 let g:EasyMotion_startofline = 0
-map <Leader> <Plug>(easymotion-prefix)
-nmap s <Plug>(easymotion-s2)
-nmap t <Plug>(easymotion-t2)
-map <Leader>l <Plug>(easymotion-lineforward)
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-map <Leader>h <Plug>(easymotion-linebackward)
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
 
 
 "平滑滚屏
@@ -253,25 +239,6 @@ let g:multi_cursor_use_default_mapping=1
 let g:multi_cursor_quit_key='<CR>'
 
 
-"切换配色方案 <F4>
-let g:Color = 1
-let g:ColorList = { 0: "desert",
-                \   1: "molokai2",
-                \   2: "Monokai",
-                \   3: "wombat",
-                \   4: "lucius"
-                \   }
-map <F4> :call SwitchColorscheme() <CR>
-imap <F4> <Esc> :call SwitchColorscheme() <CR>
-func! SwitchColorscheme()
-    exec "colorscheme " g:ColorList[g:Color]
-    let g:Color+=1
-    if g:Color == 5
-        let g:Color = 0
-    endif
-endfunc
-
-
 "C++ 语法高亮
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
@@ -282,13 +249,13 @@ let g:cpp_concepts_highlight = 1
 map <F5> :NERDTreeToggle<CR>
 imap <F5> <Esc>:NERDTreeToggle<CR>
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = ['\.o$', '\~$']
+let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeDirArrowExpandable = "\uf07b"
+let g:NERDTreeDirArrowCollapsible = "\uf07c"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
@@ -331,7 +298,7 @@ function! QuickfixToggle()
         let g:quickfix_is_open = 0
     else
         let g:quickfix_return_to_window = winnr()
-        execute "copen"
+        execute "copen 8 | setl wrap"
         let g:quickfix_is_open = 1
     endif
 endfunction
@@ -344,6 +311,11 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:Powerline_symbols="fancy"
+let g:Powerline_symbols="fancy"
+let g:airline_left_sep = "\ue0b8"
+let g:airline_left_alt_sep = "\ue0b9"
+let g:airline_right_sep = "\ue0ba"
+let g:airline_right_alt_sep = "\ue0bb"
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
@@ -363,55 +335,81 @@ let g:indentLine_enabled = 1
 let g:indentLine_char = '¦'
 
 
-"Startify(启动界面) 配置 
-let g:startify_padding_left = 4 
-let g:startify_disable_at_vimenter = 0 
-autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers) 
+"Startify (启动界面)
+let g:startify_padding_left = 4
+let g:startify_disable_at_vimenter = 0
+let g:startify_custom_footer =
+            \ ['', "   Happy Viming!!"]
+autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 
 
 "ALE 配置
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = '汪'
 let g:ale_sign_warning = '喵'
-let g:ale_echo_msg_error_str = '汪'
-let g:ale_echo_msg_warning_str = '喵'
+let g:ale_echo_msg_error_str = '汪汪汪！'
+let g:ale_echo_msg_warning_str = '喵喵喵？'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_set_quickfix = 1
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_text_changed = 'normal'
 let g:ale_linters = {'c': ['gcc'],
                     \'c++': ['gcc'],
-                    \'Vim': ['vint']
                     \}
+if !hlexists('ALEErrorSign')
+    highlight link ALEErrorSign todo
+endif
+nmap <silent> N <Plug>(ale_next_wrap)
+nmap <silent> P <Plug>(ale_previous_wrap)
+
+
+":Test命令 在当前目录下创建输入文件
+map <F4> :Test<CR>
+imap <F4> <Esc> :Test<CR>
+if !exists(':Test')
+    command! -nargs=0 Test 20vsplit inTest.txt
+endif
+if !exists(':Notest')
+    command! -nargs=0 Notest call CleanTest()
+endif
+function! CleanTest()
+    silent g/inTest\|outTest/d
+    silent! %s/tcin >>/cin >>/g
+    silent! %s/tcout <</cout <</g
+    silent execute "w"
+endfunction
 
 
 "编译 & 连接选项
 autocmd FileType cpp call CPP_CompileOptions()
 function! CPP_CompileOptions()
-    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -lpthread -g -O0 -c %"
+    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=GBK -g -O0 -c %"
     let b:RunCommand = "!g++ *.o -o Run.exe && Run.exe"
 endfunction
 
 
 "AsyncRun(异步编译) 配置 <F7>
 "保存并编译生成目标文件
-map <silent> <F7> :call AsyncCompile()<CR>
-imap <silent> <F7> <Esc> :call AsyncCompile()<CR>
+map <F7> :call AsyncCompile()<CR>
+imap <F7> <Esc> :call AsyncCompile()<CR>
 function! AsyncCompile()
     if exists('b:CompileCommand')
         execute "w"
         execute b:CompileCommand
         execute "TagbarClose"
         let g:quickfix_return_to_window = winnr()
-        execute "copen"
+        execute "copen 8 | setl wrap"
         let g:quickfix_is_open = 1
         execute g:quickfix_return_to_window . "wincmd w"
     else
-        echohl WarningMsg | echo "当前文件并不能编译.. ╮(￣▽￣)╭"
+        echo "当前文件并不能编译.. ╮(￣▽￣)╭"
     endif
 endfunction
 
 
 "Debug <F8> 保存编译并调试
-map <silent> <F8> :call Debug()<CR>
-imap <silent> <F8> <Esc> :call Debug()<CR>
+map <F8> :call Debug()<CR>
+imap <F8> <Esc> :call Debug()<CR>
 function! Debug()
     if exists('b:CompileCommand')
         execute "w"
@@ -419,7 +417,7 @@ function! Debug()
         execute "!gdb ./%<.o"
         echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
     else
-        echohl WarningMsg | echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
+        echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
     endif
 endfunction
 
@@ -438,7 +436,7 @@ function! Link_Run()
         execute b:RunCommand
         echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
     else
-        echohl WarningMsg | echo "Excuse me??"
+        echo "不是可执行文件.."
     endif
 endfunction
 
@@ -450,34 +448,3 @@ function! CleanObjFile()
     execute "!del /q *.o Run.exe"
     echohl WarningMsg | echo "Cleaning Successfully!"
 endfunction
-
-
-set diffexpr=MyDiff()
-func MyDiff()
-	let opt = '-a --binary '
-	if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-	if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-	let arg1 = v:fname_in
-	if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-	let arg2 = v:fname_new
-	if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-	let arg3 = v:fname_out
-	if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-	if $VIMRUNTIME =~ ' '
-		if &sh =~ '\<cmd'
-			if empty(&shellxquote)
-				let l:shxq_sav = ''
-				set shellxquote&
-			endif
-			let cmd = '"' . $VIMRUNTIME . '\diff"'
-		else
-			let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-		endif
-	else
-		let cmd = $VIMRUNTIME . '\diff'
-	endif
-	silent exec '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
-	if exists('l:shxq_sav')
-		let &shellxquote=l:shxq_sav
-	endif
-endfunc
