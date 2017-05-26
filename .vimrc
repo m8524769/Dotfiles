@@ -51,7 +51,7 @@ set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
 set langmenu=zh_CN.utf-8
 set helplang=CN
-let $LANG = 'en_US.utf-8' 
+let $LANG = 'en_US.utf-8'
 language messages zh_CN.utf-8
 
 "取消备份及交换文件
@@ -73,8 +73,10 @@ nmap <right> <C-w>l
 
 "增强光标移动
 nmap H ^
+vmap H ^
 omap H ^
 nmap L $
+vmap L $
 omap L $
 
 "拼接行
@@ -237,6 +239,7 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
 call plug#end()
 filetype plugin indent on
 
@@ -246,8 +249,10 @@ filetype plugin indent on
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_startofline = 0
+let g:EasyMotion_enter_jump_first = 1
+let g:EasyMotion_move_highlight = 0
 map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+nmap ; <Plug>(easymotion-next)
 
 
 "平滑滚屏
@@ -316,6 +321,10 @@ let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
 
 
+"Vim-Surround
+vmap s gS
+
+
 "Ctags (tags代码索引)
 set autochdir
 set tags+=$VIM/vimfiles/systags
@@ -355,8 +364,8 @@ endfunction
 "AirLine (状态栏及缓冲区标签) <C-Tab> <Leader>[1-9]
 map <silent> <C-tab> :bn<CR>
 imap <silent> <C-tab> <Esc> :bn<CR>
-let g:airline_theme="luna" 
-let g:airline_powerline_fonts = 1   
+let g:airline_theme="luna"
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:Powerline_symbols="fancy"
@@ -549,7 +558,7 @@ function! AsyncCompile()
     if exists('b:CompileCommand')
         silent execute "w"
         execute b:CompileCommand
-        if g:ale#engine#GetLoclist(buffer_number("%")) == [] 
+        if g:ale#engine#GetLoclist(buffer_number("%")) == []
             echo "Compiled Successfully!! o(*≧▽≦)ツ"
         else
             execute "TagbarClose"
