@@ -1,0 +1,109 @@
+{
+    // Editor Settings
+    "editor.fontFamily": "'DejaVuSansMonoForPowerline Nerd Font', 'Microsoft YaHei'",
+    "editor.fontSize": 18,
+    "editor.lineHeight": 25,
+    "editor.lineNumbers": "relative",
+    "editor.rulers": [70],
+    "editor.tabCompletion": false,
+    "editor.minimap.enabled": true,
+    "editor.renderIndentGuides": true,
+    "editor.dragAndDrop": true,
+    "editor.formatOnType": true,
+    "editor.formatOnPaste": true,
+    "editor.renderLineHighlight": "all",
+    "editor.formatOnSave": true,
+
+
+    // Work Bench Settings
+    "workbench.welcome.enabled": true,
+    "workbench.colorTheme": "Monokai",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#007ACC",
+        "statusBar.noFolderBackground": "#007ACC",
+        "statusBar.debuggingBackground": "#007ACC"
+    },
+
+
+    // Other Settings
+    "window.title": "${appName}${separator}${activeEditorMedium}${dirty}",
+    "files.trimTrailingWhitespace": true,
+    "extensions.autoUpdate": true,
+    "terminal.integrated.fontFamily": "DejaVuSansMonoForPowerline Nerd Font",
+    "terminal.integrated.fontSize": 18,
+
+
+
+    // Vim
+    "vim.otherModesKeyBindings": [{
+            "before": ["H"],
+            "after": ["^"]
+        },
+        {
+            "before": ["J"],
+            "after": ["8", "Down"]
+        },
+        {
+            "before": ["K"],
+            "after": ["8", "Up"]
+        },
+        {
+            "before": ["L"],
+            "after": ["$"]
+        },
+        {
+            "before": ["<Up>"],
+            "after": ["<C-w>", "<Up>"]
+        },
+        {
+            "before": ["<Down>"],
+            "after": ["<C-w>", "<Down>"]
+        },
+        {
+            "before": ["<Right>"],
+            "after": ["<C-w>", "<Right>"]
+        },
+        {
+            "before": ["<Left>"],
+            "after": ["<C-w>", "<Left>"]
+        }
+    ],
+    "vim.insertModeKeyBindings": [{
+            "before": ["j", "k"],
+            "after": ["<Esc>"]
+        },
+        {
+            "before": ["J", "K"],
+            "after": ["<Esc>"]
+        }
+    ],
+    "vim.otherModesKeyBindingsNonRecursive": [],
+    "vim.insertModeKeyBindingsNonRecursive": [],
+    "vim.useSystemClipboard": true,
+    "vim.hlsearch": true,
+    "vim.visualstar": true,
+    "vim.handleKeys": {},
+    "vim.statusBarColorControl": true,
+    "vim.statusBarColors": {
+        "normal": "#007ACC",
+        "insert": "#9900FF",
+        "visual": "#FF9900",
+        "visualline": "#FF9900",
+        "visualblock": "#FF9900",
+        "replace": "#000000"
+    },
+
+
+    // Code-Runner
+    "code-runner.executorMap": {
+        "c": "gcc $fileName -o Run && ./Run",
+        "cpp": "clang++ -lc++ -lc++abi ./*.o -o Run && ./Run",
+        "python": "python"
+    },
+    "code-runner.customCommand": "clang++ -std=c++1z -stdlib=libc++ -Wall -O2 -c $fileName",
+    "code-runner.defaultLanguage": "cpp",
+    "code-runner.cwd": "",
+    "code-runner.fileDirectoryAsCwd": false,
+    "vim.disableAnnoyingNeovimMessage": true
+}
