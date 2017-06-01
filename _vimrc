@@ -103,7 +103,7 @@ set autoread
 set history=20
 
 "默认操作路径
-cd $VIM\Vim_Projects
+cd $VIM\..\Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
@@ -195,28 +195,28 @@ endfunc
 
 
 "Vundle及Vim插件
-set rtp+=$VIM/vimfiles/bundle/Vundle.vim
-call vundle#begin('$VIM/vimfiles/bundle/')
-Plugin 'git://github.com/VundleVim/Vundle.vim.git'
-Plugin 'git://github.com/scrooloose/nerdtree.git'
-Plugin 'git://github.com/scrooloose/nerdcommenter.git'
-Plugin 'git://github.com/universal-ctags/ctags.git'
-Plugin 'git://github.com/majutsushi/tagbar.git'
-Plugin 'git://github.com/easymotion/vim-easymotion.git'
-Plugin 'git://github.com/vim-airline/vim-airline.git'
-Plugin 'git://github.com/vim-airline/vim-airline-themes.git'
-Plugin 'git://github.com/vim-scripts/TogFullscreen.vim.git'
-Plugin 'git://github.com/skywind3000/asyncrun.vim.git'
-Plugin 'git://github.com/pbrisbin/vim-mkdir.git'
-Plugin 'git://github.com/terryma/vim-multiple-cursors.git'
-Plugin 'git://github.com/Yggdroot/indentLine.git'
-Plugin 'git://github.com/w0rp/ale.git'
-Plugin 'git://github.com/mhinz/vim-startify.git'
-Plugin 'git://github.com/terryma/vim-smooth-scroll.git'
-Plugin 'git://github.com/octol/vim-cpp-enhanced-highlight.git'
-Plugin 'git://github.com/ryanoasis/vim-devicons.git'
-call vundle#end()
-filetype plugin indent on
+call plug#begin('$VIM/vimfiles/bundle')
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'universal-ctags/ctags'
+Plug 'majutsushi/tagbar'
+Plug 'easymotion/vim-easymotion'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-scripts/TogFullscreen.vim'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'pbrisbin/vim-mkdir'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'Yggdroot/indentLine'
+Plug 'w0rp/ale'
+Plug 'mhinz/vim-startify'
+Plug 'iamcco/dict.vim'
+Plug 'm8524769/Baidu.vim'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'ryanoasis/vim-devicons'
+call plug#end()
+
 
 
 
@@ -249,7 +249,7 @@ let g:cpp_concepts_highlight = 1
 map <F5> :NERDTreeToggle<CR>
 imap <F5> <Esc>:NERDTreeToggle<CR>
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
+let g:NERDTreeIgnore = ['\.o$', '\~$']
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
@@ -311,7 +311,6 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:Powerline_symbols="fancy"
-let g:Powerline_symbols="fancy"
 let g:airline_left_sep = "\ue0b8"
 let g:airline_left_alt_sep = "\ue0b9"
 let g:airline_right_sep = "\ue0ba"
@@ -341,21 +340,25 @@ let g:startify_disable_at_vimenter = 0
 let g:startify_custom_footer =
             \ ['', "   Happy Viming!!"]
 autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+let g:startify_custom_header =
+            \ startify#fortune#cowsay('=','|','=','=','=','=')
 
 
 "ALE 配置
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '汪'
-let g:ale_sign_warning = '喵'
-let g:ale_echo_msg_error_str = '汪汪汪！'
-let g:ale_echo_msg_warning_str = '喵喵喵？'
+let g:ale_sign_error = 'E'
+let g:ale_sign_warning = 'W'
+let g:ale_echo_msg_error_str = 'Error'
+let g:ale_echo_msg_warning_str = 'Warning'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
-let g:ale_linters = {'c': ['gcc'],
-                    \'c++': ['gcc'],
+let g:ale_linters = {'c': ['clang'],
+                    \'c++': ['clang']
                     \}
+let g:ale_cpp_clang_options = '-std=c++17 -Wall'
+let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, modernize-*']
 if !hlexists('ALEErrorSign')
     highlight link ALEErrorSign todo
 endif
@@ -381,9 +384,15 @@ endfunction
 
 
 "编译 & 连接选项
+autocmd FileType c call C_CompileOptions()
+function! C_CompileOptions()
+    let b:CompileCommand = "AsyncRun gcc -std=c99 -Wall -fexec-charset=GBK -g -O0 -c %"
+    let b:RunCommand = "!gcc *.o -o Run.exe && Run.exe"
+endfunction
+
 autocmd FileType cpp call CPP_CompileOptions()
 function! CPP_CompileOptions()
-    let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -fexec-charset=GBK -g -O0 -c %"
+    let b:CompileCommand = "AsyncRun g++ -std=c++17 -Wall -fexec-charset=GBK -g -O0 -c %"
     let b:RunCommand = "!g++ *.o -o Run.exe && Run.exe"
 endfunction
 
@@ -445,6 +454,6 @@ endfunction
 map <F10> :call CleanObjFile()<CR>
 imap <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
-    execute "!del /q *.o Run.exe"
+    silent execute "!del /q *.o Run.exe"
     echohl WarningMsg | echo "Cleaning Successfully!"
 endfunction
