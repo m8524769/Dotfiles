@@ -19,9 +19,6 @@ colorscheme molokai2
 " colorscheme desert
 " colorscheme monokai
 " colorscheme wombat
-if (!has("gui_running"))
-    colorscheme lucius
-endif
 set guifont=DejaVuSansMonoforPowerline\ Nerd\ Font\ 14
 set guifontwide=Microsoft\ YaHei\ Regular\ 14
 set number
@@ -406,9 +403,7 @@ let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
-            \ '~/.conkyrc',
             \ '~/script/Clean.sh',
-            \ '~/script/SORA.py'
             \ ]
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
@@ -426,6 +421,7 @@ autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 
 
 "YouCompleteMe (自动代码补全)
+let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
@@ -508,20 +504,20 @@ autocmd FileType sh call SH_CompileOptions()
 autocmd FileType python call PYHTON_CompileOptions()
 
 function! C_CompileOptions() " Use LLVM/Clang Compiler
-    let b:CompileCommand = "AsyncRun clang -std=c14 -Wall -O1 -c %"
+    let b:CompileCommand = "AsyncRun clang -std=c99 -Wall -O1 -c %"
     let b:LinkCommand    = "!clang ./*.o -o Run"
     let b:RunCommand     = "!time ./Run"
-    map <C-F7> :AsyncRun clang -std=c14 -Wall -g -O1 -c %
+    map <C-F7> :AsyncRun clang -std=c99 -Wall -g -O1 -c %
     imap <C-F7> <Esc> <C-F7>
     map <C-F9> :!clang ./*.o -o Run && time ./Run
     imap <C-F9> <Esc> <C-F9>
 endfunction
 
 " function! CPP_CompileOptions() " Use GCC Compiler
-"     let b:CompileCommand = "AsyncRun g++ -std=c++14 -Wall -O1 -c %"
+"     let b:CompileCommand = "AsyncRun g++ -std=c++17 -Wall -O1 -c %"
 "     let b:LinkCommand    = "!g++ ./*.o -o Run"
 "     let b:RunCommand     = "!time ./Run"
-"     map <C-F7> :AsyncRun g++ -std=c++14 -Wall -g -O1 -c %
+"     map <C-F7> :AsyncRun g++ -std=c++17 -Wall -g -O1 -c %
 "     imap <C-F7> <Esc> <C-F7>
 "     map <C-F9> :!g++ ./*.o -o Run && time ./Run
 "     imap <C-F9> <Esc> <C-F9>
@@ -615,9 +611,9 @@ map <silent> <F10> :call CleanObjFile()<CR>
 imap <silent> <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
     if(has("win32") || has("win64"))
-        execute "!del /q *.o Run.exe"
+        silent execute "!del /q *.o Run.exe"
     else
-        execute "!rm ./*.o ./Run"
+        silent execute "!rm ./*.o ./Run"
     endif
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
