@@ -79,7 +79,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # opaqueness
 if [ -n "$WINDOWID" ]; then
-    TRANSPARENCY_HEX=$(printf 0x%x $((0xffffffff * 72 / 100)))
+    TRANSPARENCY_HEX=$(printf 0x%x $((0xffffffff * 74 / 100)))
     xprop -id "$WINDOWID" -f _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY "$TRANSPARENCY_HEX"
 fi
 
@@ -91,7 +91,7 @@ fi
 alias rm='rm -i'
 alias mv='mv -i'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
-alias gun='echo Good luck, bro!!; sleep 2; sudo pacman -Syu'
+alias gun='echo Good Luck! bro; sudo pacman -Syu'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias zhcon='zhcon --utf8 --drv=vga'
 alias gc='git clone'
