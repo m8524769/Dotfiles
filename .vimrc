@@ -55,12 +55,10 @@ language messages zh_CN.utf-8
 set nobackup
 set noswapfile
 set noundofile
-"set backup
-"set backupext=.bak
-"set backupdir=/tmp/vim_backup/
 
 "禁用<F1>
-nmap <F1> <Esc>
+map <F1> <Esc>
+imap <F1> <Esc>
 
 "方向键切换窗口
 nmap <Left> <C-w>h
@@ -118,9 +116,6 @@ iabbrev pf+ printf("");<Esc>==f"a
 iabbrev sf+ scanf("", &);<Esc>==f"a
 iabbrev cout+ cout <<  << endl;<Esc>==f<2la
 iabbrev cin+ cin >> ;<Esc>==$i
-iabbrev for+ for (; ; )<CR>
-            \{}<Left><CR>
-            \<Esc>2k3==wa
 iabbrev do+ do {}while ();<Esc>==f{a<CR><Esc>f(a
 iabbrev switch+ switch ()<CR>
                 \{}<Left><CR>
@@ -143,7 +138,6 @@ iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Esc>3k4==o
-iabbrev #+ #include <><Left>
 iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
                 \#define <c-r>=expand("%")<CR><CR>
                 \#endif // <c-r>=expand("%")<CR>
@@ -182,12 +176,10 @@ inoremap ( ()<Esc>i
 inoremap ) <c-r>=ClosePair(')')<CR>
 inoremap [ []<Esc>i
 inoremap ] <c-r>=ClosePair(']')<CR>
-" inoremap { {}<Esc>i
-" inoremap } <c-r>=ClosePair('}')<CR>
 inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
-function ClosePair(char)
+function! ClosePair(char)
     if getline('.')[col('.') - 1] == a:char
         return "\<Right>"
     else
@@ -195,7 +187,7 @@ function ClosePair(char)
     endif
 endfunction
 
-function QuoteDelim(char)
+function! QuoteDelim(char)
     let line = getline('.')
     let col = col('.')
     if line[col - 2] == "\\"
@@ -221,8 +213,6 @@ Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" Plug 'vim-scripts/a.vim'
-Plug 'lambdalisue/vim-fullscreen'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'terryma/vim-multiple-cursors'
@@ -282,17 +272,19 @@ endfunction
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
-
-
 "Devicons
-if (!has("gui_running"))
-    let g:webdevicons_enable = 0
-endif
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
-
-
+"IndentLine(缩进对齐线)
+let g:indentLine_enabled = 1
+let g:indentLine_char = '¦'
 "Unite
 nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
+"Vim-Surround
+vmap s gS
+"Ctags (tags代码索引)
+set autochdir
+set tags+=$VIM/vimfiles/systags
+set tags+=./tags
 
 
 "NERD_Tree (目录树) <F5>
@@ -303,6 +295,8 @@ let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
+let g:NERDTreeCascadeSingleChildDir = 1
+let g:NERDTreeCascadeOpenSingleChildDir = 1
 let g:NERDTreeAutoDeleteBuffer = 1
 let g:NERDTreeDirArrowExpandable = "\uf07b"
 let g:NERDTreeDirArrowCollapsible = "\uf07c"
@@ -316,16 +310,6 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
 let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
-
-
-"Vim-Surround
-vmap s gS
-
-
-"Ctags (tags代码索引)
-set autochdir
-set tags+=$VIM/vimfiles/systags
-set tags+=./tags
 
 
 "TagBar (函数列表) <F6>
@@ -358,42 +342,40 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine (状态栏及缓冲区标签) <C-Tab> <Leader>[1-9]
-map <silent> <C-tab> :bn<CR>
-imap <silent> <C-tab> <Esc> :bn<CR>
-let g:airline_theme="luna"
+"AirLine (状态栏, 缓冲区及标签) <C-Tab> <Tab> <Leader>[1-9]
+nmap <silent> <C-Tab> :call NewTab()<CR>
+imap <silent> <C-Tab> <Esc> :call NewTab()<CR>
+function! NewTab()
+    execute "tabnew"
+    execute "Startify"
+endfunction
+let g:airline_theme="onedark"
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:Powerline_symbols="fancy"
-if (has("gui_running"))
-    let g:airline_left_sep = "\ue0b8"
-    let g:airline_left_alt_sep = "\ue0b9"
-    let g:airline_right_sep = "\ue0ba"
-    let g:airline_right_alt_sep = "\ue0bb"
-endif
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#buffers_label = 'Buffers'
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-map <Leader>1 :b 1<CR>
-map <Leader>2 :b 2<CR>
-map <Leader>3 :b 3<CR>
-map <Leader>4 :b 4<CR>
-map <Leader>5 :b 5<CR>
-map <Leader>6 :b 6<CR>
-map <Leader>7 :b 7<CR>
-map <Leader>8 :b 8<CR>
-map <Leader>9 :b 9<CR>
-
-
-"IndentLine(缩进对齐线)
-let g:indentLine_enabled = 1
-let g:indentLine_char = '¦'
-
-
-"更改Fullscreen映射 <F11>
-nmap <silent> <F11> <Plug>(fullscreen-toggle)
-imap <silent> <F11> <Esc> <Plug>(fullscreen-toggle)
+let g:airline_left_sep = "\ue0b8"
+let g:airline_left_alt_sep = "\ue0b9"
+let g:airline_right_sep = "\ue0ba"
+let g:airline_right_alt_sep = "\ue0bb"
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <Tab>     <Plug>AirlineSelectNextTab
+nmap <S-Tab>   <Plug>AirlineSelectPrevTab
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
 
 
 "Startify (启动界面)
@@ -403,7 +385,8 @@ let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
-            \ '~/script/Clean.sh',
+            \ '~/.conkyrc',
+            \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
@@ -418,6 +401,7 @@ let g:startify_list_order = [
 let g:startify_custom_footer =
             \ ['', "   Happy Viming!!"]
 autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+autocmd User Startified setlocal cursorline
 
 
 "YouCompleteMe (自动代码补全)
@@ -574,7 +558,7 @@ map <silent> <F8> :call Debug()<CR>
 imap <silent> <F8> <Esc> :call Debug()<CR>
 function! Debug()
     if exists('b:CompileCommand')
-        execute "w"
+        silent execute "w"
         execute b:CompileCommand
         execute "!gdb ./%<.o"
         echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
