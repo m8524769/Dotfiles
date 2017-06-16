@@ -19,8 +19,8 @@ colorscheme molokai2
 " colorscheme desert
 " colorscheme monokai
 " colorscheme wombat
-set guifont=DejaVuSansMonoforPowerline\ Nerd\ Font\ 14
-set guifontwide=Microsoft\ YaHei\ Regular\ 14
+set guifont=DejaVuSansMono\ YaHei\ NF\ 14
+" set guifont=FiraCode\ QiHei\ NF\ 16
 set number
 set relativenumber
 set nowrap
@@ -274,9 +274,10 @@ let g:cpp_experimental_simple_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 "Devicons
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 2
 "IndentLine(缩进对齐线)
 let g:indentLine_enabled = 1
-let g:indentLine_char = '¦'
+let g:indentLine_char = "\u250A"
 "Unite
 nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 "Vim-Surround
@@ -298,8 +299,8 @@ let g:NERDTreeMinimalUI = 1
 let g:NERDTreeCascadeSingleChildDir = 1
 let g:NERDTreeCascadeOpenSingleChildDir = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-let g:NERDTreeDirArrowExpandable = "\uf07b"
-let g:NERDTreeDirArrowCollapsible = "\uf07c"
+let g:NERDTreeDirArrowExpandable = "\uE5FF"
+let g:NERDTreeDirArrowCollapsible = "\uE5FE"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
@@ -342,9 +343,11 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine (状态栏, 缓冲区及标签) <C-Tab> <Tab> <Leader>[1-9]
-nmap <silent> <C-Tab> :call NewTab()<CR>
-imap <silent> <C-Tab> <Esc> :call NewTab()<CR>
+"AirLine (状态栏, 缓冲区及标签) <C-[t|Tab]> <Tab> <Leader>[1-9]
+nmap <silent> <C-t> :call NewTab()<CR>
+nmap <C-Tab> <C-t>
+imap <C-t> <Esc> <C-t>
+imap <C-Tab> <Esc> <C-t>
 function! NewTab()
     execute "tabnew"
     execute "Startify"
@@ -360,10 +363,20 @@ let g:airline#extensions#tabline#tab_nr_type = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_left_sep = "\ue0b8"
-let g:airline_left_alt_sep = "\ue0b9"
-let g:airline_right_sep = "\ue0ba"
-let g:airline_right_alt_sep = "\ue0bb"
+if has('gui_running')
+    let g:airline_left_sep = "\uE0B8"
+    let g:airline_left_alt_sep = "\uE0B9"
+    let g:airline_right_sep = "\uE0BA"
+    let g:airline_right_alt_sep = "\uE0BB"
+endif
+let g:airline_symbols.branch = "\u2387"
+let g:airline_symbols.notexists = "\uE710"
+" let g:airline_symbols.crypt = "\uE0A2"
+" let g:airline_symbols.linenr = "\u2630"
+" let g:airline_symbols.whitespace = "\uF120"
+let g:airline#extensions#ale#error_symbol = "\uF057:"
+let g:airline#extensions#ale#warning_symbol = "\uF06A:"
+let g:airline#extensions#whitespace#checks = []
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 nmap <Tab>     <Plug>AirlineSelectNextTab
 nmap <S-Tab>   <Plug>AirlineSelectPrevTab
@@ -386,6 +399,7 @@ let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
             \ '~/.conkyrc',
+            \ '~/.config/fontconfig/fonts.conf',
             \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
@@ -414,8 +428,8 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 
 "ALE (代码异步检测)
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = '汪'
-let g:ale_sign_warning = '喵'
+let g:ale_sign_error = "\uF12A"
+let g:ale_sign_warning = "\uF128"
 let g:ale_echo_msg_error_str = '汪汪汪！'
 let g:ale_echo_msg_warning_str = '喵喵喵？'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
