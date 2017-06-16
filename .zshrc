@@ -90,11 +90,11 @@ fi
 
 alias rm='rm -i'
 alias mv='mv -i'
+alias gun='echo Good Luck, Bro!; sudo pacman -Syu'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
-alias gun='echo Good Luck! bro; sudo pacman -Syu'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias zhcon='zhcon --utf8 --drv=vga'
-alias gc='git clone'
+alias gc='git clone --depth 1'
 alias ga='git add -A'
 alias gs='git status'
 alias gl='git log --oneline'
