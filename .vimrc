@@ -108,7 +108,7 @@ set autoread
 set history=200
 
 "默认操作路径
-cd ~/Projects
+cd /home/yk/Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
@@ -227,6 +227,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'roman/golden-ratio'
 call plug#end()
 filetype plugin indent on
 
@@ -240,17 +241,6 @@ let g:EasyMotion_enter_jump_first = 1
 let g:EasyMotion_move_highlight = 0
 map  / <Plug>(easymotion-sn)
 nmap ; <Plug>(easymotion-next)
-
-
-"平滑滚屏
-noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
-noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
-
-
-"multiple-cursors(多行编辑) <C-(n|p|x)>
-set selection=inclusive
-let g:multi_cursor_use_default_mapping=1
-let g:multi_cursor_quit_key='<CR>'
 
 
 "垂直分屏 <F3>
@@ -268,6 +258,9 @@ function! VerticalSplit()
 endfunction
 
 
+"平滑滚屏
+noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
 "C++ 语法高亮
 let g:cpp_class_scope_highlight = 1
 let g:cpp_experimental_simple_template_highlight = 1
@@ -276,16 +269,21 @@ let g:cpp_concepts_highlight = 1
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
 let g:WebDevIconsUnicodeGlyphDoubleWidth = 2
 "IndentLine(缩进对齐线)
-let g:indentLine_enabled = 1
 let g:indentLine_char = "\u250A"
-"Unite
-nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
-"Vim-Surround
-vmap s gS
+let g:indentLine_concealcursor = ''
+let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+"multiple-cursors(多行编辑) <C-(n|p|x)>
+set selection=inclusive
+let g:multi_cursor_use_default_mapping=1
+let g:multi_cursor_quit_key='<CR>'
 "Ctags (tags代码索引)
 set autochdir
 set tags+=$VIM/vimfiles/systags
 set tags+=./tags
+"Unite
+nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
+"Vim-Surround
+vmap s gS
 
 
 "NERD_Tree (目录树) <F5>
@@ -514,7 +512,7 @@ endfunction
 " function! CPP_CompileOptions() " Use GCC Compiler
 "     let b:CompileCommand = "AsyncRun g++ -std=c++17 -Wall -O1 -c %"
 "     let b:LinkCommand    = "!g++ ./*.o -o Run"
-"     let b:RunCommand     = "!time ./Run"
+"     let b:RunCommand     = "!./Run"
 "     map <C-F7> :AsyncRun g++ -std=c++17 -Wall -g -O1 -c %
 "     imap <C-F7> <Esc> <C-F7>
 "     map <C-F9> :!g++ ./*.o -o Run && time ./Run
