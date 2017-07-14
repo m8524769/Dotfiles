@@ -124,8 +124,6 @@ iabbrev switch+ switch ()<CR>
                 \default: <CR>
                 \<Esc>5k6==wa
 iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
-iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
-iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
 iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
@@ -138,17 +136,14 @@ iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Esc>3k4==o
-iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
-                \#define <c-r>=expand("%")<CR><CR>
-                \#endif // <c-r>=expand("%")<CR>
-                \<ESC>2k
-                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
-iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+
+"代码模板
+iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y by yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up><Tab>
-iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y by yk")<CR> */<CR>
                 \#include <iostream><CR>
                 \#include <fstream><CR>
                 \#include <algorithm><CR>
@@ -157,19 +152,25 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><CR><Up><Tab>
-                \return 0;<Up><Up><Tab>
-
-"常用脚本缩写词
+                \cout << "Time >> " << clock()*1000/CLOCKS_PER_SEC << "ms" << endl;<CR>
+                \return 0;<Up><Up><Up><Tab>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
                 \#!/usr/bin/env python3<CR><CR>
+iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
+                \#define <c-r>=expand("%")<CR><CR>
+                \#endif // <c-r>=expand("%")<CR>
+                \<ESC>2k
+                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
 
-"自动插入代码模板及头文件保护符
-autocmd BufNewFile *.c   execute "normal icmain+\<Space>"
-autocmd BufNewFile *.cpp execute "normal icppmain+\<Space>"
-autocmd BufNewFile *.h   execute "normal iguard+\<Space>"
-autocmd BufNewFile *.sh  execute "normal ishmain+\<Space>"
-autocmd BufNewFile *.py  execute "normal ipymain+\<Space>"
+augroup code_template
+    autocmd!
+    autocmd BufNewFile *.c   :normal icmain+
+    autocmd BufNewFile *.cpp :normal icppmain+
+    autocmd BufNewFile *.h   :normal iguard+
+    autocmd BufNewFile *.sh  :normal ishmain+
+    autocmd BufNewFile *.py  :normal ipymain+
+augroup END
 
 "括号自动补全
 inoremap ( ()<Esc>i
@@ -204,7 +205,7 @@ endfunction
 filetype off
 call plug#begin('$VIM/vimfiles/bundle')
 Plug 'junegunn/vim-plug'
-Plug 'Shougo/unite.vim'
+" Plug 'Shougo/unite.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'universal-ctags/ctags'
@@ -227,7 +228,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'roman/golden-ratio'
+" Plug 'roman/golden-ratio'
 call plug#end()
 filetype plugin indent on
 
@@ -403,9 +404,9 @@ let g:startify_bookmarks = [
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
 let g:startify_list_order = [
-            \ ['   Oh! My Holy Working Directory!'],
+            \ ['   Working Directory'],
             \ 'dir',
-            \ ['   Recently Used Files'],
+            \ ['   Recently Used'],
             \ 'files',
             \ ['   My Bookmarks:'],
             \ 'bookmarks',
@@ -480,7 +481,7 @@ endfunction
 map <F4> :Test<CR>
 imap <F4> <Esc> :Test<CR>
 if !exists(':Test')
-    command! -nargs=0 Test 20vsplit inTest.txt
+    command! -nargs=0 Test 25vsplit inTest.txt
 endif
 if !exists(':Notest')
     command! -nargs=0 Notest call CleanTest()
@@ -520,10 +521,10 @@ endfunction
 " endfunction
 
 function! CPP_CompileOptions() " Use LLVM/Clang Compiler
-    let b:CompileCommand = "AsyncRun clang++ -std=c++1z -stdlib=libc++ -Wall -Weffc++ -O1 -c %"
+    let b:CompileCommand = "AsyncRun clang++ -std=c++1z -stdlib=libc++ -Wall -Weffc++ -O0 -c %"
     let b:LinkCommand    = "!clang++ -lc++ -lc++abi ./*.o -o Run"
     let b:RunCommand     = '!./Run'
-    map <C-F7> :AsyncRun clang++ -std=c++1z -stdlib=libc++ -Weverything -g -O1 -c %
+    map <C-F7> :AsyncRun clang++ -std=c++1z -stdlib=libc++ -Weverything -g -O2 -c %
     imap <C-F7> <Esc> <C-F7>
     map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && ./Run
     imap <C-F9> <Esc> <C-F9>
