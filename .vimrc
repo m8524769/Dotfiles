@@ -84,7 +84,6 @@ imap <C-k> <Up>
 imap <C-l> <Right>
 imap <C-u> <Esc> u
 imap jk <Esc>
-imap JK <Esc>
 
 "Operator-Pending映射
 onoremap in( :<c-u>normal! f(vi(<CR>
@@ -112,17 +111,17 @@ cd /home/yk/Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
-iabbrev pf+ printf("");<Esc>==f"a
-iabbrev sf+ scanf("", &);<Esc>==f"a
-iabbrev cout+ cout <<  << endl;<Esc>==f<2la
+iabbrev pf+ printf;<Left>("
+iabbrev sf+ scanf;<Left>("
+iabbrev cout+ cout <<  << endl;<Esc>==8li
 iabbrev cin+ cin >> ;<Esc>==$i
-iabbrev do+ do {}while ();<Esc>==f{a<CR><Esc>f(a
+iabbrev do+ do {}while ();<Esc>==f}i<CR><Esc>f)i
 iabbrev switch+ switch ()<CR>
                 \{}<Left><CR>
                 \case '': <CR>
                 \case '': <CR>
                 \default: <CR>
-                \<Esc>5k6==wa
+                \<Esc>5k6==$i
 iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
 iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
@@ -138,12 +137,12 @@ iabbrev try+ try {}<Left><CR>
                 \<Esc>3k4==o
 
 "代码模板
-iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y by yk")<CR> */<CR>
+iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
-                \{}<Left><CR><CR><CR><CR><Up><Tab>
-                \return 0;<Up><Up><Tab>
-iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y by yk")<CR> */<CR>
+                \{}<Left><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up>
+iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \#include <iostream><CR>
                 \#include <fstream><CR>
                 \#include <algorithm><CR>
@@ -151,9 +150,10 @@ iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y by yk")<CR> */<CR>
                 \using namespace std;<CR>
                 \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
-                \{}<Left><CR><CR><CR><CR><Up><Tab>
+                \{}<Left><CR><CR><Up><Tab>
+                \freopen("./inTest.txt", "r", stdin);<CR><CR><CR>
                 \cout << "Time >> " << clock()*1000/CLOCKS_PER_SEC << "ms" << endl;<CR>
-                \return 0;<Up><Up><Up><Tab>
+                \return 0;<Up><Up><Up>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
                 \#!/usr/bin/env python3<CR><CR>
@@ -264,7 +264,9 @@ noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
 noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
 "C++ 语法高亮
 let g:cpp_class_scope_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
 "Devicons
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
@@ -413,8 +415,11 @@ let g:startify_list_order = [
             \ ]
 let g:startify_custom_footer =
             \ ['', "   Happy Viming!!"]
-autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
-autocmd User Startified setlocal cursorline
+augroup startify
+    autocmd!
+    autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+    autocmd User Startified setlocal cursorline
+augroup END
 
 
 "YouCompleteMe (自动代码补全)
@@ -429,20 +434,29 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = "\uF12A"
 let g:ale_sign_warning = "\uF128"
-let g:ale_echo_msg_error_str = '汪汪汪！'
-let g:ale_echo_msg_warning_str = '喵喵喵？'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" let g:ale_echo_msg_error_str = '汪汪汪！'
+" let g:ale_echo_msg_warning_str = '喵喵喵？'
+let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_history_enabled = 0
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
-let g:ale_linters = {'c': ['clang'],
-                    \'c++': ['clang'],
-                    \'Bash': ['shell'],
-                    \'Python': ['flake8'],
-                    \'Vim': ['vint']
-                    \}
-let g:ale_cpp_clang_options = '-std=c++1z -Wall'
-let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, modernize-*']
+let g:ale_linters = {
+            \'c': ['clang'],
+            \'cpp': ['clangtidy'],
+            \'Bash': ['shell'],
+            \'Python': ['flake8'],
+            \'Vim': ['vint'],
+            \}
+let g:ale_fixers = {
+            \'cpp': [
+            \   'remove_trailing_lines',
+            \   'CPP_ALEFix'
+            \   ]
+            \}
+let g:ale_cpp_clang_options = '-std=c++1z'
+let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, hicpp-*, modernize-*, performance-*']
+let g:ale_cpp_clangtidy_options = ''
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
 if !hlexists('ALEErrorSign')
@@ -450,6 +464,9 @@ if !hlexists('ALEErrorSign')
 endif
 nmap <silent> N <Plug>(ale_next_wrap)
 nmap <silent> P <Plug>(ale_previous_wrap)
+function! CPP_ALEFix(...)
+    silent execute "!clang-tidy -fix-errors % --"
+endfunction
 
 
 "有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
@@ -495,10 +512,13 @@ endfunction
 
 
 "编译 & 连接选项 <C-(F7|F9)>为手动执行命令
-autocmd FileType c call C_CompileOptions()
-autocmd FileType cpp,cxx call CPP_CompileOptions()
-autocmd FileType sh call SH_CompileOptions()
-autocmd FileType python call PYHTON_CompileOptions()
+augroup compile_command
+    autocmd!
+    autocmd FileType c call C_CompileOptions()
+    autocmd FileType cpp,cxx call CPP_CompileOptions()
+    autocmd FileType sh call SH_CompileOptions()
+    autocmd FileType python call PYHTON_CompileOptions()
+augroup END
 
 function! C_CompileOptions() " Use LLVM/Clang Compiler
     let b:CompileCommand = "AsyncRun clang -std=c99 -Wall -O1 -c %"
@@ -573,7 +593,7 @@ function! Debug()
     if exists('b:CompileCommand')
         silent execute "w"
         execute b:CompileCommand
-        execute "!gdb ./%<.o"
+        execute "!lldb %<.o"
         echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
     else
         echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
