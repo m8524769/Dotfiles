@@ -17,7 +17,8 @@ syntax on
 set t_Co=256
 set laststatus=2
 colorscheme molokai2
-set guifont=DejaVuSansMono\ NF:h12
+set guifont=FiraCode\ QiHei\ NF:h12
+" set guifont=DejaVuSansMono\ YaHei\ NF:h16
 set number
 set relativenumber
 set nowrap
@@ -48,38 +49,34 @@ set helplang=CN
 let $LANG = 'en_US.utf-8' 
 language messages zh_CN.utf-8
 
-"取消备份及交换文件
-set nobackup
-set noswapfile
-set noundofile
-
-"禁用<F1>及Alt
-noremap <F1> <Esc>
-set winaltkeys=no
-
-"切换全屏<F11>
-imap <F11> <Esc> :call ToggleFullscreen()<CR>
+"禁用<F1>
+map <F1> <Esc>
+imap <F1> <Esc>
 
 "方向键切换窗口
-nmap <Left> <c-w>h
-nmap <Down> <c-w>j
-nmap <up> <c-w>k
-nmap <right> <c-w>l
+nmap <Left> <C-w>h
+nmap <Down> <C-w>j
+nmap <up> <C-w>k
+nmap <right> <C-w>l
 
 "增强光标移动
 nmap H ^
+vmap H ^
 omap H ^
 nmap L $
+vmap L $
 omap L $
 
+"拼接行
+nnoremap <C-j> J
+
 "插入模式快捷键映射
-inoremap <C-h> <Left>
-inoremap <C-j> <Down>
-inoremap <C-k> <Up>
-inoremap <C-l> <Right>
-inoremap <C-u> <Esc> u
-inoremap jk <Esc>
-inoremap JK <Esc>
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+imap <C-u> <Esc> u
+imap jk <Esc>
 
 "Operator-Pending映射
 onoremap in( :<c-u>normal! f(vi(<CR>
@@ -107,23 +104,18 @@ cd $VIM\..\Projects
 
 "C/C++缩写词及代码片段补全 <C-CR>
 imap <C-CR> +<Space><BS>
-iabbrev pf+ printf("");<Esc>==f"a
-iabbrev sf+ scanf("", &);<Esc>==f"a
-iabbrev cout+ cout <<  << endl;<Esc>==f<2la
+iabbrev pf+ printf;<Left>("
+iabbrev sf+ scanf;<Left>("
+iabbrev cout+ cout <<  << endl;<Esc>==8li
 iabbrev cin+ cin >> ;<Esc>==$i
-iabbrev for+ for (; ; )<CR>
-            \{}<Left><CR>
-            \<Esc>2k3==wa
-iabbrev do+ do {}while ();<Esc>==f{a<CR><Esc>f(a
+iabbrev do+ do {}while ();<Esc>==f}i<CR><Esc>f)i
 iabbrev switch+ switch ()<CR>
                 \{}<Left><CR>
                 \case '': <CR>
                 \case '': <CR>
                 \default: <CR>
-                \<Esc>5k6==wa
+                \<Esc>5k6==$i
 iabbrev struct+ struct {};<Left><Left><CR><Esc>k2==wi
-iabbrev union+ union {};<Left><Left><CR><Esc>k2==wi
-iabbrev enum+ enum {};<Left><Left><CR><Esc>k2==wi
 iabbrev class+ class CLASSNAME {};<Left><Left><CR>
                 \public:<CR>
                 \CLASSNAME() {}<CR>
@@ -136,19 +128,14 @@ iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Esc>3k4==o
-iabbrev #+ #include <><Left>
-iabbrev using+ using namespace <Esc>==$a
-iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
-                \#define <c-r>=expand("%")<CR><CR>
-                \#endif // <c-r>=expand("%")<CR>
-                \<ESC>2k
-                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
-iabbrev cmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+
+"代码模板
+iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
-                \{}<Left><CR><CR><CR><CR><Up><Tab>
-                \return 0;<Up><Up><Tab>
-iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
+                \{}<Left><CR><CR><CR><Up><Tab>
+                \return 0;<Up><Up>
+iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \#include <iostream><CR>
                 \#include <fstream><CR>
                 \#include <algorithm><CR>
@@ -156,13 +143,27 @@ iabbrev cppmain+ /* <c-r>=strftime("New at 20%y.%m.%d(%A) by yk")<CR> */<CR>
                 \using namespace std;<CR>
                 \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
-                \{}<Left><CR><CR><CR><CR><Up><Tab>
-                \return 0;<Up><Up><Tab>
+                \{}<Left><CR><CR><Up><Tab>
+                \freopen("./inTest.txt", "r", stdin);<CR><CR><CR>
+                \cout << "Time >> " << clock()*1000/CLOCKS_PER_SEC << "ms" << endl;<CR>
+                \return 0;<Up><Up><Up>
+iabbrev shmain+ #!/bin/bash<CR><CR>
+iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
+                \#!/usr/bin/env python3<CR><CR>
+iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
+                \#define <c-r>=expand("%")<CR><CR>
+                \#endif // <c-r>=expand("%")<CR>
+                \<ESC>2k
+                \:.,.+2s/\v(\w+)\.h/_\U\1_H_/g<CR>O
 
-"自动插入代码模板及头文件保护符
-autocmd BufNewFile *.c exec "normal icmain+\<Space>"
-autocmd BufNewFile *.cpp exec "normal icppmain+\<Space>"
-autocmd BufNewFile *.h execute "normal iguard+\<Space>"
+augroup code_template
+    autocmd!
+    autocmd BufNewFile *.c   :normal icmain+
+    autocmd BufNewFile *.cpp :normal icppmain+
+    autocmd BufNewFile *.h   :normal iguard+
+    autocmd BufNewFile *.sh  :normal ishmain+
+    autocmd BufNewFile *.py  :normal ipymain+
+augroup END
 
 "括号自动补全
 inoremap ( ()<Esc>i
@@ -198,12 +199,12 @@ endfunc
 call plug#begin('$VIM/vimfiles/bundle')
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
-Plug 'universal-ctags/ctags'
-Plug 'majutsushi/tagbar'
+" Plug 'universal-ctags/ctags'
+" Plug 'majutsushi/tagbar'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/TogFullscreen.vim'
+" Plug 'vim-scripts/TogFullscreen.vim'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'terryma/vim-multiple-cursors'
@@ -220,42 +221,54 @@ call plug#end()
 
 
 
-"EasyMotion 配置
+"EasyMotion (快速跳转)
 let g:EasyMotion_smartcase = 1
-let g:EasyMotion_do_mapping = 1
+let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_startofline = 0
+let g:EasyMotion_enter_jump_first = 1
+let g:EasyMotion_move_highlight = 0
 map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
+nmap ; <Plug>(easymotion-next)
 
 
 "平滑滚屏
 noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
 noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
-
-
-"multiple-cursors 配置
+"C++ 语法高亮
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:cpp_experimental_template_highlight = 1
+let g:cpp_concepts_highlight = 1
+"Devicons
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 2
+"IndentLine(缩进对齐线)
+let g:indentLine_char = "\u250A"
+let g:indentLine_concealcursor = ''
+let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+"multiple-cursors(多行编辑) <C-(n|p|x)>
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
 let g:multi_cursor_quit_key='<CR>'
+"Vim-Surround
+vmap s gS
+let g:py_version = 2
 
 
-"C++ 语法高亮
-let g:cpp_class_scope_highlight = 1
-let g:cpp_experimental_simple_template_highlight = 1
-let g:cpp_concepts_highlight = 1
-
-
-"NERD_Tree 配置 <F5>
-map <F5> :NERDTreeToggle<CR>
-imap <F5> <Esc>:NERDTreeToggle<CR>
+"NERD_Tree (目录树) <F5>
+map <silent> <F5> :NERDTreeToggle<CR>
+imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = ['\.o$', '\~$']
+let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
+let g:NERDTreeCascadeSingleChildDir = 1
+let g:NERDTreeCascadeOpenSingleChildDir = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-let g:NERDTreeDirArrowExpandable = "\uf07b"
-let g:NERDTreeDirArrowCollapsible = "\uf07c"
+let g:NERDTreeDirArrowExpandable = "\uE5FF"
+let g:NERDTreeDirArrowCollapsible = "\uE5FE"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
@@ -266,24 +279,6 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_java = 1
 let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
-
-
-"Ctags 配置
-set autochdir
-set tags+=$VIM/vim80/systags
-set tags+=./tags
-
-
-"TagBar 配置 <F6>
-map <F6> :TagbarToggle<CR>
-imap <F6> <Esc> :TagbarToggle<CR>
-let g:tagbar_ctags_bin = 'ctags'
-let g:tagbar_width = 30
-let g:tagbar_autofocus = 1
-let g:tagbar_autoclose = 1
-let g:tagbar_compact = 1
-let g:tagbar_autopreview = 1
-let g:tagbar_autoshowtag = 1
 
 
 "QuickFix (编译信息窗口) <F2>
@@ -304,34 +299,50 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine配置 <Ctrl + Tab>
-nmap <silent> <C-tab> :bn<CR>
-let g:airline_theme="luna" 
-let g:airline_powerline_fonts = 1   
+"AirLine (状态栏, 缓冲区及标签) <C-[t|Tab]> <Tab> <Leader>[1-9]
+nmap <silent> <C-t> :call NewTab()<CR>
+imap <C-t> <Esc> <C-t>
+function! NewTab()
+    execute "tabnew"
+    execute "Startify"
+endfunction
+let g:airline_theme="onedark"
+let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:Powerline_symbols="fancy"
-let g:airline_left_sep = "\ue0b8"
-let g:airline_left_alt_sep = "\ue0b9"
-let g:airline_right_sep = "\ue0ba"
-let g:airline_right_alt_sep = "\ue0bb"
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#buffers_label = 'Buffers'
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-map <Leader>1 :b 1<CR>
-map <Leader>2 :b 2<CR>
-map <Leader>3 :b 3<CR>
-map <Leader>4 :b 4<CR>
-map <Leader>5 :b 5<CR>
-map <Leader>6 :b 6<CR>
-map <Leader>7 :b 7<CR>
-map <Leader>8 :b 8<CR>
-map <Leader>9 :b 9<CR>
-
-
-"IndentLine 配置
-let g:indentLine_enabled = 1
-let g:indentLine_char = '¦'
+if has('gui_running')
+    let g:airline_left_sep = "\uE0B8"
+    let g:airline_left_alt_sep = "\uE0B9"
+    let g:airline_right_sep = "\uE0BA"
+    let g:airline_right_alt_sep = "\uE0BB"
+endif
+let g:airline_symbols.branch = "\u2387"
+let g:airline_symbols.notexists = "\uE710"
+" let g:airline_symbols.crypt = "\uE0A2"
+" let g:airline_symbols.linenr = "\u2630"
+" let g:airline_symbols.whitespace = "\uF120"
+let g:airline#extensions#ale#error_symbol = "\uF057:"
+let g:airline#extensions#ale#warning_symbol = "\uF06A:"
+let g:airline#extensions#whitespace#checks = []
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <Tab>     <Plug>AirlineSelectNextTab
+nmap <S-Tab>   <Plug>AirlineSelectPrevTab
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
 
 
 "Startify (启动界面)
@@ -342,28 +353,48 @@ let g:startify_custom_footer =
 autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
 let g:startify_custom_header =
             \ startify#fortune#cowsay('=','|','=','=','=','=')
+augroup startify
+    autocmd!
+    autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+    autocmd User Startified setlocal cursorline
+augroup END
 
 
-"ALE 配置
+"ALE (代码异步检测)
 let g:ale_sign_column_always = 1
-let g:ale_sign_error = 'E'
-let g:ale_sign_warning = 'W'
-let g:ale_echo_msg_error_str = 'Error'
-let g:ale_echo_msg_warning_str = 'Warning'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_sign_error = "\uF12A"
+let g:ale_sign_warning = "\uF128"
+" let g:ale_echo_msg_error_str = '汪汪汪！'
+" let g:ale_echo_msg_warning_str = '喵喵喵？'
+let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_history_enabled = 0
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_insert_leave = 1
 let g:ale_lint_on_text_changed = 'normal'
-let g:ale_linters = {'c': ['clang'],
-                    \'c++': ['clang']
-                    \}
-let g:ale_cpp_clang_options = '-std=c++17 -Wall'
-let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, modernize-*']
+let g:ale_linters = {
+            \'c': ['clang'],
+            \'cpp': ['clangtidy']
+            \}
+let g:ale_cpp_clang_options = '-std=c++1z'
+let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, hicpp-*, modernize-*, performance-*']
+let g:ale_cpp_clangtidy_options = ''
 if !hlexists('ALEErrorSign')
     highlight link ALEErrorSign todo
 endif
 nmap <silent> N <Plug>(ale_next_wrap)
 nmap <silent> P <Plug>(ale_previous_wrap)
+
+
+"有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
+let g:api_key = "1932136763"
+let g:keyfrom = "aioiyuuko"
+nmap <silent> <Leader>d <Plug>DictSearch
+vmap <silent> <Leader>d <Plug>DictVSearch
+nmap <silent> <Leader>t <Plug>DictWSearch
+vmap <silent> <Leader>t <Plug>DictWVSearch
+nmap <silent> <Leader>r <Plug>DictRSearch
+vmap <silent> <Leader>r <Plug>DictRVSearch
+" 'q' 关闭Dict窗口
 
 
 ":Test命令 在当前目录下创建输入文件
@@ -412,21 +443,6 @@ function! AsyncCompile()
         execute g:quickfix_return_to_window . "wincmd w"
     else
         echo "当前文件并不能编译.. ╮(￣▽￣)╭"
-    endif
-endfunction
-
-
-"Debug <F8> 保存编译并调试
-map <F8> :call Debug()<CR>
-imap <F8> <Esc> :call Debug()<CR>
-function! Debug()
-    if exists('b:CompileCommand')
-        execute "w"
-        execute b:CompileCommand
-        execute "!gdb ./%<.o"
-        echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
-    else
-        echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
     endif
 endfunction
 
