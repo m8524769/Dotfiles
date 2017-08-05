@@ -143,10 +143,10 @@ iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \{}<Left><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up>
 iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
+                \#include <cstdio><CR>
                 \#include <iostream><CR>
                 \#include <fstream><CR>
-                \#include <algorithm><CR>
-                \#include <vector><CR><CR>
+                \#include <algorithm><CR><CR>
                 \using namespace std;<CR>
                 \std::ifstream tcin("./inTest.txt");<CR><CR>
                 \int main()<CR>
@@ -157,6 +157,7 @@ iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
                 \#!/usr/bin/env python3<CR><CR>
+iabbrev rbmain+ #!/usr/bin/env ruby<CR><CR>
 iabbrev guard+ #ifndef <c-r>=expand("%")<CR><CR>
                 \#define <c-r>=expand("%")<CR><CR>
                 \#endif // <c-r>=expand("%")<CR>
@@ -170,6 +171,7 @@ augroup code_template
     autocmd BufNewFile *.h   :normal iguard+
     autocmd BufNewFile *.sh  :normal ishmain+
     autocmd BufNewFile *.py  :normal ipymain+
+    autocmd BufNewFile *.rb  :normal irbmain+
 augroup END
 
 "括号自动补全
@@ -431,6 +433,9 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 
 
 "ALE (代码异步检测)
+nmap <silent> N <Plug>(ale_next_wrap)
+nmap <silent> P <Plug>(ale_previous_wrap)
+nmap <silent> <F8> <Plug>(ale_fix)
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = "\uF12A"
 let g:ale_sign_warning = "\uF128"
@@ -462,10 +467,10 @@ let g:ale_python_flake8_args = '-m flake8'
 if !hlexists('ALEErrorSign')
     highlight link ALEErrorSign todo
 endif
-nmap <silent> N <Plug>(ale_next_wrap)
-nmap <silent> P <Plug>(ale_previous_wrap)
 function! CPP_ALEFix(...)
+    silent execute "w"
     silent execute "!clang-tidy -fix-errors % --"
+    echo "代码已修复 _(:3」∠)_"
 endfunction
 
 
@@ -494,7 +499,7 @@ function! EnterProject(name) abort
 endfunction
 
 
-":Test命令 在当前目录下创建输入文件
+":Test命令 在当前目录下创建测试输入文件 <F4>
 map <F4> :Test<CR>
 imap <F4> <Esc> :Test<CR>
 if !exists(':Test')
@@ -518,6 +523,7 @@ augroup compile_command
     autocmd FileType cpp,cxx call CPP_CompileOptions()
     autocmd FileType sh call SH_CompileOptions()
     autocmd FileType python call PYHTON_CompileOptions()
+    autocmd FileType ruby call RUBY_CompileOptions()
 augroup END
 
 function! C_CompileOptions() " Use LLVM/Clang Compiler
@@ -562,6 +568,12 @@ function! PYHTON_CompileOptions()
     imap <C-F9> <Esc> :!python3 %
 endfunction
 
+function! RUBY_CompileOptions()
+    let b:RunCommand = "!ruby %"
+    map <C-F9> :!ruby %
+    imap <C-F9> <Esc> :!ruby %
+endfunction
+
 
 "AsyncRun(异步编译) <F7> <C-F7>
 "保存并编译生成目标文件
@@ -582,21 +594,6 @@ function! AsyncCompile()
         endif
     else
         echo "当前文件并不能编译.. ╮(￣▽￣)╭"
-    endif
-endfunction
-
-
-"Debug <F8> 保存编译并调试
-map <silent> <F8> :call Debug()<CR>
-imap <silent> <F8> <Esc> :call Debug()<CR>
-function! Debug()
-    if exists('b:CompileCommand')
-        silent execute "w"
-        execute b:CompileCommand
-        execute "!lldb %<.o"
-        echohl WarningMsg | echo "Debug Finish! _(:з」∠)_"
-    else
-        echo "只能调试C/C++程序呦.. ╮(￣▽￣)╭"
     endif
 endfunction
 
