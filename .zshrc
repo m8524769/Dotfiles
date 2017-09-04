@@ -53,7 +53,7 @@ ENABLE_CORRECTION="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 # incr
-plugins=(git last-working-dir zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(last-working-dir zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -66,9 +66,9 @@ export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
+#     export EDITOR='vim'
 # else
-#   export EDITOR='mvim'
+#     export EDITOR='mvim'
 # fi
 
 # Compilation flags
@@ -93,15 +93,13 @@ alias mv='mv -i'
 alias gun='echo Good Luck, Bro!; sudo pacman -Syu'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
-alias zhcon='zhcon --utf8 --drv=vga'
+alias lantern='rm -rf ~/.lantern; lantern'
+
 alias gc='git clone --depth 1'
 alias ga='git add -A'
 alias gs='git status'
 alias gl='git log --oneline'
-
-# Example aliases
-alias zshconfig="mate ~/.zshrc"
-alias ohmyzsh="mate ~/.oh-my-zsh"
+alias gd='git diff --cached'
 
 #export NVM_DIR="/home/yk/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
