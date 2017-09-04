@@ -20,7 +20,7 @@ colorscheme molokai2
 " colorscheme monokai
 " colorscheme wombat
 set guifont=DejaVuSansMono\ YaHei\ NF\ 14
-" set guifont=FiraCode\ QiHei\ NF\ 16
+" set guifont=FiraCode\ QiHei\ NF\ 14
 set number
 set relativenumber
 set nowrap
@@ -519,59 +519,56 @@ endfunction
 "编译 & 连接选项 <C-(F7|F9)>为手动执行命令
 augroup compile_command
     autocmd!
-    autocmd FileType c call C_CompileOptions()
-    autocmd FileType cpp,cxx call CPP_CompileOptions()
-    autocmd FileType sh call SH_CompileOptions()
-    autocmd FileType python call PYHTON_CompileOptions()
-    autocmd FileType ruby call RUBY_CompileOptions()
+    autocmd FileType c       call C_Command()
+    autocmd FileType cpp,cxx call CPP_Command()
+    autocmd FileType sh      call SH_Command()
+    autocmd FileType python  call PY_Command()
+    autocmd FileType ruby    call RB_Command()
+    autocmd FileType haskell call HS_Command()
 augroup END
 
-function! C_CompileOptions() " Use LLVM/Clang Compiler
+function! C_Command() " Use LLVM/Clang Compiler
     let b:CompileCommand = "AsyncRun clang -std=c99 -Wall -O1 -c %"
     let b:LinkCommand    = "!clang ./*.o -o Run"
     let b:RunCommand     = "!time ./Run"
     map <C-F7> :AsyncRun clang -std=c99 -Wall -g -O1 -c %
-    imap <C-F7> <Esc> <C-F7>
     map <C-F9> :!clang ./*.o -o Run && time ./Run
-    imap <C-F9> <Esc> <C-F9>
 endfunction
 
-" function! CPP_CompileOptions() " Use GCC Compiler
+" function! CPP_Command() " Use GCC Compiler
 "     let b:CompileCommand = "AsyncRun g++ -std=c++17 -Wall -O1 -c %"
 "     let b:LinkCommand    = "!g++ ./*.o -o Run"
 "     let b:RunCommand     = "!./Run"
 "     map <C-F7> :AsyncRun g++ -std=c++17 -Wall -g -O1 -c %
-"     imap <C-F7> <Esc> <C-F7>
 "     map <C-F9> :!g++ ./*.o -o Run && time ./Run
-"     imap <C-F9> <Esc> <C-F9>
 " endfunction
 
-function! CPP_CompileOptions() " Use LLVM/Clang Compiler
+function! CPP_Command() " Use LLVM/Clang Compiler
     let b:CompileCommand = "AsyncRun clang++ -std=c++1z -stdlib=libc++ -Wall -Weffc++ -O0 -c %"
     let b:LinkCommand    = "!clang++ -lc++ -lc++abi ./*.o -o Run"
     let b:RunCommand     = '!./Run'
     map <C-F7> :AsyncRun clang++ -std=c++1z -stdlib=libc++ -Weverything -g -O2 -c %
-    imap <C-F7> <Esc> <C-F7>
     map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && ./Run
-    imap <C-F9> <Esc> <C-F9>
 endfunction
 
-function! SH_CompileOptions()
+function! SH_Command()
     let b:RunCommand = "!bash %"
     map <C-F9> :!bash %
-    imap <C-F9> <Esc> :!bash %
 endfunction
 
-function! PYHTON_CompileOptions()
+function! PY_Command()
     let b:RunCommand = "!python3 %"
     map <C-F9> :!python3 %
-    imap <C-F9> <Esc> :!python3 %
 endfunction
 
-function! RUBY_CompileOptions()
+function! RB_Command()
     let b:RunCommand = "!ruby %"
     map <C-F9> :!ruby %
-    imap <C-F9> <Esc> :!ruby %
+endfunction
+
+function! HS_Command()
+    let b:RunCommand = "!terminator -x stack ghci"
+    map <C-F9> :!terminator -x stack ghci
 endfunction
 
 
