@@ -16,9 +16,6 @@ nmap <leader>v :vi $MYVIMRC<CR>
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
-" colorscheme desert
-" colorscheme monokai
-" colorscheme wombat
 set guifont=DejaVuSansMono\ YaHei\ NF\ 14
 " set guifont=FiraCode\ QiHei\ NF\ 14
 set number
@@ -346,11 +343,9 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine (状态栏, 缓冲区及标签) <C-[t|Tab]> <Tab> <Leader>[1-9]
+"AirLine (状态栏, 缓冲区及标签) <C-t> <Tab> <Leader>[1-9]
 nmap <silent> <C-t> :call NewTab()<CR>
-nmap <C-Tab> <C-t>
 imap <C-t> <Esc> <C-t>
-imap <C-Tab> <Esc> <C-t>
 function! NewTab()
     execute "tabnew"
     execute "Startify"
@@ -475,6 +470,7 @@ endfunction
 
 
 "有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
+" `q`关闭Dict窗口
 let g:api_key = "1932136763"
 let g:keyfrom = "aioiyuuko"
 nmap <silent> <Leader>d <Plug>DictSearch
@@ -483,20 +479,6 @@ nmap <silent> <Leader>t <Plug>DictWSearch
 vmap <silent> <Leader>t <Plug>DictWVSearch
 nmap <silent> <Leader>r <Plug>DictRSearch
 vmap <silent> <Leader>r <Plug>DictRVSearch
-" 'q' 关闭Dict窗口
-
-
-":Project命令 进入C++项目工作空间, 若不存在则创建
-"需要 pbrisbin/vim-mkdir 插件支持
-if !exists(':Project')
-    command! -nargs=1 Project call EnterProject(<q-args>)
-endif
-function! EnterProject(name) abort
-    silent execute "vi ~/Projects/" . a:name . "/main.cpp"
-    silent execute "w"
-    silent execute "cd ~/Projects/" . a:name
-    echo "已进入该项目, 位于 ~/Projects/" . a:name . "\Happy Coding!"
-endfunction
 
 
 ":Test命令 在当前目录下创建测试输入文件 <F4>
@@ -621,11 +603,7 @@ endfunction
 map <silent> <F10> :call CleanObjFile()<CR>
 imap <silent> <F10> <Esc> :call CleanObjFile()<CR>
 function! CleanObjFile()
-    if(has("win32") || has("win64"))
-        silent execute "!del /q *.o Run.exe"
-    else
-        silent execute "!rm ./*.o ./Run"
-    endif
+    silent execute "!rm ./*.o ./Run"
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
 endfunction
 
