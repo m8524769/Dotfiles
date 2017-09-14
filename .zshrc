@@ -90,6 +90,7 @@ fi
 
 alias rm='rm -i'
 alias mv='mv -i'
+alias :q='exit'
 alias gun='echo Good Luck, Bro!; sudo pacman -Syu'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
