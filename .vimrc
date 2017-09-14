@@ -54,14 +54,14 @@ set noswapfile
 set noundofile
 
 "禁用<F1>
-map <F1> <Esc>
+map  <F1> <Esc>
 imap <F1> <Esc>
 
-"方向键切换窗口
-nmap <Left> <C-w>h
-nmap <Down> <C-w>j
-nmap <up> <C-w>k
-nmap <right> <C-w>l
+"切换窗口
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
 
 "增强光标移动
 nmap H ^
@@ -70,9 +70,6 @@ omap H ^
 nmap L $
 vmap L $
 omap L $
-
-"拼接行
-nnoremap <C-j> J
 
 "插入模式快捷键映射
 imap <C-h> <Left>
@@ -98,6 +95,11 @@ set foldlevelstart=99
 
 "与Linux共享剪切
 set clipboard=unnamedplus
+
+"内置终端
+set shell=/bin/fish
+set termkey=<C-l>
+set termsize="24x80"
 
 "自动载入
 set autoread
@@ -207,7 +209,7 @@ Plug 'junegunn/vim-plug'
 " Plug 'Shougo/unite.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
-Plug 'universal-ctags/ctags'
+" Plug 'universal-ctags/ctags'
 Plug 'majutsushi/tagbar'
 Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
@@ -549,8 +551,8 @@ function! RB_Command()
 endfunction
 
 function! HS_Command()
-    let b:RunCommand = "!terminator -x stack ghci"
-    map <C-F9> :!terminator -x stack ghci
+    let b:RunCommand = "term ghci"
+    map <C-F9> :term ghci
 endfunction
 
 
