@@ -230,6 +230,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 " Plug 'roman/golden-ratio'
+Plug 'neovimhaskell/haskell-vim'
 call plug#end()
 filetype plugin indent on
 
@@ -500,21 +501,21 @@ function! CleanTest()
 endfunction
 
 
-"编译 & 连接选项 <C-(F7|F9)>为手动执行命令
+"编译及链接选项 <C-(F7|F9)> 为手动执行命令
 augroup compile_command
     autocmd!
     autocmd FileType c       call C_Command()
     autocmd FileType cpp,cxx call CPP_Command()
-    autocmd FileType sh      call SH_Command()
-    autocmd FileType python  call PY_Command()
-    autocmd FileType ruby    call RB_Command()
-    autocmd FileType haskell call HS_Command()
+    autocmd FileType sh      let b:RunCommand = "!bash %"
+    autocmd FileType python  let b:RunCommand = "!python3 %"
+    autocmd FileType ruby    let b:RunCommand = "!ruby %"
+    autocmd FileType haskell let b:RunCommand = "term ghci %"
 augroup END
 
 function! C_Command() " Use LLVM/Clang Compiler
     let b:CompileCommand = "AsyncRun clang -std=c99 -Wall -O1 -c %"
     let b:LinkCommand    = "!clang ./*.o -o Run"
-    let b:RunCommand     = "!time ./Run"
+    let b:RunCommand     = "!./Run"
     map <C-F7> :AsyncRun clang -std=c99 -Wall -g -O1 -c %
     map <C-F9> :!clang ./*.o -o Run && time ./Run
 endfunction
@@ -535,31 +536,11 @@ function! CPP_Command() " Use LLVM/Clang Compiler
     map <C-F9> :!clang++ -lc++ -lc++abi ./*.o -o Run && ./Run
 endfunction
 
-function! SH_Command()
-    let b:RunCommand = "!bash %"
-    map <C-F9> :!bash %
-endfunction
-
-function! PY_Command()
-    let b:RunCommand = "!python3 %"
-    map <C-F9> :!python3 %
-endfunction
-
-function! RB_Command()
-    let b:RunCommand = "!ruby %"
-    map <C-F9> :!ruby %
-endfunction
-
-function! HS_Command()
-    let b:RunCommand = "term ghci"
-    map <C-F9> :term ghci
-endfunction
-
 
 "AsyncRun(异步编译) <F7> <C-F7>
 "保存并编译生成目标文件
 map <silent> <F7> :call AsyncCompile()<CR>
-imap <silent> <F7> <Esc> :call AsyncCompile()<CR>
+imap <F7> <Esc> <F7>
 function! AsyncCompile()
     if exists('b:CompileCommand')
         silent execute "w"
@@ -582,7 +563,7 @@ endfunction
 "Link & Run <F9> <C-F9>
 "链接当前目录的所有目标文件, 生成可执行文件并运行
 map <silent> <F9> :call Link_Run()<CR>
-imap <silent> <F9> <Esc> :call Link_Run()<CR>
+imap <F9> <Esc> <F9>
 function! Link_Run()
     if g:quickfix_is_open
         execute g:quickfix_return_to_window . "wincmd w"
@@ -603,7 +584,7 @@ endfunction
 
 "清除当前目录的所有目标文件及可执行文件 <F10>
 map <silent> <F10> :call CleanObjFile()<CR>
-imap <silent> <F10> <Esc> :call CleanObjFile()<CR>
+imap <F10> <Esc> <F10>
 function! CleanObjFile()
     silent execute "!rm ./*.o ./Run"
     echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
