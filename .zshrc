@@ -79,7 +79,7 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # opaqueness
 if [ -n "$WINDOWID" ]; then
-    TRANSPARENCY_HEX=$(printf 0x%x $((0xffffffff * 74 / 100)))
+    TRANSPARENCY_HEX=$(printf 0x%x $((0xffffffff * 75 / 100)))
     xprop -id "$WINDOWID" -f _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY "$TRANSPARENCY_HEX"
 fi
 
