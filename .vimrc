@@ -399,8 +399,11 @@ let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
+            \ '~/.Xresources',
             \ '~/.conkyrc',
             \ '~/.config/fontconfig/fonts.conf',
+            \ '~/.config/i3/config',
+            \ '~/.config/polybar/config',
             \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
