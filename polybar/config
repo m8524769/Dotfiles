@@ -25,7 +25,6 @@ throttle-input-for = 30
 screenchange-reload = true
 
 [bar/top]
-; tray-position = center
 dpi = 90
 bottom = false
 width = 100%
@@ -42,7 +41,7 @@ border-bottom-size = 0
 border-bottom-color = ${colors.background}
 spacing = 1
 padding-left = 1
-padding-right = 1
+padding-right = 0
 module-margin-left = 1
 module-margin-right = 1
 font-0 = FiraCode:pixelsize=16;4
@@ -50,10 +49,7 @@ font-1 = FontAwesome:pixelsize=18;4
 font-2 = DejaVuSansMono YaHei NF:pixelsize=18;3
 modules-left = i3
 modules-center = date
-modules-right = powermenu
-;tray-transparent = true
-;tray-background = #0063ff
-;override-redirect = true
+modules-right = wlan powermenu
 scroll-up = i3wm-wsnext
 scroll-down = i3wm-wsprev
 
@@ -83,12 +79,7 @@ font-2 = DejaVuSansMono YaHei NF:pixelsize=18;4
 modules-left = filesystem-root filesystem-home
 modules-center = volume
 modules-right = cpu memory
-; tray-position =
-tray-padding = 2
-
-[module/xwindow]
-type = internal/xwindow
-label = %title%
+; tray-padding = 2
 
 [module/filesystem-root]
 type = internal/fs
@@ -110,18 +101,16 @@ index-sort = true
 wrapping-scroll = false
 fuzzy-match = true
 ws-icon-0 = 1;
-ws-icon-1 = 2;
+ws-icon-1 = 2;
 ws-icon-2 = 3;
-ws-icon-3 = 4;
+ws-icon-3 = 4;
 ws-icon-4 = 5;
 ws-icon-5 = 6;
 ws-icon-6 = 7;
-ws-icon-7 = 8;
+ws-icon-7 = 8;
 ws-icon-8 = 9;
-ws-icon-9 = 0;
+ws-icon-9 = 0;
 ws-icon-default = 
-;     
-;         
 format = <label-state> <label-mode>
 label-mode-padding = 2
 label-mode-foreground = #000
@@ -134,34 +123,15 @@ label-unfocused = %index%
 label-unfocused-padding = 3
 label-urgent = %index%!
 label-urgent-background = ${colors.alert}
-label-urgent-padding = 2
+label-urgent-padding = 3
 label-visible = %index%
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
-[module/backlight]
-type = internal/xbacklight
-enable-scroll = true
-card = intel_backlight
-click-left = connman-gtk
-format = <label> <bar>
-label = ""
-bar-width = 10
-bar-indicator = |
-bar-indicator-foreground = #ff
-bar-indicator-font = 2
-bar-fill = ─
-bar-fill-font = 2
-bar-fill-foreground = #9f78e1
-bar-empty = ─
-bar-empty-font = 2
-bar-empty-foreground = ${colors.foreground-alt}
-
 [module/cpu]
 type = internal/cpu
 interval = 0.1
-; interval = 1
 format = <ramp-coreload>
 label = %percentage%%
 ramp-coreload-0 = %{F#5B}▁%{F-}
@@ -175,48 +145,27 @@ ramp-coreload-7 = %{F#FF5C57}█%{F-}
 
 [module/memory]
 type = internal/memory
-interval = 1
+interval = 0.5
 format = <bar-used>
 label =
 bar-used-indicator =
 bar-used-width = 20
 bar-used-foreground-0 = #5AF78E
 bar-used-foreground-1 = #5AF78E
-bar-used-foreground-2 = #F3F99D
+bar-used-foreground-2 = #5AF78E
 bar-used-foreground-3 = #FF5C57
+bar-used-gradient = false
 bar-used-fill = ▐
 bar-used-empty = ▐
 bar-used-empty-foreground = #444444
 
 [module/wlan]
 type = internal/network
-interface = wlp3s0
+interface = wlp1s0
 interval = 3.0
-format-connected = <label-connected>
-format-connected-prefix = " "
-format-connected-prefix-foreground = #5b
-format-connected-underline = #FFFFFF
-label-connected = "on"
-label-disconnected = " off"
-label-disconnected-foreground = #5b
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
-ramp-signal-foreground = ${colors.foreground-alt}
-
-[module/eth]
-type = internal/network
-;interface = br0
-interval = 3.0
-format-connected-underline = #55aa55
-format-connected-prefix = " "
-format-connected-foreground-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
-format-disconnected-underline = ${self.format-connected-underline}
-label-disconnected = %ifname%
-label-disconnected-foreground = ${colors.foreground-alt}
+format-connected = <ramp-signal>
+label-connected = %essid%
+ramp-signal-0 = %{A1:nm-connection-editor:}%{A}
 
 [module/date]
 type = internal/date
@@ -229,18 +178,17 @@ label = %date% %time%
 
 [module/volume]
 type = internal/volume
-format-volume = <label-volume> <bar-volume>
-label-volume = "VOL"
+format-volume = <bar-volume>
+label-volume =
 label-volume-foreground = ${colors.foreground-alt}
 label-muted = " Muted"
 label-muted-foreground = ${colors.foreground-alt}
-bar-volume-width = 36
-bar-volume-foreground-0 = #C7F5FE
-bar-volume-foreground-1 = #FCC8F8
-bar-volume-foreground-2 = #EAB4F8
-bar-volume-foreground-3 = #FF99FE
+bar-volume-width = 40
+bar-volume-foreground-0 = #FCC8F8
+bar-volume-foreground-1 = #EAB4F8
+bar-volume-foreground-2 = #FF99FE
 bar-volume-gradient = false
-bar-volume-indicator = │
+bar-volume-indicator = Vol
 bar-volume-indicator-font = 2
 bar-volume-indicator-foreground = #FF
 bar-volume-fill = ─
@@ -252,7 +200,10 @@ bar-volume-empty-foreground = ${colors.foreground-alt}
 [module/powermenu]
 type = custom/menu
 label-open = 
+label-open-padding = 2
 label-open-foreground = ${colors.foreground}
+label-open-background = ${colors.background-alt}
+label-open-underline = #A4A4A4
 label-close = Cancel
 label-close-foreground = #EAFFD0
 label-separator = |
@@ -264,12 +215,11 @@ menu-0-0-exec = menu-open-1
 menu-0-1 =  Shutdown
 menu-0-1-exec = menu-open-2
 menu-0-1-foreground = #F38181
-
-menu-0-2 = Exit i3
+menu-0-2 =  Exit i3
 menu-0-2-exec = i3-msg exit
 menu-0-2-foreground = #95E1D3
-menu-0-3 = 
-menu-0-3-exec = i3lock
+menu-0-3 = " "
+menu-0-3-exec = i3lock --color=4A4A4A --ignore-empty-password
 menu-0-3-foreground = ${colors.foreground}
 
 menu-1-0 =  Now
