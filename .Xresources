@@ -2,41 +2,12 @@
 Xft.dpi: 96
 Xft.antialias: true
 
-Xcursor.theme: capitaine-cursors
+! Xcursor.theme: capitaine-cursor
+Xcursor.theme: bridge
+! Xcursor.theme: Maia-Cursor
 
-URxvt.preeditType: Root
-URxvt.inputMethod: fcitx
-URxvt.depth: 32
-URxvt.inheritPixmap: true
-URxvt.background: black
-URxvt.foreground: white
-URxvt.colorBD: Gray75
-URxvt.colorUL: Green
-URxvt.color1: Red2
-URxvt.color4: RoyalBlue
-URxvt.color5: Magenta2
-URxvt.color8: Gray50
-URxvt.color10: Green2
-URxvt.color12: DodgerBlue
-URxvt.color14: Cyan2
-URxvt.color15: Gray95
-URxvt.urlLauncher: firefox-nightly
-URxvt.matcher.button: 1
-URxvt.perl-ext-common: matcher
-URxvt.scrollBar: False
-URxvt.scrollBar_floating: False
-URxvt.scrollstyle: plain
-URxvt.mouseWheelScrollPage: True
-URxvt.scrollTtyOutput: False
-URxvt.scrollWithBuffer: True
-URxvt.scrollTtyKeypress: True
-URxvt.cursorBlink: True
-URxvt.saveLines: 10000
-URxvt.borderLess: False
-URxvt.font: xft:DejaVu Sans Mono:pixelsize=18,xft:Microsoft YaHei:pixelsize=18
-URxvt.boldfont: xft:DejaVu Sans Mono:pixelsize=18
-
-UXTerm.VT100.geometry: 80x24
+UXTerm.VT100.utf8: 1
+UXTerm.VT100.geometry: 80x25
 UXTerm.VT100.background: black
 UXTerm.VT100.foreground: white
 UXTerm.VT100.locale: true
@@ -48,4 +19,39 @@ UXTerm.VT100.scaleHeight: 1.0
 UXTerm.VT100.cursorColor: white
 UXTerm.VT100.cursorBlink: True
 UXTerm.VT100.saveLines: 4096
+UXTerm.VT100.visualbell: true
 UXTerm.VT100.bellIsUrgent: true
+UXTerm.VT100.selectToClipboard: true
+
+! URxvt.preeditType: Root
+! URxvt.inputMethod: fcitx
+! URxvt.depth: 32
+! URxvt.inheritPixmap: true
+! URxvt.background: black
+! URxvt.foreground: white
+! URxvt.colorBD: Gray75
+! URxvt.colorUL: Green
+! URxvt.color1: Red2
+! URxvt.color4: RoyalBlue
+! URxvt.color5: Magenta2
+! URxvt.color8: Gray50
+! URxvt.color10: Green2
+! URxvt.color12: DodgerBlue
+! URxvt.color14: Cyan2
+! URxvt.color15: Gray95
+! URxvt.urlLauncher: firefox-nightly
+! URxvt.matcher.button: 1
+! URxvt.perl-ext-common: matcher
+! URxvt.scrollBar: False
+! URxvt.scrollBar_floating: False
+! URxvt.scrollstyle: plain
+! URxvt.mouseWheelScrollPage: True
+! URxvt.scrollTtyOutput: False
+! URxvt.scrollWithBuffer: True
+! URxvt.scrollTtyKeypress: True
+! URxvt.cursorBlink: True
+! URxvt.saveLines: 10000
+! URxvt.borderLess: False
+! URxvt.font: xft:DejaVu Sans Mono:pixelsize=18,xft:Microsoft YaHei:pixelsize=18
+! URxvt.boldfont: xft:DejaVu Sans Mono:pixelsize=18
+
