@@ -9,7 +9,7 @@ behave mswin
 let mapleader=","                           " 默认<Leader>键
 let g:mapleader = ","
 
-let $MYVIMRC='~/Projects/My_Code/.vimrc'    " <Leader>v 打开.vimrc
+let $MYVIMRC='~/.vimrc'                     " <Leader>v 打开.vimrc
 nmap <leader>v :vi $MYVIMRC<CR>
 
 "界面配置
@@ -97,7 +97,7 @@ set foldlevelstart=99
 set clipboard=unnamedplus
 
 "内置终端
-set shell=/bin/fish
+set shell=/bin/zsh
 set termkey=<C-l>
 set termsize="24x80"
 
@@ -399,18 +399,19 @@ let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
+            \ '~/.xinitrc',
             \ '~/.Xresources',
             \ '~/.conkyrc',
             \ '~/.config/fontconfig/fonts.conf',
             \ '~/.config/i3/config',
+            \ '~/.config/i3/i3lock.sh',
             \ '~/.config/polybar/config',
+            \ '~/.config/polybar/launch.sh',
             \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
             \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
 let g:startify_list_order = [
-            \ ['   Working Directory'],
-            \ 'dir',
             \ ['   Recently Used'],
             \ 'files',
             \ ['   My Bookmarks:'],
