@@ -76,18 +76,17 @@ module-margin-right = 1
 font-0 = FiraCode:pixelsize=16;4
 font-1 = FontAwesome:pixelsize=18;4
 font-2 = DejaVuSansMono YaHei NF:pixelsize=18;4
-modules-left = filesystem-root filesystem-home
+modules-left = fs-root fs-home
 modules-center = volume
 modules-right = cpu memory
-; tray-padding = 2
 
-[module/filesystem-root]
+[module/fs-root]
 type = internal/fs
 interval = 8
 mount-0 = /
 label-mounted = "%{F#55}%{F-} %percentage_used%%"
 
-[module/filesystem-home]
+[module/fs-home]
 type = internal/fs
 interval = 4
 mount-0 = /home
@@ -121,19 +120,18 @@ label-focused-underline = #A4A4A4
 label-focused-padding = 3
 label-unfocused = %index%
 label-unfocused-padding = 3
-label-urgent = %index%!
-label-urgent-background = ${colors.alert}
+label-urgent = %index%
+label-urgent-background = #007ACC
 label-urgent-padding = 3
 label-visible = %index%
-label-visible-background = ${self.label-focused-background}
-label-visible-underline = ${self.label-focused-underline}
-label-visible-padding = ${self.label-focused-padding}
+label-visible-background = ${colors.background-alt}
+label-visible-underline = #A4A4A4
+label-visible-padding = 3
 
 [module/cpu]
 type = internal/cpu
 interval = 0.1
 format = <ramp-coreload>
-label = %percentage%%
 ramp-coreload-0 = %{F#5B}▁%{F-}
 ramp-coreload-1 = %{F#5B}▂%{F-}
 ramp-coreload-2 = %{F#5B}▃%{F-}
@@ -170,31 +168,23 @@ ramp-signal-0 = %{A1:nm-connection-editor:}%{A}
 [module/date]
 type = internal/date
 interval = 1
+label = %date% %time%
 date = %m/%d %a
 time = %H:%M
 date-alt = %A, %d %B %Y
 time-alt = %H:%M:%S
-label = %date% %time%
 
 [module/volume]
 type = internal/volume
 format-volume = <bar-volume>
-label-volume =
-label-volume-foreground = ${colors.foreground-alt}
 label-muted = " Muted"
 label-muted-foreground = ${colors.foreground-alt}
 bar-volume-width = 40
 bar-volume-foreground-0 = #FCC8F8
-bar-volume-foreground-1 = #EAB4F8
-bar-volume-foreground-2 = #FF99FE
 bar-volume-gradient = false
 bar-volume-indicator = Vol
-bar-volume-indicator-font = 2
-bar-volume-indicator-foreground = #FF
 bar-volume-fill = ─
-bar-volume-fill-font = 2
 bar-volume-empty = ─
-bar-volume-empty-font = 2
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
 [module/powermenu]
@@ -219,7 +209,7 @@ menu-0-2 =  Exit i3
 menu-0-2-exec = i3-msg exit
 menu-0-2-foreground = #95E1D3
 menu-0-3 = " "
-menu-0-3-exec = i3lock --color=4A4A4A --ignore-empty-password
+menu-0-3-exec = ~/.config/i3/i3lock.sh
 menu-0-3-foreground = ${colors.foreground}
 
 menu-1-0 =  Now
