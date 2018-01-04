@@ -3,7 +3,6 @@
 #
 # Should you change your keyboard layout some time, delete
 # this file and re-run i3-config-wizard(1).
-#
 
 # i3 config file (v4)
 #
@@ -32,7 +31,7 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec uxterm
-bindsym $mod+Control+t exec uxterm
+bindsym $mod+Control+t exec gnome-terminal
 
 # start GVim
 bindsym $mod+Control+v exec gvim
@@ -52,6 +51,7 @@ bindsym $mod+q kill
 
 # start rofi (a program launcher)
 bindsym $mod+d exec --no-startup-id rofi -show run
+bindsym Super_L exec --no-startup-id rofi -show run
 
 # change focus
 bindsym $mod+h focus left
@@ -97,12 +97,6 @@ bindsym $mod+Shift+space floating toggle
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
 
-# focus the parent container
-# bindsym $mod+a focus parent
-
-# focus the child container
-#bindsym $mod+d focus child
-
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -131,8 +125,6 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
-# exit i3 (logs you out of your X session)
-# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -153,40 +145,30 @@ mode "resize" {
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
-
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-# bar {
-#         status_command i3status
-#         position top
-# }
+bindsym --release Print exec --no-startup-id scrot
+bindsym --release Shift+Print exec --no-startup-id scrot -s
 
 new_window 1pixel
 popup_during_fullscreen smart
 
 # Autostart
-exec_always --no-startup-id feh --bg-fill ~/图片/Wallpapers/pexels-photo-463366.jpeg
+exec_always --no-startup-id feh --bg-fill ~/图片/pexels-photo-463366.jpeg
 exec --no-startup-id compton &
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 exec --no-startup-id fcitx &
-exec --no-startup-id xautolock -time 5 -locker '~/.config/i3/i3lock.sh'
+exec --no-startup-id xautolock -time 10 -locker '~/.config/i3/i3lock.sh'
 
 
 # i3 gaps and border
 #
 # Set inner/outer gaps
-gaps inner 13
+gaps inner 14
 gaps outer 8
 
-# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
-# gaps inner|outer current|all set|plus|minus <px>
-# gaps inner all set 10
-# gaps outer all plus 5
-
 # Smart gaps (gaps used if only more than one container on the workspace)
-# smart_gaps on
+smart_gaps on
 
 # Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
