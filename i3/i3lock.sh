@@ -5,10 +5,10 @@ C='#393E4644'  # clear ish
 D='#393E4600'  # default
 T='#EEEEEEDD'  # text
 W='#FF2E63BB'  # wrong
-V='#08D9D6DD'  # verifying
+V='#08D9D6CC'  # verifying
 
 i3lock -e -i ~/图片/Wallpapers/arch-linux-5991.png \
---radius=94           \
+--radius=120          \
 --ring-width=7        \
 --ringcolor=$D        \
 --ringvercolor=$V     \
@@ -17,17 +17,17 @@ i3lock -e -i ~/图片/Wallpapers/arch-linux-5991.png \
 --bshlcolor=$W        \
 \
 --insidecolor=$B      \
---insidevercolor=$C   \
---insidewrongcolor=$C \
+--insidevercolor=$B   \
+--insidewrongcolor=$B \
 \
 --linecolor=$B        \
 --separatorcolor=$D   \
 \
 --veriftext=""        \
 --wrongtext=""        \
+--textsize=32         \
+--textcolor=$T        \
 # --statusfont="FiraCode" \
-# --textsize=32         \
-# --textcolor=$T        \
 # \
 # --clock               \
 # --timestr="%H:%M"     \
