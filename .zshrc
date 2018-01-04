@@ -11,14 +11,14 @@ export ZSH=/home/yk/.oh-my-zsh
 ZSH_THEME="gentoo"
 
 # Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+CASE_SENSITIVE="true"
 
 # Uncomment the following line to use hyphen-insensitive completion. Case
 # sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
 # export UPDATE_ZSH_DAYS=13
@@ -27,13 +27,13 @@ ZSH_THEME="gentoo"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -52,8 +52,8 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# incr
-plugins=(last-working-dir zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(z zsh-syntax-highlighting zsh-autosuggestions)
+# incr last-working-dir
 
 source $ZSH/oh-my-zsh.sh
 
@@ -68,7 +68,7 @@ export LANG=en_US.UTF-8
 # if [[ -n $SSH_CONNECTION ]]; then
 #     export EDITOR='vim'
 # else
-#     export EDITOR='mvim'
+#     export EDITOR='vim'
 # fi
 
 # Compilation flags
@@ -95,7 +95,7 @@ alias gun='echo Good Luck, Bro!; sudo pacman -Syu'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias localtest='cd ~/Projects/m8524769.github.io; jekyll serve --watch'
-alias socks='cd ~/src/shadowsocksr/shadowsocks; python ./local.py'
+alias socks='cd ~/src/shadowsocksr/shadowsocks; gvim ../config.json; python ./local.py'
 # alias lantern='rm -rf ~/.lantern; lantern'
 
 alias gc='git clone --depth 1'
