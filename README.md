@@ -1,18 +1,24 @@
-# *My Dotfiles*
+# *yk's Dotfiles*
 
-[![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
+![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)
 
-> 配置文件及脚本备份
+> Config files and Scripts on my Archlinux
 
-- .vimrc & \_vimrc      > Vim/GVim 配置，Windows版本目前停更
-- .zshrc                > Oh-My-Zsh 配置
-- .xinitrc              > X server 启动脚本
-- .Xresources           > 终端模拟器配置
-- .conkyrc              > Conky 配置
-- fontconfig/fonts.conf > Linux 字体配置脚本
-- i3/config             > i3-gaps 配置
-- polybar/config        > polybar 配置
-- polybar/launch.sh     > polybar 启动脚本
-- mirrorlist            > Archlinux 镜像源列表
-- molokai2.vim          > 基于Molokai的GVim配色方案
-- python.vim            > Python 语法高亮增强
+## Setup
+  + OS: `Arch Linux`
+  + Windows Manager: [`i3-gaps`](i3/config)
+  + Shell: [`zsh`](.zshrc)
+  + Terminal Emulator: [`uxterm`](.Xresources)
+  + Text Editor: [`gvim`](.vimrc) \ [`visual-studio-code`](https://gist.github.com/m8524769/824dd8cce44f7146afdc9261196f7546)
+  + Application Launcher: [`rofi`](rofi/config.rasi)
+  + Status Bar: [`polybar`](polybar/config)
+  + System Monitor: [`conky`](.conkyrc)
+  + File Manager: [`ranger`](ranger/rc.conf)
+  + Screen Locker: [`i3lock-color`](i3/i3lock.sh)
+
+## Others
+  + X Server Launcher: [`.xinitrc`](.xinitrc)
+  + [`fonts.conf`](fontconfig/fonts.conf)
+  + [`mirrorlist`](mirrorlist)
+  + GVim Colorscheme: [`molokai2.vim`](molokai2.vim)
+  + Highlight Enhancement for Python in Vim: [`python.vim`](python.vim)
