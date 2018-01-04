@@ -7,12 +7,17 @@
 
 [colors]
 background = #7A000000
-background-alt = #444
-foreground = #DFDFDF
 foreground-alt = #55
-primary = #FFB52A
-secondary = #E60053
-alert = #BD2C40
+white = #DFDFDF
+smoke = #55
+grey = #A4A4A4
+darkgrey = #444444
+black = #000
+blue = #007ACC
+green = #5AF78E
+red = #FF5C57
+pink = #FCC8F8
+orange = #FFB52A
 
 [global/wm]
 margin-top = 0
@@ -27,55 +32,33 @@ screenchange-reload = true
 [bar/top]
 dpi = 90
 bottom = false
-width = 100%
 height = 25
-offset-x = 0
-offset-y = 0
 background = ${colors.background}
-foreground = ${colors.foreground}
-overline-size = 0
-overline-color = #F00
+foreground = ${colors.white}
 underline-size = 2
-underline-color = #00F
-border-bottom-size = 0
-border-bottom-color = ${colors.background}
 spacing = 1
 padding-left = 1
-padding-right = 0
-module-margin-left = 1
-module-margin-right = 1
 font-0 = FiraCode:pixelsize=16;4
 font-1 = FontAwesome:pixelsize=18;4
 font-2 = DejaVuSansMono YaHei NF:pixelsize=18;3
 modules-left = i3
 modules-center = date
-modules-right = wlan powermenu
+modules-right = powermenu
 scroll-up = i3wm-wsnext
 scroll-down = i3wm-wsprev
 
 [bar/bottom]
 dpi = 90
 bottom = true
-width = 100%
 height = 20
-offset-x = 0
-offset-y = 0
 background = ${colors.background}
-foreground = ${colors.foreground}
-overline-size = 0
-overline-color = #F00
-underline-size = 0
-underline-color = #00F
-border-bottom-size = 0
-border-bottom-color = ${colors.background}
-spacing = 1
+foreground = ${colors.white}
 padding-left = 1
 padding-right = 1
-module-margin-left = 1
-module-margin-right = 1
+module-margin-right = 2
 font-0 = FiraCode:pixelsize=16;4
 font-1 = FontAwesome:pixelsize=18;4
-font-2 = DejaVuSansMono YaHei NF:pixelsize=18;4
+font-2 = DejaVuSansMono YaHei NF:pixelsize=18;2
 modules-left = fs-root fs-home
 modules-center = volume
 modules-right = cpu memory
@@ -109,37 +92,37 @@ ws-icon-6 = 7;
 ws-icon-7 = 8;
 ws-icon-8 = 9;
 ws-icon-9 = 0;
-ws-icon-default = 
 format = <label-state> <label-mode>
-label-mode-padding = 2
-label-mode-foreground = #000
-label-mode-background = ${colors.primary}
 label-focused = %icon%
-label-focused-background = ${colors.background-alt}
-label-focused-underline = #A4A4A4
+label-focused-background = ${colors.darkgrey}
+label-focused-underline = ${colors.grey}
 label-focused-padding = 3
 label-unfocused = %index%
 label-unfocused-padding = 3
 label-urgent = %index%
-label-urgent-background = #007ACC
+label-urgent-background = ${colors.blue}
 label-urgent-padding = 3
+label-mode-padding = 2
+label-mode-foreground = ${colors.black}
+label-mode-background = ${colors.orange}
 label-visible = %index%
-label-visible-background = ${colors.background-alt}
-label-visible-underline = #A4A4A4
+label-visible-background = ${colors.darkgrey}
+label-visible-underline = ${colors.grey}
 label-visible-padding = 3
 
 [module/cpu]
 type = internal/cpu
 interval = 0.1
 format = <ramp-coreload>
-ramp-coreload-0 = %{F#5B}▁%{F-}
-ramp-coreload-1 = %{F#5B}▂%{F-}
-ramp-coreload-2 = %{F#5B}▃%{F-}
-ramp-coreload-3 = %{F#5B}▄%{F-}
-ramp-coreload-4 = %{F#5B}▅%{F-}
-ramp-coreload-5 = %{F#FF5C57}▆%{F-}
-ramp-coreload-6 = %{F#FF5C57}▇%{F-}
-ramp-coreload-7 = %{F#FF5C57}█%{F-}
+ramp-coreload-0 = ▁
+ramp-coreload-1 = ▂
+ramp-coreload-2 = ▃
+ramp-coreload-3 = ▄
+ramp-coreload-4 = ▅
+ramp-coreload-5 = ▆
+ramp-coreload-6 = ▇
+ramp-coreload-7 = █
+ramp-coreload-foreground = #5B
 
 [module/memory]
 type = internal/memory
@@ -148,14 +131,14 @@ format = <bar-used>
 label =
 bar-used-indicator =
 bar-used-width = 20
-bar-used-foreground-0 = #5AF78E
-bar-used-foreground-1 = #5AF78E
-bar-used-foreground-2 = #5AF78E
-bar-used-foreground-3 = #FF5C57
+bar-used-foreground-0 = ${colors.green}
+bar-used-foreground-1 = ${colors.green}
+bar-used-foreground-2 = ${colors.green}
+bar-used-foreground-3 = ${colors.red}
 bar-used-gradient = false
 bar-used-fill = ▐
 bar-used-empty = ▐
-bar-used-empty-foreground = #444444
+bar-used-empty-foreground = ${colors.darkgrey}
 
 [module/wlan]
 type = internal/network
@@ -177,23 +160,24 @@ time-alt = %H:%M:%S
 [module/volume]
 type = internal/volume
 format-volume = <bar-volume>
-label-muted = " Muted"
-label-muted-foreground = ${colors.foreground-alt}
+label-muted = "────────────────Muted────────────────"
+label-muted-foreground = ${colors.smoke}
 bar-volume-width = 40
-bar-volume-foreground-0 = #FCC8F8
+bar-volume-foreground-0 = ${colors.pink}
 bar-volume-gradient = false
-bar-volume-indicator = Vol
-bar-volume-fill = ─
-bar-volume-empty = ─
-bar-volume-empty-foreground = ${colors.foreground-alt}
+bar-volume-indicator =
+bar-volume-fill = ▰
+bar-volume-empty = ▰
+bar-volume-empty-foreground = ${colors.smoke}
+; ▮▯▱◆◇◈
 
 [module/powermenu]
 type = custom/menu
 label-open = 
 label-open-padding = 2
-label-open-foreground = ${colors.foreground}
-label-open-background = ${colors.background-alt}
-label-open-underline = #A4A4A4
+label-open-foreground = ${colors.white}
+label-open-background = ${colors.darkgrey}
+label-open-underline = ${colors.grey}
 label-close = Cancel
 label-close-foreground = #EAFFD0
 label-separator = |
@@ -210,7 +194,7 @@ menu-0-2-exec = i3-msg exit
 menu-0-2-foreground = #95E1D3
 menu-0-3 = " "
 menu-0-3-exec = ~/.config/i3/i3lock.sh
-menu-0-3-foreground = ${colors.foreground}
+menu-0-3-foreground = ${colors.white}
 
 menu-1-0 =  Now
 menu-1-0-exec = reboot
