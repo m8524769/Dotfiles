@@ -16,8 +16,8 @@ nmap <leader>v :vi $MYVIMRC<CR>
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
-set guifont=DejaVuSansMono\ YaHei\ NF\ 14
-" set guifont=FiraCode\ QiHei\ NF\ 14
+set guifont=DejaVuSansMono\ YaHei\ NF\ 15
+" set guifont=FiraCode\ QiHei\ NF\ 15
 set number
 set relativenumber
 set nowrap
@@ -56,6 +56,9 @@ set noundofile
 "禁用<F1>
 map  <F1> <Esc>
 imap <F1> <Esc>
+
+"禁用蜂鸣警告
+set vb t_vb=
 
 "切换窗口
 map <C-h> <C-w>h
@@ -206,10 +209,8 @@ endfunction
 filetype off
 call plug#begin('$VIM/vimfiles/bundle')
 Plug 'junegunn/vim-plug'
-" Plug 'Shougo/unite.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
-" Plug 'universal-ctags/ctags'
 Plug 'majutsushi/tagbar'
 Plug 'easymotion/vim-easymotion'
 Plug 'Valloric/YouCompleteMe'
@@ -229,7 +230,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-" Plug 'roman/golden-ratio'
 Plug 'neovimhaskell/haskell-vim'
 call plug#end()
 filetype plugin indent on
@@ -443,7 +443,7 @@ let g:ale_sign_error = "\uF12A"
 let g:ale_sign_warning = "\uF128"
 " let g:ale_echo_msg_error_str = '汪汪汪！'
 " let g:ale_echo_msg_warning_str = '喵喵喵？'
-let g:ale_echo_msg_format = '[%linter%] %s'
+let g:ale_echo_msg_format = '%s'
 let g:ale_history_enabled = 0
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_insert_leave = 1
@@ -462,8 +462,8 @@ let g:ale_fixers = {
             \   ]
             \}
 let g:ale_cpp_clang_options = '-std=c++1z'
+let g:ale_cpp_clangtidy_options = '-std=c++1z'
 let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, hicpp-*, modernize-*, performance-*']
-let g:ale_cpp_clangtidy_options = ''
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
 if !hlexists('ALEErrorSign')
@@ -597,3 +597,4 @@ endfunction
 if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
+
