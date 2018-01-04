@@ -13,13 +13,13 @@ UXTerm.VT100.locale: true
 UXTerm.VT100.font: fixed
 UXTerm.VT100.faceName: DejaVu Sans Mono
 UXTerm.VT100.faceNameDoublesize: Microsoft YaHei
-UXTerm.VT100.faceSize: 14
+UXTerm.VT100.faceSize: 15
 UXTerm.VT100.scaleHeight: 1.0
 UXTerm.VT100.cursorColor: white
 UXTerm.VT100.cursorBlink: true
 UXTerm.VT100.saveLines: 4096
 UXTerm.VT100.visualbell: true
-UXTerm.VT100.bellIsUrgent: true
+UXTerm.VT100.bellIsUrgent: false
 UXTerm.VT100.scrollKey: true
 UXTerm.VT100.scrollTtyOutput: false
 UXTerm.VT100.selectToClipboard: true
