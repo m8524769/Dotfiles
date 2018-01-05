@@ -2,7 +2,7 @@
 
 ![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)
 
-> Config files and Scripts on my Archlinux
+> Personal Config files and Scripts
 
 ## Setup
   + OS: `Arch Linux`
@@ -15,10 +15,11 @@
   + System Monitor: [`conky`](.conkyrc)
   + File Manager: [`ranger`](ranger/rc.conf)
   + Screen Locker: [`i3lock-color`](i3/i3lock.sh)
+  + Notification Daemon: [`dunst`](dunst/dunstrc)
 
 ## Others
-  + X Server Launcher: [`.xinitrc`](.xinitrc)
+  + [`.xinitrc`](.xinitrc)
   + [`fonts.conf`](fontconfig/fonts.conf)
-  + [`mirrorlist`](mirrorlist)
-  + GVim Colorscheme: [`molokai2.vim`](molokai2.vim)
-  + Highlight Enhancement for Python in Vim: [`python.vim`](python.vim)
+  + [`mirrorlist`](others/mirrorlist)
+  + GVim Colorscheme: [`molokai2.vim`](others/molokai2.vim)
+  + Highlight Enhancement for Python in Vim: [`python.vim`](others/python.vim)
