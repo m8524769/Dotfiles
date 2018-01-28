@@ -16,8 +16,9 @@ nmap <leader>v :vi $MYVIMRC<CR>
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
-set guifont=DejaVuSansMono\ YaHei\ NF\ 15
-" set guifont=FiraCode\ QiHei\ NF\ 15
+set guifont+=InconsolataGo\ QiHei\ NF\ 16
+set guifont+=DejaVuSansMono\ YaHei\ NF\ 15
+set guifont+=FiraCode\ QiHei\ NF\ 14
 set number
 set relativenumber
 set nowrap
@@ -285,8 +286,6 @@ let g:multi_cursor_quit_key='<CR>'
 set autochdir
 set tags+=$VIM/vimfiles/systags
 set tags+=./tags
-"Unite
-nnoremap <leader>f :<C-u>Unite -start-insert file_rec<CR>
 "Vim-Surround
 vmap s gS
 
@@ -407,10 +406,13 @@ let g:startify_bookmarks = [
             \ '~/.config/i3/i3lock.sh',
             \ '~/.config/polybar/config',
             \ '~/.config/polybar/launch.sh',
+            \ '~/.config/ranger/rc.conf',
+            \ '~/.config/ranger/rifle.conf',
+            \ '~/.config/dunst/dunstrc',
             \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
-            \ startify#fortune#cowsay('═','║','╔','╗','╝','╚')
+            \ startify#fortune#cowsay('','═','║','╔','╗','╝')
 let g:startify_list_order = [
             \ ['   Recently Used'],
             \ 'files',
