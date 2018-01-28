@@ -3,7 +3,6 @@ Xft.dpi: 96
 Xft.antialias: true
 
 Xcursor.theme: bridge
-! Xcursor.theme: capitaine-cursor
 
 UXTerm.VT100.utf8: 1
 UXTerm.VT100.geometry: 80x25
@@ -12,14 +11,14 @@ UXTerm.VT100.foreground: white
 UXTerm.VT100.locale: true
 UXTerm.VT100.font: fixed
 UXTerm.VT100.faceName: DejaVu Sans Mono
-UXTerm.VT100.faceNameDoublesize: Microsoft YaHei
+UXTerm.VT100.faceNameDoublesize: Microsoft YaHei UI
 UXTerm.VT100.faceSize: 15
 UXTerm.VT100.scaleHeight: 1.0
 UXTerm.VT100.cursorColor: white
 UXTerm.VT100.cursorBlink: true
 UXTerm.VT100.saveLines: 4096
 UXTerm.VT100.visualbell: true
-UXTerm.VT100.bellIsUrgent: false
+UXTerm.VT100.bellOnReset: false
 UXTerm.VT100.scrollKey: true
 UXTerm.VT100.scrollTtyOutput: false
 UXTerm.VT100.selectToClipboard: true
