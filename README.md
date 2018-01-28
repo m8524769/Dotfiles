@@ -16,10 +16,12 @@
   + File Manager: [`ranger`](ranger/rc.conf)
   + Screen Locker: [`i3lock-color`](i3/i3lock.sh)
   + Notification Daemon: [`dunst`](dunst/dunstrc)
+  + Audio Visualizer: [`cava`](cava/config)
 
 ## Others
   + [`.xinitrc`](.xinitrc)
   + [`fonts.conf`](fontconfig/fonts.conf)
+  + [`makepkg.conf`](pacman/makepkg.conf)
   + [`mirrorlist`](others/mirrorlist)
   + GVim Colorscheme: [`molokai2.vim`](others/molokai2.vim)
   + Highlight Enhancement for Python in Vim: [`python.vim`](others/python.vim)
