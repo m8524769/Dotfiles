@@ -92,10 +92,10 @@ bindsym F11 fullscreen toggle
 # bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+# bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -150,21 +150,29 @@ bindsym $mod+r mode "resize"
 bindsym --release Print exec --no-startup-id scrot
 bindsym --release Shift+Print exec --no-startup-id scrot -s
 
-new_window 1pixel
+new_window pixel 1
 popup_during_fullscreen smart
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #0078d7 #0078d7 #ffffff #0078d7   #0078d7
+client.focused_inactive #2f2f2f #2f2f2f #eeeeee #2f2f2f   #2f2f2f
+client.unfocused        #2f2f2f #2f2f2f #888888 #2f2f2f   #2f2f2f
+# client.urgent           #2f343a #900000 #ffffff #900000   #900000
+# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.background       #353535
 
 # Autostart
 exec_always --no-startup-id feh --bg-fill ~/图片/pexels-photo-463366.jpeg
-exec --no-startup-id compton &
+exec_always --no-startup-id compton &
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 exec --no-startup-id fcitx &
-exec --no-startup-id xautolock -time 10 -locker '~/.config/i3/i3lock.sh'
+exec --no-startup-id xautolock -locker '~/.config/i3/i3lock.sh' -notify 10 -notifier 'notify-send ""'
 
 
 # i3 gaps and border
 #
 # Set inner/outer gaps
-gaps inner 14
+gaps inner 13
 gaps outer 8
 
 # Smart gaps (gaps used if only more than one container on the workspace)
