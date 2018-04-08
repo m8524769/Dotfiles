@@ -8,6 +8,7 @@
 [colors]
 background = #7A000000
 foreground-alt = #55
+blank = #00000000
 white = #DFDFDF
 smoke = #55
 grey = #A4A4A4
@@ -32,7 +33,10 @@ screenchange-reload = true
 [bar/top]
 dpi = 90
 bottom = false
-height = 25
+height = 26
+; override-redirect = true
+; offset-x = 10
+; offset-y = 10
 background = ${colors.background}
 foreground = ${colors.white}
 underline-size = 2
@@ -51,6 +55,9 @@ scroll-down = i3wm-wsprev
 dpi = 90
 bottom = true
 height = 20
+; override-redirect = true
+; offset-x = 10
+; offset-y = 10
 background = ${colors.background}
 foreground = ${colors.white}
 padding-left = 1
@@ -94,7 +101,8 @@ ws-icon-8 = 9;
 ws-icon-9 = 0;
 format = <label-state> <label-mode>
 label-focused = %icon%
-label-focused-background = ${colors.darkgrey}
+; label-focused-background = ${colors.darkgrey}
+; label-focused-underline = ${colors.grey}
 label-focused-underline = ${colors.grey}
 label-focused-padding = 3
 label-unfocused = %index%
@@ -155,7 +163,6 @@ label = %date% %time%
 date = %m/%d %a
 time = %H:%M
 date-alt = %A, %d %B %Y
-time-alt = %H:%M:%S
 
 [module/volume]
 type = internal/volume
@@ -169,7 +176,6 @@ bar-volume-indicator =
 bar-volume-fill = ▰
 bar-volume-empty = ▰
 bar-volume-empty-foreground = ${colors.smoke}
-; ▮▯▱◆◇◈
 
 [module/powermenu]
 type = custom/menu
@@ -177,7 +183,7 @@ label-open = 
 label-open-padding = 2
 label-open-foreground = ${colors.white}
 label-open-background = ${colors.darkgrey}
-label-open-underline = ${colors.grey}
+; label-open-underline = ${colors.grey}
 label-close = Cancel
 label-close-foreground = #EAFFD0
 label-separator = |
