@@ -44,7 +44,6 @@ bindsym $mod+Control+h exec nautilus
 
 # start Netease Cloud Music
 bindsym $mod+Control+m exec netease-cloud-music
-assign [class="netease-cloud-music"] 2
 
 # kill focused window
 bindsym $mod+q kill
@@ -162,18 +161,21 @@ client.unfocused        #2f2f2f #2f2f2f #888888 #2f2f2f   #2f2f2f
 client.background       #353535
 
 # Autostart
-exec_always --no-startup-id feh --bg-fill ~/图片/pexels-photo-463366.jpeg
-exec_always --no-startup-id compton &
+# exec_always --no-startup-id feh --bg-fill ~/图片/pexels-photo-463366.jpeg
+exec_always --no-startup-id feh --bg-fill ~/图片/annie-spratt-593480-unsplash.jpg
+exec_always --no-startup-id compton --backend xrender &
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 exec --no-startup-id fcitx &
-exec --no-startup-id xautolock -locker '~/.config/i3/i3lock.sh' -notify 10 -notifier 'notify-send ""'
+exec --no-startup-id xautolock -locker '~/.config/i3/i3lock.sh' -notify 10 -notifier 'notify-send "LOCKING"'
 
 
 # i3 gaps and border
 #
 # Set inner/outer gaps
-gaps inner 13
-gaps outer 8
+# gaps inner 13
+# gaps outer 8
+gaps inner 8
+gaps outer 2
 
 # Smart gaps (gaps used if only more than one container on the workspace)
 smart_gaps on
