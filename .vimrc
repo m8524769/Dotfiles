@@ -1,22 +1,22 @@
-runtime! debian.vim                         " 载入默认配置
+runtime! debian.vim
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/gvimrc_example.vim
-source $VIMRUNTIME/delmenu.vim              " 解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
-source $VIMRUNTIME/mswin.vim                " 模仿Windows快捷键
+source $VIMRUNTIME/mswin.vim
 behave mswin
 
-let mapleader=","                           " 默认<Leader>键
+let mapleader=","
 let g:mapleader = ","
 
-let $MYVIMRC='~/.vimrc'                     " <Leader>v 打开.vimrc
+let $MYVIMRC='~/.vimrc'
 nmap <leader>v :vi $MYVIMRC<CR>
 
 "界面配置
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
-set guifont+=InconsolataGo\ QiHei\ NF\ 16
+set guifont+=InconsolataGo\ QiHei\ NF\ 17
 set guifont+=DejaVuSansMono\ YaHei\ NF\ 15
 set guifont+=FiraCode\ QiHei\ NF\ 14
 set number
@@ -516,6 +516,7 @@ augroup compile_command
     autocmd FileType python  let b:RunCommand = "!python3 %"
     autocmd FileType ruby    let b:RunCommand = "!ruby %"
     autocmd FileType haskell let b:RunCommand = "term ghci %"
+    autocmd FileType javascript let b:RunCommand = "!node %"
 augroup END
 
 function! C_Command() " Use LLVM/Clang Compiler
