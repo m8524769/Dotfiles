@@ -4,6 +4,9 @@
 
 > Personal Config files and Scripts
 
+![Screenshot_1](Screenshots/01.png)
+![Screenshot_2](Screenshots/02.png)
+
 ## Setup
   + OS: `Arch Linux`
   + Windows Manager: [`i3-gaps`](i3/config)
