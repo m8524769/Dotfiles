@@ -1,8 +1,11 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.gem/ruby/2.4.0/bin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.gem/ruby/2.5.0/bin:/usr/bin:/usr/sbin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH=/home/yk/.oh-my-zsh
+
+# Path to your ruby packages installation.
+# export GEM_HOME=/home/yk/.gem
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -95,7 +98,7 @@ alias gun='echo Good Luck, Bro!; sudo pacman -Syu'
 alias bye='sync; echo See you next time; sleep 2; shutdown -h now'
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias localtest='cd ~/Projects/m8524769.github.io; jekyll serve --watch'
-alias socks='cd ~/src/shadowsocksr/shadowsocks; gvim ../config.json; python ./local.py'
+alias ssr='cd ~/src/shadowsocksr/shadowsocks; gvim ../config.json; python ./local.py'
 # alias lantern='rm -rf ~/.lantern; lantern'
 
 alias gc='git clone --depth 1'
