@@ -102,8 +102,6 @@ set clipboard=unnamedplus
 
 "内置终端
 set shell=/bin/zsh
-set termkey=<C-l>
-set termsize="24x80"
 
 "自动载入
 set autoread
