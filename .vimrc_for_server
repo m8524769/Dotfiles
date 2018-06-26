@@ -1,0 +1,380 @@
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+let mapleader=","
+let g:mapleader = ","
+
+let $MYVIMRC='~/.vimrc'
+nmap <leader>v :vi $MYVIMRC<CR>
+
+"界面配置
+set laststatus=2
+set t_Co=256
+colorscheme molokai2
+set number
+set relativenumber
+set nowrap
+set cursorcolumn
+set cursorline
+set cmdheight=1
+set go=
+
+"缩进配置
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set smarttab
+set cindent
+set cino=g0
+filetype on
+filetype indent on
+nnoremap <CR> ==<CR>
+
+"编码配置
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,Shift_JIS,cp936,gb18030,big5,euc-jp,latin1
+set langmenu=zh_CN.utf-8
+set helplang=CN
+let $LANG = 'en_US.utf-8'
+language messages zh_CN.utf-8
+
+"取消备份及交换文件
+set nobackup
+set noswapfile
+set noundofile
+
+"禁用<F1>
+map  <F1> <Esc>
+imap <F1> <Esc>
+
+"禁用蜂鸣警告
+set vb t_vb=
+
+"切换窗口
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+"增强光标移动
+nmap H ^
+vmap H ^
+omap H ^
+nmap L $
+vmap L $
+omap L $
+
+"插入模式快捷键映射
+imap <C-h> <Left>
+imap <C-j> <Down>
+imap <C-k> <Up>
+imap <C-l> <Right>
+imap <C-u> <Esc> u
+imap jk <Esc>
+
+"Operator-Pending映射
+onoremap in( :<c-u>normal! f(vi(<CR>
+onoremap in[ :<c-u>normal! f[vi[<CR>
+onoremap in{ :<c-u>normal! f{vi{<CR>
+onoremap in< :<c-u>normal! f<vi<<CR>
+onoremap in" :<c-u>normal! f"vi"<CR>
+onoremap in' :<c-u>normal! f'vi'<CR>
+
+"代码折叠
+set foldenable
+set foldmethod=syntax
+set foldcolumn=0
+set foldlevelstart=99
+
+"与Linux共享剪切
+set clipboard=unnamedplus
+
+"内置终端
+set shell=/bin/zsh
+
+"自动载入
+set autoread
+set history=200
+
+"括号自动补全
+inoremap ( ()<Esc>i
+inoremap ) <c-r>=ClosePair(')')<CR>
+inoremap [ []<Esc>i
+inoremap ] <c-r>=ClosePair(']')<CR>
+inoremap " <c-r>=QuoteDelim('"')<CR>
+inoremap ' <c-r>=QuoteDelim("'")<CR>
+
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
+
+function! QuoteDelim(char)
+    let line = getline('.')
+    let col = col('.')
+    if line[col - 2] == "\\"
+        return a:char
+    elseif line[col - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char.a:char."\<Esc>i"
+    endif
+endfunction
+
+
+"Vim-Plug配置及Vim插件列表
+filetype off
+call plug#begin('$VIM/vimfiles/bundle')
+Plug 'junegunn/vim-plug'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'easymotion/vim-easymotion'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'pbrisbin/vim-mkdir'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'Yggdroot/indentLine'
+Plug 'mhinz/vim-startify'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+call plug#end()
+filetype plugin indent on
+
+
+"EasyMotion (快速跳转)
+let g:EasyMotion_smartcase = 1
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_startofline = 0
+let g:EasyMotion_enter_jump_first = 1
+let g:EasyMotion_move_highlight = 0
+map  / <Plug>(easymotion-sn)
+nmap ; <Plug>(easymotion-next)
+
+
+"垂直分屏 <F3>
+map <silent> <F3> :call VerticalSplit()<CR>
+imap <silent> <F3> <Esc> :call VerticalSplit()<CR>
+let g:is_vsplit = 0
+function! VerticalSplit()
+    if g:is_vsplit
+        execute "only"
+        let g:is_vsplit = 0
+    else
+        execute "vsplit"
+        let g:is_vsplit = 1
+    endif
+endfunction
+
+
+"平滑滚屏
+noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
+noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
+"IndentLine(缩进对齐线)
+let g:indentLine_char = "\u250A"
+let g:indentLine_concealcursor = ''
+let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+"multiple-cursors(多行编辑) <C-(n|p|x)>
+set selection=inclusive
+let g:multi_cursor_use_default_mapping=1
+let g:multi_cursor_quit_key='<CR>'
+
+
+"NERD_Tree (目录树) <F5>
+map <silent> <F5> :NERDTreeToggle<CR>
+imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
+let g:NERDTreeChDirMode = 2
+let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
+let g:NERDTreeQuitOnOpen = 1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeMinimalUI = 1
+let g:NERDTreeCascadeSingleChildDir = 1
+let g:NERDTreeCascadeOpenSingleChildDir = 1
+let g:NERDTreeAutoDeleteBuffer = 1
+let g:NERDTreeDirArrowExpandable = "\uE5FF"
+let g:NERDTreeDirArrowCollapsible = "\uE5FE"
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
+"Nerd_Commenter (多行注释) <Leader>cc <Leader>c<Space>
+let g:NERDSpaceDelims = 1
+let g:NERDCompactSexyComs = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDAltDelims_java = 1
+let g:NERDCommentEmptyLines = 0
+let g:NERDTrimTrailingWhitespace = 1
+
+
+"QuickFix (编译信息窗口) <F2>
+map <silent> <F2> :call QuickfixToggle()<CR>
+imap <silent> <F2> <Esc>:call QuickfixToggle()<CR>
+let g:quickfix_is_open = 0
+let g:quickfix_return_to_window = winnr()
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "cclose"
+        let g:quickfix_is_open = 0
+    else
+        let g:quickfix_return_to_window = winnr()
+        execute "copen 8 | setl wrap"
+        let g:quickfix_is_open = 1
+    endif
+endfunction
+
+
+"AirLine (状态栏, 缓冲区及标签) <C-t> <Tab> <Leader>[1-9]
+nmap <silent> <C-t> :call NewTab()<CR>
+imap <C-t> <Esc> <C-t>
+function! NewTab()
+    execute "tabnew"
+    execute "Startify"
+endfunction
+let g:airline_theme="onedark"
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#buffers_label = 'Buffers'
+let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+let g:airline_symbols.branch = "\u2387"
+let g:airline_symbols.notexists = "\uE710"
+let g:airline#extensions#whitespace#checks = []
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+nmap <Tab>     <Plug>AirlineSelectNextTab
+nmap <S-Tab>   <Plug>AirlineSelectPrevTab
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+
+
+"Startify (启动界面)
+let g:startify_padding_left = 4
+let g:startify_disable_at_vimenter = 0
+let NERDTreeHijackNetrw = 1
+let g:startify_bookmarks = [
+            \ '/etc/nginx/nginx.conf',
+            \ '~/.zshrc',
+            \ '~/.vimrc',
+            \ ]
+let g:startify_custom_header =
+            \ startify#fortune#cowsay('','═','║','╔','╗','╝')
+let g:startify_list_order = [
+            \ ['   Recently Used'],
+            \ 'files',
+            \ ['   My Bookmarks:'],
+            \ 'bookmarks',
+            \ ]
+let g:startify_custom_footer =
+            \ ['', "   Happy Viming!!"]
+augroup startify
+    autocmd!
+    autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
+    autocmd User Startified setlocal cursorline
+augroup END
+
+
+"编译及链接选项 <C-(F7|F9)> 为手动执行命令
+augroup compile_command
+    autocmd!
+    autocmd FileType c       call C_Command()
+    autocmd FileType cpp,cxx call CPP_Command()
+    autocmd FileType sh      let b:RunCommand = "!bash %"
+    autocmd FileType python  let b:RunCommand = "!python3 %"
+    autocmd FileType ruby    let b:RunCommand = "!ruby %"
+    autocmd FileType haskell let b:RunCommand = "term ghci %"
+    autocmd FileType javascript let b:RunCommand = "!node %"
+augroup END
+
+function! C_Command() " Use LLVM/Clang Compiler
+    let b:CompileCommand = "AsyncRun clang -std=c99 -Wall -O1 -c %"
+    let b:LinkCommand    = "!clang ./*.o -o Run"
+    let b:RunCommand     = "!./Run"
+    map <C-F7> :AsyncRun clang -std=c99 -Wall -g -O1 -c %
+    map <C-F9> :!clang ./*.o -o Run && time ./Run
+endfunction
+
+function! CPP_Command() " Use GCC Compiler
+    let b:CompileCommand = "AsyncRun g++ -std=c++17 -Wall -O1 -c %"
+    let b:LinkCommand    = "!g++ ./*.o -o Run"
+    let b:RunCommand     = "!./Run"
+    map <C-F7> :AsyncRun g++ -std=c++17 -Wall -g -O1 -c %
+    map <C-F9> :!g++ ./*.o -o Run && time ./Run
+endfunction
+
+"AsyncRun(异步编译) <F7> <C-F7>
+"保存并编译生成目标文件
+map <silent> <F7> :call AsyncCompile()<CR>
+imap <F7> <Esc> <F7>
+function! AsyncCompile()
+    if exists('b:CompileCommand')
+        silent execute "w"
+        execute b:CompileCommand
+        if g:ale#engine#GetLoclist(buffer_number("%")) == []
+            echo "Compiled Successfully!! o(*≧▽≦)ツ"
+        else
+            execute "TagbarClose"
+            let g:quickfix_return_to_window = winnr()
+            execute "copen 8 | setl wrap"
+            let g:quickfix_is_open = 1
+            execute g:quickfix_return_to_window . "wincmd w"
+        endif
+    else
+        echo "当前文件并不能编译.. ╮(￣▽￣)╭"
+    endif
+endfunction
+
+
+"Link & Run <F9> <C-F9>
+"链接当前目录的所有目标文件, 生成可执行文件并运行
+map <silent> <F9> :call Link_Run()<CR>
+imap <F9> <Esc> <F9>
+function! Link_Run()
+    if g:quickfix_is_open
+        execute g:quickfix_return_to_window . "wincmd w"
+        execute "cclose"
+        let g:quickfix_is_open = 0
+    endif
+    if exists('b:LinkCommand')
+        execute b:LinkCommand
+    endif
+    if exists('b:RunCommand')
+        execute b:RunCommand
+        echohl WarningMsg | echo "Running Finish! o(*≧▽≦)ツ"
+    else
+        echo "不是可执行文件.."
+    endif
+endfunction
+
+
+"清除当前目录的所有目标文件及可执行文件 <F10>
+map <silent> <F10> :call CleanObjFile()<CR>
+imap <F10> <Esc> <F10>
+function! CleanObjFile()
+    silent execute "!rm ./*.o ./Run"
+    echohl WarningMsg | echo "Cleaning Successfully! (ﾉ･ω･)ﾉﾞ"
+endfunction
+
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
