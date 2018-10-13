@@ -9,10 +9,10 @@ behave mswin
 let mapleader=","
 let g:mapleader = ","
 
-let $MYVIMRC='~/.vimrc'
-nmap <leader>v :vi $MYVIMRC<CR>
+let $VIMRC='~/.vimrc'
+nmap <leader>v :vi $VIMRC<CR>
 
-"界面配置
+" 基本界面配置
 set laststatus=2
 set t_Co=256
 colorscheme molokai2
@@ -27,7 +27,7 @@ set cursorline
 set cmdheight=1
 set go=
 
-"缩进配置
+" 缩进配置
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -39,7 +39,7 @@ filetype on
 filetype indent on
 nnoremap <CR> ==<CR>
 
-"编码配置
+" 编码配置
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
@@ -49,25 +49,25 @@ set helplang=CN
 let $LANG = 'en_US.utf-8'
 language messages zh_CN.utf-8
 
-"取消备份及交换文件
+" 取消备份及交换文件
 set nobackup
 set noswapfile
 set noundofile
 
-"禁用<F1>
+" 禁用<F1>
 map  <F1> <Esc>
 imap <F1> <Esc>
 
-"禁用蜂鸣警告
+" 禁用蜂鸣警告
 set vb t_vb=
 
-"切换窗口
+" 切换窗口
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
-"增强光标移动
+" 光标移动增强
 nmap H ^
 vmap H ^
 omap H ^
@@ -75,7 +75,7 @@ nmap L $
 vmap L $
 omap L $
 
-"插入模式快捷键映射
+" 插入模式快捷键
 imap <C-h> <Left>
 imap <C-j> <Down>
 imap <C-k> <Up>
@@ -83,7 +83,7 @@ imap <C-l> <Right>
 imap <C-u> <Esc> u
 imap jk <Esc>
 
-"Operator-Pending映射
+" Operator-Pending映射
 onoremap in( :<c-u>normal! f(vi(<CR>
 onoremap in[ :<c-u>normal! f[vi[<CR>
 onoremap in{ :<c-u>normal! f{vi{<CR>
@@ -91,26 +91,29 @@ onoremap in< :<c-u>normal! f<vi<<CR>
 onoremap in" :<c-u>normal! f"vi"<CR>
 onoremap in' :<c-u>normal! f'vi'<CR>
 
-"代码折叠
+" 代码折叠
 set foldenable
 set foldmethod=syntax
 set foldcolumn=0
 set foldlevelstart=99
 
-"与Linux共享剪切
+" 共享系统剪切板
 set clipboard=unnamedplus
 
-"内置终端
+" 内置终端
 set shell=/bin/zsh
 
-"自动载入
+" 自动载入
 set autoread
 set history=200
 
-"默认操作路径
-cd /home/yk/Projects
+" 默认工作目录
+let $PWD = $HOME . "/Projects"
+if isdirectory($PWD)
+    cd $PWD
+endif
 
-"C/C++缩写词及代码片段补全 <C-CR>
+" C/C++代码片段 <C-CR>
 imap <C-CR> +<Space><BS>
 iabbrev pf+ printf;<Left>("
 iabbrev sf+ scanf;<Left>("
@@ -137,7 +140,7 @@ iabbrev try+ try {}<Left><CR>
                 \<Right> catch () {}<Left><CR>
                 \<Esc>3k4==o
 
-"代码模板
+" 代码初始化模板
 iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
@@ -175,11 +178,13 @@ augroup code_template
     autocmd BufNewFile *.rb  :normal irbmain+
 augroup END
 
-"括号自动补全
+" 括号自动补全
 inoremap ( ()<Esc>i
 inoremap ) <c-r>=ClosePair(')')<CR>
 inoremap [ []<Esc>i
 inoremap ] <c-r>=ClosePair(']')<CR>
+inoremap { {}<Esc>i
+inoremap } <c-r>=ClosePair('}')<CR>
 inoremap " <c-r>=QuoteDelim('"')<CR>
 inoremap ' <c-r>=QuoteDelim("'")<CR>
 
@@ -204,7 +209,7 @@ function! QuoteDelim(char)
 endfunction
 
 
-"Vim-Plug配置及Vim插件列表
+" Vim-plug 插件列表
 filetype off
 call plug#begin('$VIM/vimfiles/bundle')
 Plug 'junegunn/vim-plug'
@@ -235,7 +240,7 @@ filetype plugin indent on
 
 
 
-"EasyMotion (快速跳转)
+" EasyMotion
 let g:EasyMotion_smartcase = 1
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_startofline = 0
@@ -245,7 +250,7 @@ map  / <Plug>(easymotion-sn)
 nmap ; <Plug>(easymotion-next)
 
 
-"垂直分屏 <F3>
+" 垂直分屏 <F3>
 map <silent> <F3> :call VerticalSplit()<CR>
 imap <silent> <F3> <Esc> :call VerticalSplit()<CR>
 let g:is_vsplit = 0
@@ -260,51 +265,50 @@ function! VerticalSplit()
 endfunction
 
 
-"平滑滚屏
+" 平滑滚屏
 noremap <silent> J :call smooth_scroll#down(&scroll, 0, 2)<CR>
 noremap <silent> K :call smooth_scroll#up(&scroll, 0, 2)<CR>
-"C++ 语法高亮
+" C++ 语法高亮增强
 let g:cpp_class_scope_highlight = 1
 let g:cpp_member_variable_highlight = 1
 let g:cpp_class_decl_highlight = 1
 let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
-"Devicons
+" Devicons
 let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
 let g:WebDevIconsUnicodeGlyphDoubleWidth = 2
-"IndentLine(缩进对齐线)
+" IndentLine
 let g:indentLine_char = "\u250A"
 let g:indentLine_concealcursor = ''
 let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
-"multiple-cursors(多行编辑) <C-(n|p|x)>
+" multiple-cursors 多行编辑 <C-(n|p|x)>
 set selection=inclusive
 let g:multi_cursor_use_default_mapping=1
 let g:multi_cursor_quit_key='<CR>'
-"Ctags (tags代码索引)
+" Ctags 代码索引
 set autochdir
 set tags+=$VIM/vimfiles/systags
 set tags+=./tags
-"Vim-Surround
+" Vim-Surround
 vmap s gS
 
 
-"NERD_Tree (目录树) <F5>
+" NERD_Tree 资源管理器 <F5>
 map <silent> <F5> :NERDTreeToggle<CR>
 imap <silent> <F5> <Esc> :NERDTreeToggle<CR>
 let g:NERDTreeChDirMode = 2
 let g:NERDTreeIgnore = ['\.o$', '\.pyc$', '\~$', '\.gif', '\.jpg', '\.png']
+let g:NERDTreeMouseMode = 3
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
-let g:NERDTreeCascadeSingleChildDir = 1
-let g:NERDTreeCascadeOpenSingleChildDir = 1
 let g:NERDTreeAutoDeleteBuffer = 1
 let g:NERDTreeDirArrowExpandable = "\uE5FF"
 let g:NERDTreeDirArrowCollapsible = "\uE5FE"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 
-"Nerd_Commenter (多行注释) <Leader>cc <Leader>c<Space>
+" Nerd_Commenter 注释增强 <Leader>c<Space>
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
@@ -313,7 +317,7 @@ let g:NERDCommentEmptyLines = 0
 let g:NERDTrimTrailingWhitespace = 1
 
 
-"TagBar (函数列表) <F6>
+" TagBar 函数列表 <F6>
 map <silent> <F6> :TagbarToggle<CR>
 imap <silent> <F6> <Esc> :TagbarToggle<CR>
 let g:tagbar_ctags_bin = 'ctags'
@@ -325,7 +329,7 @@ let g:tagbar_autopreview = 1
 let g:tagbar_autoshowtag = 1
 
 
-"QuickFix (编译信息窗口) <F2>
+" QuickFix 信息窗口 <F2>
 map <silent> <F2> :call QuickfixToggle()<CR>
 imap <silent> <F2> <Esc>:call QuickfixToggle()<CR>
 let g:quickfix_is_open = 0
@@ -343,38 +347,20 @@ function! QuickfixToggle()
 endfunction
 
 
-"AirLine (状态栏, 缓冲区及标签) <C-t> <Tab> <Leader>[1-9]
-nmap <silent> <C-t> :call NewTab()<CR>
+" AirLine 标签及状态栏 <C-t> <Tab> <Leader>[1-9]
+nmap <silent> <C-t> :tabnew<CR>
 imap <C-t> <Esc> <C-t>
-function! NewTab()
-    execute "tabnew"
-    execute "Startify"
-endfunction
 let g:airline_theme="onedark"
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 1
-let g:airline#extensions#tabline#buffer_nr_show = 0
-let g:airline#extensions#tabline#buffers_label = 'Buffers'
-let g:airline#extensions#tabline#show_tab_nr = 1
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#alt_sep = 1
 let g:airline#extensions#tabline#tab_nr_type = 1
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-if has('gui_running')
-    let g:airline_left_sep = "\uE0B8"
-    let g:airline_left_alt_sep = "\uE0B9"
-    let g:airline_right_sep = "\uE0BA"
-    let g:airline_right_alt_sep = "\uE0BB"
-endif
-let g:airline_symbols.branch = "\u2387"
-let g:airline_symbols.notexists = "\uE710"
-" let g:airline_symbols.crypt = "\uE0A2"
-" let g:airline_symbols.linenr = "\u2630"
-" let g:airline_symbols.whitespace = "\uF120"
-let g:airline#extensions#ale#error_symbol = "\uF057:"
-let g:airline#extensions#ale#warning_symbol = "\uF06A:"
-let g:airline#extensions#whitespace#checks = []
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 0
+" let g:airline#extensions#tabline#buffers_label = 'Buffers'
+" let g:airline#extensions#tabline#tabs_label = 'Tabs'
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 nmap <Tab>     <Plug>AirlineSelectNextTab
 nmap <S-Tab>   <Plug>AirlineSelectPrevTab
@@ -387,9 +373,28 @@ nmap <leader>6 <Plug>AirlineSelectTab6
 nmap <leader>7 <Plug>AirlineSelectTab7
 nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
+let g:airline#extensions#tabline#keymap_ignored_filetypes = ['vimfiler', 'nerdtree']
+let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#ale#error_symbol = ' ' " \uF057
+let g:airline#extensions#ale#warning_symbol = ' ' " \uF06A
+let g:airline#extensions#whitespace#checks = []
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+if has('gui_running')
+    let g:airline_left_sep = '' " \uE0B8
+    let g:airline_left_alt_sep = '' " \uE0B9
+    let g:airline_right_sep = '' " \uE0BA
+    let g:airline_right_alt_sep = '' " \uE0BB
+endif
+let g:airline_symbols.branch = '⎇' " \u2387
+let g:airline_symbols.notexists = '' " \uE710
+" let g:airline_symbols.crypt = '' " \uE0A2
+" let g:airline_symbols.linenr = '☰' " \u2630
+" let g:airline_symbols.whitespace = '' " \uF120
 
 
-"Startify (启动界面)
+" Startify 欢迎界面
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
 let NERDTreeHijackNetrw = 1
@@ -410,7 +415,7 @@ let g:startify_bookmarks = [
             \ '~/Projects/Script/Clean.sh',
             \ ]
 let g:startify_custom_header =
-            \ startify#fortune#cowsay('','═','║','╔','╗','╝')
+            \ "startify#fortune#cowsay('','═','║','╔','╗','╝','╚')"
 let g:startify_list_order = [
             \ ['   Recently Used'],
             \ 'files',
@@ -423,10 +428,16 @@ augroup startify
     autocmd!
     autocmd User Startified nmap <buffer> o <plug>(startify-open-buffers)
     autocmd User Startified setlocal cursorline
+    autocmd VimEnter * let t:startify_new_tab = 1
+    autocmd BufEnter *
+                \ if !exists('t:startify_new_tab') && empty(expand('%')) |
+                \   let t:startify_new_tab = 1 |
+                \   Startify |
+                \ endif
 augroup END
 
 
-"YouCompleteMe (自动代码补全)
+" YouCompleteMe 代码补全
 let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
@@ -434,15 +445,13 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 
 
-"ALE (代码异步检测)
+" ALE 异步代码检测及修复
 nmap <silent> N <Plug>(ale_next_wrap)
 nmap <silent> P <Plug>(ale_previous_wrap)
 nmap <silent> <F8> <Plug>(ale_fix)
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = "\uF12A"
 let g:ale_sign_warning = "\uF128"
-" let g:ale_echo_msg_error_str = '汪汪汪！'
-" let g:ale_echo_msg_warning_str = '喵喵喵？'
 let g:ale_echo_msg_format = '%s'
 let g:ale_history_enabled = 0
 let g:ale_set_quickfix = 1
@@ -476,8 +485,7 @@ function! CPP_ALEFix(...)
 endfunction
 
 
-"有道翻译 <Leader>(d|t|r) 命令行/窗口/替换
-" `q`关闭Dict窗口
+" 有道翻译 <Leader>(d|t) 命令行/窗口
 let g:api_key = "1932136763"
 let g:keyfrom = "aioiyuuko"
 nmap <silent> <Leader>d <Plug>DictSearch
@@ -488,7 +496,7 @@ nmap <silent> <Leader>r <Plug>DictRSearch
 vmap <silent> <Leader>r <Plug>DictRVSearch
 
 
-":Test命令 在当前目录下创建测试输入文件 <F4>
+" :Test命令 在当前目录下创建测试输入文件 <F4>
 map <F4> :Test<CR>
 imap <F4> <Esc> :Test<CR>
 if !exists(':Test')
@@ -505,7 +513,7 @@ function! CleanTest()
 endfunction
 
 
-"编译及链接选项 <C-(F7|F9)> 为手动执行命令
+" 编译及执行命令
 augroup compile_command
     autocmd!
     autocmd FileType c       call C_Command()
@@ -542,8 +550,8 @@ function! CPP_Command() " Use LLVM/Clang Compiler
 endfunction
 
 
-"AsyncRun(异步编译) <F7> <C-F7>
-"保存并编译生成目标文件
+" AsyncRun(异步编译) <F7> <C-F7>
+" 保存并编译生成目标文件
 map <silent> <F7> :call AsyncCompile()<CR>
 imap <F7> <Esc> <F7>
 function! AsyncCompile()
@@ -565,8 +573,8 @@ function! AsyncCompile()
 endfunction
 
 
-"Link & Run <F9> <C-F9>
-"链接当前目录的所有目标文件, 生成可执行文件并运行
+" Link & Run <F9> <C-F9>
+" 链接当前目录的所有目标文件, 生成可执行文件并运行
 map <silent> <F9> :call Link_Run()<CR>
 imap <F9> <Esc> <F9>
 function! Link_Run()
@@ -587,7 +595,7 @@ function! Link_Run()
 endfunction
 
 
-"清除当前目录的所有目标文件及可执行文件 <F10>
+" 清除当前目录的所有目标文件及可执行文件 <F10>
 map <silent> <F10> :call CleanObjFile()<CR>
 imap <F10> <Esc> <F10>
 function! CleanObjFile()
