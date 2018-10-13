@@ -303,6 +303,7 @@ let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeAutoDeleteBuffer = 1
+let g:NERDTreeHijackNetrw = 1
 let g:NERDTreeDirArrowExpandable = "\uE5FF"
 let g:NERDTreeDirArrowCollapsible = "\uE5FE"
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -355,7 +356,7 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_splits = 0
 let g:airline#extensions#tabline#show_buffers = 0
-let g:airline#extensions#tabline#alt_sep = 1
+let g:airline#extensions#tabline#alt_sep = 0
 let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 0
@@ -375,6 +376,9 @@ nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
 let g:airline#extensions#tabline#keymap_ignored_filetypes = ['vimfiler', 'nerdtree']
 let g:airline#extensions#tabline#buffer_nr_show = 0
+let g:airline#extensions#tabline#show_close_button = 0
+" let g:airline#extensions#tabline#close_symbol = 'X'
+let g:airline#parts#ffenc#skip_expected_string = 'utf-8'
 let g:airline#extensions#ale#error_symbol = ' ' " \uF057
 let g:airline#extensions#ale#warning_symbol = ' ' " \uF06A
 let g:airline#extensions#whitespace#checks = []
@@ -382,12 +386,14 @@ if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
 if has('gui_running')
-    let g:airline_left_sep = '' " \uE0B8
-    let g:airline_left_alt_sep = '' " \uE0B9
+    " let g:airline_left_sep = '' " \uE0B8
+    " let g:airline_left_alt_sep = '' " \uE0B9
+    let g:airline_left_sep = ' '
+    let g:airline_left_alt_sep = ''
     let g:airline_right_sep = '' " \uE0BA
     let g:airline_right_alt_sep = '' " \uE0BB
 endif
-let g:airline_symbols.branch = '⎇' " \u2387
+let g:airline_symbols.branch = '⎇ ' " \u2387
 let g:airline_symbols.notexists = '' " \uE710
 " let g:airline_symbols.crypt = '' " \uE0A2
 " let g:airline_symbols.linenr = '☰' " \u2630
@@ -397,7 +403,6 @@ let g:airline_symbols.notexists = '' " \uE710
 " Startify 欢迎界面
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
-let NERDTreeHijackNetrw = 1
 let g:startify_bookmarks = [
             \ '~/.vimrc',
             \ '~/.zshrc',
