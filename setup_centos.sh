@@ -36,7 +36,7 @@ if [[ $REPLY =~ ^[Yy]$ ]] ; then
     nginxRepo="/etc/yum.repos.d/nginx.repo"
     echo "[nginx]" > $nginxRepo
     echo "name=nginx repo" >> $nginxRepo
-    echo "baseurl=http://nginx.org/packages/$OS/$OSRELEASE/$basearch/" >> $nginxRepo
+    echo "baseurl=http://nginx.org/packages/${OS}/${OSRELEASE}/${basearch}/" >> $nginxRepo
     echo "gpgcheck=0" >> $nginxRepo
     echo "enabled=1" >> $nginxRepo
     yum install -y nginx
