@@ -1,16 +1,12 @@
 #!/bin/bash
 
-OS=`cat /etc/os-release | grep "ID" | awk -F "[\"\"]" '{print $2}' | head -n1`
-OSRELASE=`cat /etc/os-release | grep "VERSION_ID" | awk -F "[\"\"]" '{print $2}'`
-
-if [[ $OS != "centos" ]] ; then
-    echo "Sorry, your operate system is not CentOS."
-    exit 1
-fi
+source /etc/os-release
+$OS=$ID
+$OSRELEASE=$VERSION_ID
 
 yum update -y
 
-yum install -y git vim zsh
+yum install -y git vim zsh gcc
 
 chsh -s /bin/zsh
 
@@ -29,14 +25,13 @@ curl -fLo ~/.vim/colors/molokai2.vim --create-dirs \
 git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions \
     ~/.oh-my-zsh/plugins/zsh-autosuggestions
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
 read -p "Install & Setup Nginx? (Y/n)" -n 1 -r
+echo
 if [[ $REPLY =~ ^[Yy]$ ]] ; then
     nginxRepo="/etc/yum.repos.d/nginx.repo"
     echo "[nginx]" > $nginxRepo
     echo "name=nginx repo" >> $nginxRepo
-    echo "baseurl=http://nginx.org/packages/${OS}/${OSRELEASE}/${basearch}/" >> $nginxRepo
+    echo "baseurl=http://nginx.org/packages/${OS}/${OSRELEASE}/$basearch/" >> $nginxRepo
     echo "gpgcheck=0" >> $nginxRepo
     echo "enabled=1" >> $nginxRepo
     yum install -y nginx
@@ -47,6 +42,7 @@ if [[ $REPLY =~ ^[Yy]$ ]] ; then
 fi
 
 read -p "Setup ShadowSocksR? (Y/n)" -n 1 -r
+echo
 if [[ $REPLY =~ ^[Yy]$ ]] ; then
     wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh
     chmod +x shadowsocksR.sh
@@ -55,4 +51,6 @@ if [[ $REPLY =~ ^[Yy]$ ]] ; then
     chmod +x bbr.sh
     ./bbr.sh
 fi
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
