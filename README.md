@@ -26,3 +26,8 @@
   - [`mirrorlist`](others/mirrorlist)
   - GVim Colorscheme: [`molokai2.vim`](others/molokai2.vim)
   - Highlight Enhancement for Python in Vim: [`python.vim`](others/python.vim)
+
+## Setup for CentOS Server
+```shell
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/m8524769/Dotfiles/master/setup_centos.sh)"
+```
