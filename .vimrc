@@ -100,7 +100,7 @@ set foldlevelstart=99
 " 共享系统剪切板
 set clipboard=unnamedplus
 
-" 内置终端
+" 集成终端
 set shell=/bin/zsh
 
 " 自动载入
@@ -211,13 +211,13 @@ endfunction
 
 " Vim-plug 插件列表
 filetype off
-call plug#begin('$VIM/vimfiles/bundle')
+call plug#begin('~/.vim/plugged')
 Plug 'junegunn/vim-plug'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'majutsushi/tagbar'
 Plug 'easymotion/vim-easymotion'
-Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'skywind3000/asyncrun.vim'
@@ -236,7 +236,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'neovimhaskell/haskell-vim'
 call plug#end()
-filetype plugin indent on
 
 
 
@@ -350,7 +349,7 @@ endfunction
 
 " AirLine 标签及状态栏 <C-t> <Tab> <Leader>[1-9]
 nmap <silent> <C-t> :tabnew<CR>
-imap <C-t> <Esc> <C-t>
+imap <silent> <C-t> <Esc> :tabnew<CR>
 let g:airline_theme="onedark"
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -385,14 +384,12 @@ let g:airline#extensions#whitespace#checks = []
 if !exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-if has('gui_running')
-    " let g:airline_left_sep = '' " \uE0B8
-    " let g:airline_left_alt_sep = '' " \uE0B9
-    let g:airline_left_sep = ' '
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = '' " \uE0BA
-    let g:airline_right_alt_sep = '' " \uE0BB
-endif
+let g:airline_left_sep = ' '
+let g:airline_left_alt_sep = ''
+" let g:airline_left_sep = '' " \uE0B8
+" let g:airline_left_alt_sep = '' " \uE0B9
+let g:airline_right_sep = '' " \uE0BA
+let g:airline_right_alt_sep = '' " \uE0BB
 let g:airline_symbols.branch = '⎇ ' " \u2387
 let g:airline_symbols.notexists = '' " \uE710
 " let g:airline_symbols.crypt = '' " \uE0A2
@@ -414,8 +411,6 @@ let g:startify_bookmarks = [
             \ '~/.config/i3/i3lock.sh',
             \ '~/.config/polybar/config',
             \ '~/.config/polybar/launch.sh',
-            \ '~/.config/ranger/rc.conf',
-            \ '~/.config/ranger/rifle.conf',
             \ '~/.config/dunst/dunstrc',
             \ '~/Projects/Script/Clean.sh',
             \ ]
@@ -443,8 +438,6 @@ augroup END
 
 
 " YouCompleteMe 代码补全
-let g:ycm_server_python_interpreter = '/usr/bin/python2.7'
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -465,7 +458,7 @@ let g:ale_lint_on_text_changed = 'normal'
 let g:ale_linters = {
             \'c': ['clang'],
             \'cpp': ['clangtidy'],
-            \'Bash': ['shell'],
+            \'Bash': ['shellcheck'],
             \'Python': ['flake8'],
             \'Vim': ['vint'],
             \}
