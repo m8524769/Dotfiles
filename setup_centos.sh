@@ -1,12 +1,10 @@
 #!/bin/bash
 
 source /etc/os-release
-$OS=$ID
-$OSRELEASE=$VERSION_ID
 
-yum update -y
+yum -y update
 
-yum install -y git vim zsh gcc
+yum -y install git vim zsh gcc
 
 chsh -s /bin/zsh
 
@@ -22,28 +20,33 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 curl -fLo ~/.vim/colors/molokai2.vim --create-dirs \
     https://raw.githubusercontent.com/m8524769/Dotfiles/master/others/molokai2.vim
 
-git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions \
-    ~/.oh-my-zsh/plugins/zsh-autosuggestions
-
 read -p "Install & Setup Nginx? (Y/n)" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] ; then
-    nginxRepo="/etc/yum.repos.d/nginx.repo"
-    echo "[nginx]" > $nginxRepo
-    echo "name=nginx repo" >> $nginxRepo
-    echo "baseurl=http://nginx.org/packages/${OS}/${OSRELEASE}/$basearch/" >> $nginxRepo
-    echo "gpgcheck=0" >> $nginxRepo
-    echo "enabled=1" >> $nginxRepo
-    yum install -y nginx
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    {
+        echo \[nginx\]
+        echo name=nginx repo
+        echo "baseurl=http://nginx.org/packages/$ID/$VERSION_ID/\$basearch/"
+        echo gpgcheck=0
+        echo enabled=1
+    } >> /etc/yum.repos.d/nginx.repo
+    yum -y install nginx
     curl -fLo /etc/nginx/nginx.conf \
         https://raw.githubusercontent.com/m8524769/Dotfiles/master/nginx/nginx.conf
     iptables -I INPUT -p tcp --dport 80 -j ACCEPT
     systemctl enable nginx
 fi
 
+read -p "Install NodeJS? (Y/n)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash -
+    yum -y install nodejs
+fi
+
 read -p "Setup ShadowSocksR? (Y/n)" -n 1 -r
 echo
-if [[ $REPLY =~ ^[Yy]$ ]] ; then
+if [[ $REPLY =~ ^[Yy]$ ]]; then
     wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh
     chmod +x shadowsocksR.sh
     ./shadowsocksR.sh 2>&1 | tee ShadowSocksR.log
@@ -52,5 +55,16 @@ if [[ $REPLY =~ ^[Yy]$ ]] ; then
     ./bbr.sh
 fi
 
+read -p "Setup ShadowSocks? (Y/n)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
+    chmod +x shadowsocks.sh
+    ./shadowsocks.sh 2>&1 | tee ShadowSocks.log
+fi
+
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions \
+    ~/.oh-my-zsh/plugins/zsh-autosuggestions
 
