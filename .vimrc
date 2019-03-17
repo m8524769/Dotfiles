@@ -6,6 +6,7 @@ source $VIMRUNTIME/menu.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
 
+let $USERNAME='yk'
 let mapleader=","
 let g:mapleader = ","
 
@@ -141,22 +142,19 @@ iabbrev try+ try {}<Left><CR>
                 \<Esc>3k4==o
 
 " 代码初始化模板
-iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
+iabbrev cmain+ /* <c-r>=strftime("New at %m/%d 20%y " . $USERNAME)<CR> */<CR>
                 \#include <stdio.h><CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><CR><Up><Tab>
                 \return 0;<Up><Up>
-iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y yk")<CR> */<CR>
-                \#include <cstdio><CR>
-                \#include <iostream><CR>
-                \#include <fstream><CR>
-                \#include <algorithm><CR><CR>
+iabbrev cppmain+ /* <c-r>=strftime("New at %m/%d 20%y " . $USERNAME)<CR> */<CR>
+                \#include <bits/stdc++.h><CR><CR>
                 \using namespace std;<CR>
-                \std::ifstream tcin("./inTest.txt");<CR><CR>
+                \std::ifstream tcin("./stdin.txt");<CR><CR>
                 \int main()<CR>
                 \{}<Left><CR><CR><Up><Tab>
-                \freopen("./inTest.txt", "r", stdin);<CR><CR><CR>
-                \cout << "Time >> " << clock()*1000/CLOCKS_PER_SEC << "ms" << endl;<CR>
+                \freopen("./stdin.txt", "r", stdin);<CR><CR><CR>
+                \cout << "Runtime: " << clock()*1000/CLOCKS_PER_SEC << "ms";<CR>
                 \return 0;<Up><Up><Up>
 iabbrev shmain+ #!/bin/bash<CR><CR>
 iabbrev pymain+ #_*_ coding: utf-8 _*_<CR>
@@ -217,7 +215,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'majutsushi/tagbar'
 Plug 'easymotion/vim-easymotion'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --clang-completer' }
+Plug 'Valloric/YouCompleteMe', { 'do': 'python3 ./install.py --clang-completer' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'skywind3000/asyncrun.vim'
@@ -235,6 +233,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'm8524769/leetcode.vim'
 call plug#end()
 
 
@@ -290,6 +289,8 @@ set tags+=$VIM/vimfiles/systags
 set tags+=./tags
 " Vim-Surround
 vmap s gS
+" LeetCode
+let g:leetcode_username = 'm8524769'
 
 
 " NERD_Tree 资源管理器 <F5>
@@ -439,6 +440,7 @@ augroup END
 
 " YouCompleteMe 代码补全
 let g:ycm_confirm_extra_conf = 0
+let g:ycm_show_diagnostics_ui = 0
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 
@@ -447,14 +449,15 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 nmap <silent> N <Plug>(ale_next_wrap)
 nmap <silent> P <Plug>(ale_previous_wrap)
 nmap <silent> <F8> <Plug>(ale_fix)
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = "\uF12A"
-let g:ale_sign_warning = "\uF128"
+" let g:ale_enabled = 1
+" let g:ale_sign_column_always = 0
+let g:ale_sign_error = " \uF12A"
+let g:ale_sign_warning = " \uF128"
 let g:ale_echo_msg_format = '%s'
 let g:ale_history_enabled = 0
 let g:ale_set_quickfix = 1
 let g:ale_lint_on_insert_leave = 1
-let g:ale_lint_on_text_changed = 'normal'
+" let g:ale_lint_on_text_changed = 'always'
 let g:ale_linters = {
             \'c': ['clang'],
             \'cpp': ['clangtidy'],
@@ -462,14 +465,15 @@ let g:ale_linters = {
             \'Python': ['flake8'],
             \'Vim': ['vint'],
             \}
+let g:ale_linters_explicit = 1
 let g:ale_fixers = {
             \'cpp': [
             \   'remove_trailing_lines',
             \   'CPP_ALEFix'
             \   ]
             \}
-let g:ale_cpp_clang_options = '-std=c++1z'
-let g:ale_cpp_clangtidy_options = '-std=c++1z'
+let g:ale_cpp_clang_options = '-std=c++17'
+let g:ale_cpp_clangtidy_options = '-std=c++17'
 let g:ale_cpp_clangtidy_checks = ['-*, clang-analyzer-*, hicpp-*, modernize-*, performance-*']
 let g:ale_python_flake8_executable = 'python'
 let g:ale_python_flake8_args = '-m flake8'
@@ -498,15 +502,15 @@ vmap <silent> <Leader>r <Plug>DictRVSearch
 map <F4> :Test<CR>
 imap <F4> <Esc> :Test<CR>
 if !exists(':Test')
-    command! -nargs=0 Test 25vsplit inTest.txt
+    command! -nargs=0 Test 25vsplit stdin.txt
 endif
-if !exists(':Notest')
-    command! -nargs=0 Notest call CleanTest()
+if !exists(':CleanTest')
+    command! -nargs=0 CleanTest call CleanTest()
 endif
 function! CleanTest()
-    silent g/inTest\|outTest/d
     silent! %s/tcin >>/cin >>/g
     silent! %s/tcout <</cout <</g
+    silent g/tcin\|tcout/d
     silent execute "w"
 endfunction
 
