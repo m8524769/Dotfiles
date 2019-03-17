@@ -4,7 +4,7 @@ source /etc/os-release
 
 yum -y update
 
-yum -y install git vim zsh gcc
+yum -y install git vim zsh gcc wget
 
 chsh -s /bin/zsh
 
