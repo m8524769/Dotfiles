@@ -165,7 +165,7 @@ time = %H:%M
 date-alt = %A, %d %B %Y
 
 [module/volume]
-type = internal/volume
+type = internal/alsa
 format-volume = <bar-volume>
 label-muted = "────────────────Muted────────────────"
 label-muted-foreground = ${colors.smoke}

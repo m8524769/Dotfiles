@@ -291,6 +291,8 @@ set tags+=./tags
 vmap s gS
 " LeetCode
 let g:leetcode_username = 'm8524769'
+let g:leetcode_password = ''
+let g:leetcode_language = 'zh_CN'
 
 
 " NERD_Tree 资源管理器 <F5>
@@ -509,8 +511,7 @@ if !exists(':CleanTest')
 endif
 function! CleanTest()
     silent! %s/tcin >>/cin >>/g
-    silent! %s/tcout <</cout <</g
-    silent g/tcin\|tcout/d
+    silent g/stdin.txt/d
     silent execute "w"
 endfunction
 

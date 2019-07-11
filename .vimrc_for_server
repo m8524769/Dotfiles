@@ -304,9 +304,9 @@ let g:airline_symbols.notexists = '' " \uE710
 let g:startify_padding_left = 4
 let g:startify_disable_at_vimenter = 0
 let g:startify_bookmarks = [
-            \ '/etc/nginx/nginx.conf',
-            \ '~/.vimrc',
             \ '~/.zshrc',
+            \ '~/.vimrc',
+            \ '/etc/nginx/nginx.conf',
             \ ]
 let g:startify_custom_header =
             \ "startify#fortune#cowsay('','═','║','╔','╗','╝','╚')"

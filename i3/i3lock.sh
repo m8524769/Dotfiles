@@ -7,7 +7,7 @@ T='#EEEEEEDD'  # text
 W='#FF2E63BB'  # wrong
 V='#08D9D6CC'  # verifying
 
-i3lock -e -i ~/图片/Wallpapers/arch-linux-5991.png \
+i3lock -e -i ~/图片/archlinux-5991.png \
 --radius=120          \
 --ring-width=7        \
 --ringcolor=$D        \
