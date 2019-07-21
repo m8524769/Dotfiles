@@ -20,6 +20,9 @@ colorscheme molokai2
 set guifont+=InconsolataGo\ QiHei\ NF\ 17
 set guifont+=DejaVuSansMono\ YaHei\ NF\ 15
 set guifont+=FiraCode\ QiHei\ NF\ 14
+" set guifont+=InconsolataGo\ QiHei\ NF:h17
+" set guifont+=DejaVuSansMono\ YaHei\ NF:h15
+" set guifont+=FiraCode\ QiHei\ NF:h14
 set number
 set relativenumber
 set nowrap
@@ -100,6 +103,7 @@ set foldlevelstart=99
 
 " 共享系统剪切板
 set clipboard=unnamedplus
+" set clipboard=unnamed
 
 " 集成终端
 set shell=/bin/zsh
@@ -526,6 +530,7 @@ augroup compile_command
     autocmd FileType ruby    let b:RunCommand = "!ruby %"
     autocmd FileType haskell let b:RunCommand = "term ghci %"
     autocmd FileType javascript let b:RunCommand = "!node %"
+    autocmd FileType typescript let b:RunCommand = "!ts-node %"
 augroup END
 
 function! C_Command() " Use LLVM/Clang Compiler
