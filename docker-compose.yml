@@ -4,11 +4,13 @@ services:
     build:
       context: ./nginx
     image: yk/nginx
+    container_name: nginx
     ports:
       - "8080:8080"
   envoy:
     build:
       context: ./envoy
     image: yk/envoy
+    container_name: envoy
     ports:
       - "9090:9090"
