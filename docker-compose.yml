@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./nginx
+    image: yk/nginx
+    ports:
+      - "8080:8080"
+  envoy:
+    build:
+      context: ./envoy
+    image: yk/envoy
+    ports:
+      - "9090:9090"

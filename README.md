@@ -31,3 +31,18 @@
 ```shell
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/m8524769/Dotfiles/master/setup_centos.sh)"
 ```
+
+## With Docker
+```shell
+# Start nginx & envoy
+docker-compose up -d
+
+# Check status
+docker-compose ps
+
+# Rebuild images
+docker-compose build
+
+# Stop containers & remove them
+docker-compose down
+```
