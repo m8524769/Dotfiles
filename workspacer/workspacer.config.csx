@@ -109,17 +109,19 @@ public class DefaultLayoutEngine : ILayoutEngine
     private readonly int _numInPrimary;
     private readonly double _primary;
     private readonly double _increment;
+    private readonly int _gap;
 
     private int _numInPrimaryOffset = 0;
     private double _offset = 0;
 
-    public DefaultLayoutEngine() : this(1, 0.5, 0.05) { }
+    public DefaultLayoutEngine() : this(1, 0.5, 0.05, 5) { }
 
-    public DefaultLayoutEngine(int numInPrimary, double primary, double increment)
+    public DefaultLayoutEngine(int numInPrimary, double primary, double increment, int gap)
     {
         _numInPrimary = numInPrimary;
         _primary = primary;
         _increment = increment;
+        _gap = gap;
     }
 
     public string Name => "default";
@@ -152,11 +154,23 @@ public class DefaultLayoutEngine : ILayoutEngine
         {
             if (i < numInPrimary)
             {
-                windowLocations.Add(new WindowLocation(-4, i * primaryHeight + 5, primaryWidth + 8, primaryHeight, WindowState.Normal));
+                windowLocations.Add(new WindowLocation(
+                    _gap,
+                    i * primaryHeight + _gap,
+                    primaryWidth - (_gap * 2),
+                    primaryHeight - (_gap * 2),
+                    WindowState.Normal
+                ));
             }
             else
             {
-                windowLocations.Add(new WindowLocation(primaryWidth-8, (i - numInPrimary) * height + 5, secondaryWidth + 12, height, WindowState.Normal));
+                windowLocations.Add(new WindowLocation(
+                    primaryWidth,
+                    (i - numInPrimary) * height + _gap,
+                    secondaryWidth - _gap,
+                    height - (_gap * 2),
+                    WindowState.Normal
+                ));
             }
         }
         return windowLocations;
